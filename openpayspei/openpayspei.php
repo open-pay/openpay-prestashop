@@ -34,7 +34,8 @@ class OpenpaySpei extends PaymentModule {
             include_once(dirname(__FILE__) . '/lib/Openpay.php');
         }
         
-        
+        $this->sandbox_url = "https://sandbox-api.openpay.mx/v1";
+        $this->url = "https://api.openpay.mx/v1";
         
         $this->name = 'openpayspei';
         $this->tab = 'payments_gateways';
@@ -546,7 +547,22 @@ class OpenpaySpei extends PaymentModule {
                     'event_types' => array("verification","charge.succeeded","charge.created","charge.cancelled","charge.failed","payout.created","payout.succeeded","payout.failed","spei.received","chargeback.created","chargeback.rejected","chargeback.accepted")
                 );
                 
-                $this->createWebhook($webhook_data);
+                $webhook = $this->createWebhook($webhook_data);
+                if($webhook->error && $webhook->error != 6001){
+                    $errors[] = $webhook->msg;
+                }
+                
+                
+                //$errors[] = $this->getMerchantInfo();
+                
+                if(!$this->getMerchantInfo()){
+                    $errors[] = "Las credenciales de Openpay son incorrectas.";
+                    $mode = Tools::getValue('openpay_mode') ? 'LIVE' : 'TEST';
+                    Configuration::deleteByName('OPENPAY_SPEI_PUBLIC_KEY_'.$mode);
+                    Configuration::deleteByName('OPENPAY_SPEI_MERCHANT_ID_'.$mode);
+                    Configuration::deleteByName('OPENPAY_SPEI_PRIVATE_KEY_'.$mode);
+                    Configuration::deleteByName('OPENPAY_SPEI_DEADLINE_'.$mode);
+                }
                 
                 
             }
@@ -858,28 +874,52 @@ class OpenpaySpei extends PaymentModule {
             return $webhook;
             
         } catch (OpenpayApiTransactionError $e) {
-            $this->error($e);
+            return $this->error($e, true);
         } catch (OpenpayApiRequestError $e) {
-            $this->error($e);
+            return $this->error($e, true);
         } catch (OpenpayApiConnectionError $e) {
-            $this->error($e);
+            return $this->error($e, true);
         } catch (OpenpayApiAuthError $e) {
-            $this->error($e);
+            return $this->error($e, true);
         } catch (OpenpayApiError $e) {
-            $this->error($e);
+            return $this->error($e, true);
         } catch (Exception $e) {
-            $this->error($e);
+            return $this->error($e, true);
         }
     }
     
     
-    public function error($e) {
+    public function getMerchantInfo(){
         
-        //el webhook ya existe
-        if($e->getErrorCode() == 6001){
-            return;
+        $sk = Configuration::get('OPENPAY_SPEI_MODE') ? Configuration::get('OPENPAY_SPEI_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_SPEI_PRIVATE_KEY_TEST');
+        $id = Configuration::get('OPENPAY_SPEI_MODE') ? Configuration::get('OPENPAY_SPEI_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_SPEI_MERCHANT_ID_TEST');
+
+        $url = (Configuration::get('OPENPAY_SPEI_MODE') ? $this->url : $this->sandbox_url)."/".$id;
+                
+        $username = $sk;
+        $password = "";
+        
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL,$url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER,true);
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        curl_setopt($ch, CURLOPT_USERPWD, "$username:$password");
+        $result=curl_exec ($ch);
+        curl_close ($ch);
+        
+        $array = json_decode($result, true);
+        if (array_key_exists('id', $array)) {
+            return true;
+        }else{
+            return false;
         }
         
+    }
+    
+    
+    public function error($e, $backend = false) {
+        
+        //6001 el webhook ya existe
         
         switch ($e->getErrorCode()){
             
@@ -962,6 +1002,11 @@ class OpenpaySpei extends PaymentModule {
                 $msg = "Se requiere solicitar al banco autorización para realizar este pago.";
                 break;
             
+            case "6002":
+                $msg = "Ha ocurrido un error al crear el webhook. Verifica en tu panel de Openpay que este haya sido creado, es necesario instalarlo para recibir notificaciones de pago.";
+                $msg .= "<br>El webhook deberá ser: ".(Configuration::get('PS_SSL_ENABLED') ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . __PS_BASE_URI__ . 'modules/openpayspei/notification.php';
+                break;
+            
             default: //Demás errores 400 
                 $msg = "La petición no pudo ser procesada.";
                 break;
@@ -969,7 +1014,12 @@ class OpenpaySpei extends PaymentModule {
         }
         
         $error = 'ERROR '.$e->getErrorCode().'. '.$msg;
-        throw new Exception($error);
+        
+        if($backend){
+            return json_decode (json_encode (array('error' => $e->getErrorCode(), 'msg' => $error)), FALSE);
+        }else{
+            throw new Exception($error);
+        }
         
     }
     

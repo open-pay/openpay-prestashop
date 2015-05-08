@@ -34,6 +34,9 @@ class OpenpayCards extends PaymentModule {
             include_once(dirname(__FILE__) . '/lib/Openpay.php');
         }
         
+        $this->sandbox_url = "https://sandbox-api.openpay.mx/v1";
+        $this->url = "https://api.openpay.mx/v1";
+        
         $this->name = 'openpaycards';
         $this->tab = 'payments_gateways';
         $this->version = '1.0';
@@ -452,6 +455,17 @@ class OpenpayCards extends PaymentModule {
                 foreach ($configuration_values as $configuration_key => $configuration_value){
                     Configuration::updateValue($configuration_key, $configuration_value);
                 }
+                
+                
+                if(!$this->getMerchantInfo()){
+                    $errors[] = "Las credenciales de Openpay son incorrectas.";
+                    $mode = Tools::getValue('openpay_mode') ? 'LIVE' : 'TEST';
+                    Configuration::deleteByName('OPENPAY_PUBLIC_KEY_'.$mode);
+                    Configuration::deleteByName('OPENPAY_MERCHANT_ID_'.$mode);
+                    Configuration::deleteByName('OPENPAY_PRIVATE_KEY_'.$mode);
+                }
+                
+                
             }
         }
 
@@ -758,7 +772,37 @@ class OpenpayCards extends PaymentModule {
     }
     
     
-    public function error($e) {
+    public function getMerchantInfo(){
+        
+        $sk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
+        $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
+
+        $url = (Configuration::get('OPENPAY_MODE') ? $this->url : $this->sandbox_url)."/".$id;
+                
+        $username = $sk;
+        $password = "";
+        
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL,$url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER,true);
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        curl_setopt($ch, CURLOPT_USERPWD, "$username:$password");
+        $result=curl_exec ($ch);
+        curl_close ($ch);
+        
+        $array = json_decode($result, true);
+        if (array_key_exists('id', $array)) {
+            return true;
+        }else{
+            return false;
+        }
+        
+    }
+    
+    
+    public function error($e, $backend = false) {
+        
+        //6001 el webhook ya existe
         
         switch ($e->getErrorCode()){
             
@@ -841,6 +885,11 @@ class OpenpayCards extends PaymentModule {
                 $msg = "Se requiere solicitar al banco autorización para realizar este pago.";
                 break;
             
+            case "6002":
+                $msg = "Ha ocurrido un error al crear el webhook. Verifica en tu panel de Openpay que este haya sido creado, es necesario instalarlo para recibir notificaciones de pago.";
+                $msg .= "<br>El webhook deberá ser: ".(Configuration::get('PS_SSL_ENABLED') ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . __PS_BASE_URI__ . 'modules/openpaystores/notification.php';
+                break;
+            
             default: //Demás errores 400 
                 $msg = "La petición no pudo ser procesada.";
                 break;
@@ -848,7 +897,12 @@ class OpenpayCards extends PaymentModule {
         }
         
         $error = 'ERROR '.$e->getErrorCode().'. '.$msg;
-        throw new Exception($error);
+        
+        if($backend){
+            return json_decode (json_encode (array('error' => $e->getErrorCode(), 'msg' => $error)), FALSE);
+        }else{
+            throw new Exception($error);
+        }
         
     }
     
