@@ -156,6 +156,24 @@
         </table>
     </fieldset>
     <br />
+
+    {if $openpay_error}
+        <fieldset>
+            <legend>Errors</legend>
+            <table cellspacing="0" cellpadding="0" class="openpay-technical">
+                <tbody>
+                    {foreach from=$openpay_error item=error}
+                        <tr>
+                            <td><img src="../img/admin/forbbiden.gif" alt=""></td>
+                            <td>{$error|escape:'htmlall':'UTF-8'}</td>
+                        </tr>
+                    {/foreach}
+                </tbody>
+            </table>
+        </fieldset>
+        <br />
+    {/if}
+
     <form action="{$openpay_form_link}" method="post">
         <fieldset class="openpay-settings">
             <legend><img src="/modules/openpayprestashop/views/img/technical-icon.gif" alt="" />Configuraciones</legend>
@@ -262,22 +280,6 @@
         </fieldset>
     </form>
     <div class="clear"></div>
-
-    {if $openpay_error}
-        <fieldset>
-            <legend>Errors</legend>
-            <table cellspacing="0" cellpadding="0" class="openpay-technical">
-                <tbody>
-                    {foreach from=$openpay_error item=error}
-                        <tr>
-                            <td><img src="../img/admin/forbbiden.gif" alt=""></td>
-                            <td>{$error|escape:'htmlall':'UTF-8'}</td>
-                        </tr>
-                    {/foreach}
-                </tbody>
-            </table>
-        </fieldset>
-    {/if}
 
 </div>
 

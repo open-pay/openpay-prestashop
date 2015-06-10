@@ -24,7 +24,6 @@
  *  @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  *  International Registered Trademark & Property of PrestaShop SA
  */
-
 if (!defined('_PS_VERSION_'))
     exit;
 
@@ -638,6 +637,7 @@ class OpenpayPrestashop extends PaymentModule
     public function checkRequirements()
     {
         $tests = array('result' => true);
+
         $tests['curl'] = array(
             'name' => $this->l('La extensión PHP CURL tiene que estar activada en su servidor'),
             'result' => extension_loaded('curl'));
@@ -653,7 +653,7 @@ class OpenpayPrestashop extends PaymentModule
 
         $tests['configuration'] = array(
             'name' => $this->l('Configurar las credenciales de Openpay en este módulo (Merchant ID , llave privada, llave pública)'),
-            'result' => $this->checkSettings());
+            'result' => $this->getMerchantInfo());
 
         if (_PS_VERSION_ < 1.5)
             $tests['backward'] = array(
@@ -677,7 +677,6 @@ class OpenpayPrestashop extends PaymentModule
     {
         $this->context->controller->addCSS(array($this->_path.'views/css/openpay-prestashop-admin.css'));
 
-        $requirements = $this->checkRequirements();
         $errors = array();
 
         /** Update Configuration Values when settings are updated */
@@ -730,6 +729,8 @@ class OpenpayPrestashop extends PaymentModule
             foreach ($errors as $error)
                 $this->_error[] = $error;
 
+
+        $requirements = $this->checkRequirements();
 
         foreach ($requirements as $k => $requirement)
         {
