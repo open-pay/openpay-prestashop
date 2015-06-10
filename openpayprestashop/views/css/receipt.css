@@ -1,0 +1,230 @@
+.store-image img{
+    max-width: 100%;
+}
+
+.marketing{
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+/* Supporting marketing content */
+.marketing {
+    margin: 20px 0;
+}
+
+/* Customize container */
+
+.container-receipt {
+    max-width: 730px;
+    border: 1px solid #EDEDED;
+    padding: 10px;
+}
+
+.container-bank-receipt {
+    max-width: 730px;
+    border: 1px solid #EDEDED;
+}
+
+
+.Yellow1, .Yellow2, .Yellow3 {
+    background-color: #003A5B;
+}
+
+/* Responsive: Portrait tablets and up */
+@media screen and (min-width: 768px) {
+    /* Remove the padding we set earlier */
+    .marketing{
+        padding-right: 0;
+        padding-left: 0;
+    }
+}
+
+.Yellow1{
+    height: 70px;
+}
+
+.Yellow2 {
+	font-size: 25px;
+	font-weight: bold;
+	color:#FFF;
+	padding-right: 30px;
+	float: right;
+	height: 70px;
+	text-align: right;
+}
+
+.Yellow2 span {
+    display: block;
+    margin-top: 24px;
+}
+
+.amount{
+    color: #003A5B;
+    font-size: 60px;
+    font-weight: bold;
+    margin: 0 0 15px 0;
+}
+
+.amount small {
+    font-size: 30px;
+    color: #003A5B;
+    font-weight: bold;
+}
+
+h1 {
+    font-size: 20px;
+    font-weight: lighter;
+    margin: 8px 0 0 0;
+}
+
+@media screen and (max-width: 480px) {
+    .amount {
+        font-size: 40px;
+    }
+    h1{
+        font-size:16px;
+    }
+    .spei{
+        margin-top:30px;
+    }
+}
+
+.footer{
+    text-align: center;
+}
+
+.footer img {
+    width: 180px;
+}
+
+.datos{ background-color: #f7f7f7;}
+
+.marketing h4 {
+    color: #33669a;
+    font-size: 35px;
+    font-weight: bold;
+    line-height: 45px;
+    margin-top: 0px;
+}
+
+img.logo_paynet  {
+    width: 130px;
+    vertical-align:middle;
+    margin-left: 10px;
+}
+
+
+.Big_Bullet {
+    width: 20px;
+    float: left;
+    margin-right: 10px;
+}
+
+.Big_Bullet span {
+    width: 100%;
+    height: 35px;
+    display: block;
+}
+
+.Big_Bullet span, .col2 {
+    background-color: #003A5B;
+}
+
+.data{ margin-top:20px;}
+
+.data_amount{
+    background-color: #003A5B;
+    color:#fff;
+    padding: 15px;
+}
+.datos_tiendas {
+    margin-top: 20px;
+}
+
+.datos_pago {
+    margin-top:10px;
+/*    padding: 10px;*/
+}
+.datos_pago p{ width:300px; font-size: 12px;}
+
+ol {
+    font-size: 12px;
+    width: 290px;
+    padding-left: 20px;
+    margin-top:10px;
+    list-style: decimal;
+}
+
+li {
+    padding: 5px 0;
+    line-height: 16px;
+}
+
+.marketing img{ margin-right:10px;}
+
+.data_amount h1 {
+    margin: 0;
+    padding: 0;
+    font-size: 60px;
+}
+
+.data_amount h2{ font-size:18px;}
+
+.data_amount .amount {
+    color: #fff;
+    font-size: 50px;
+    font-weight: bold;
+    margin: 0 0 5px 0;
+}
+
+.data_amount  .amount small {
+    font-size: 20px;
+    color: #fff;
+    font-weight: bold;
+}
+
+.link_tiendas{
+    display: inline-block;position: relative;width: 173px;font-size: 11px;
+}
+
+.mt30{
+    margin-top: 30px;
+}
+
+.mb30{
+    margin-bottom: 30px;
+}
+
+.mb40{
+    margin-bottom: 40px;
+}
+
+.odd{
+    background-color: #F3F3F3;
+}
+
+.even{
+    background-color: #DCDCDC;
+}
+
+.detail{
+    width: 100%;
+    margin-top: 10px;
+}
+
+.subcontainer{
+    padding: 50px;
+}
+
+.nopadding{
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.spei{
+    text-align: right;
+}
+
+.nomargin{
+    margin: 0;
+}
