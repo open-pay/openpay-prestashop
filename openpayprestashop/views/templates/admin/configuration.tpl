@@ -28,7 +28,7 @@
     <div class="openpay-module-header">
         <a href="http://www.openpay.mx" target="_blank" rel="external"><img src="/modules/openpayprestashop/views/img/openpay-logo.png" alt="openpay" class="openpay-logo" /></a>
         <span class="openpay-module-intro">Comienza a recibir pagos con tarjeta, pagos en efectivo en tiendas y pagos vía SPEI hoy mismo con Openpay.</span>
-        <a href="https://sandbox-dashboard.openpay.mx/login/register" rel="external" target="_blank" class="openpay-module-create-btn"><span>Crea una Cuenta</span></a>
+        <a href="https://sandbox-dashboard.openpay.mx/merchant/production" rel="external" target="_blank" class="openpay-module-create-btn"><span>Crea una Cuenta</span></a>
     </div>
     <div class="openpay-module-wrap">
         <div class="openpay-module-col1 floatRight">
@@ -41,7 +41,11 @@
         <div class="openpay-module-col2">
             <div class="row">
                 <div class="col-md-6">
-                    <h3>Algunos beneficios</h3>
+                     <h3>Beneficios</h3>
+                    <p>Openpay ofrece una estructura sencilla de costos todo incluido para todo tipo de soluciones e-commerce o m-commerce.</p>
+                </div>
+                <div class="col-md-5">
+                    <h3>&nbsp;</h3>
                     <ul>
                         <li>Sin renta mensual</li>
                         <li>Sin costos de integración</li>
@@ -49,11 +53,6 @@
                         <li>Sin plazos forzosos</li>
                         <li>Sin cargos ocultos ni letras chiquitas</li>
                     </ul>
-                </div>
-                <div class="col-md-5">
-                    <h3>&nbsp;</h3>
-                    <p>Openpay ofrece una estructura sencilla de costos todo incluido para todo tipo de soluciones e-commerce o m-commerce.</p>
-                    <p>Todas nuestras comisiones son mas IVA.</p>
                 </div>
             </div>
             <hr>
