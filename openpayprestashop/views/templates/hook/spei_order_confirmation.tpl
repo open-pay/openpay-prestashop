@@ -17,9 +17,9 @@
 * versions in the future. If you wish to customize PrestaShop for your
 * needs please refer to http://www.prestashop.com for more information.
 *
-*  @author PrestaShop SA <contact@prestashop.com>
-*  @copyright  2007-2015 PrestaShop SA
-*  @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+*  @author    PrestaShop SA <contact@prestashop.com>
+*  @copyright 2007-2015 PrestaShop SA
+*  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
 
@@ -63,23 +63,23 @@
                 </tr>
                 <tr class="even">
                     <td>CLABE:</td>
-                    <td>{$openpay_order.clabe|escape:html:'UTF-8'}</td>
+                    <td>{$openpay_order.clabe}</td>
                 </tr>
                 <tr class="odd">
                     <td>Referencia:</td>
-                    <td>{$openpay_order.reference|escape:html:'UTF-8'}</td>
+                    <td>{$openpay_order.reference}</td>
                 </tr>
                 <tr class="even">
                     <td>Beneficiario:</td>
-                    <td>{$openpay_order.shop_name|escape:html:'UTF-8'}</td>
+                    <td>{$openpay_order.shop_name}</td>
                 </tr>
             </table>
 
             <div class="col-lg-12" style="text-align: center; margin-top: 20px;">
                 <p>¿Tienes alguna dudas o problema? Llámanos al teléfono</p>
-                <h4>{$openpay_order.phone|escape:html:'UTF-8'}</h4>
+                <h4>{$openpay_order.phone}</h4>
                 <p>O escríbenos a</p>
-                <h4>{$openpay_order.email|escape:html:'UTF-8'}</h4>
+                <h4>{$openpay_order.email}</h4>
                 <div class="col-lg-6 mb30" style="text-align:right; margin-top:5px;">
                     <a href="javascript:void(0)" class="btn btn-info btn-lg" onclick="window.print();">Imprimir recibo</a>
                 </div>
