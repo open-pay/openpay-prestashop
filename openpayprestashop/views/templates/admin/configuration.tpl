@@ -36,6 +36,10 @@
                 <h3>Panel de administración</h3>
                 <p>Contamos con un panel de administración donde podrás visualizar las diferentes transacciones que procese tu negocio.</p>
                 <a target="_blank" href="http://www.openpay.mx"><img src="/modules/openpayprestashop/views/img/openpay-dashboard.png" alt="openpay dashboard" class="openpay-dashboard" /></a>
+                <hr>
+                <div class="openpay-prestashop-partner mt30">
+                    <img src="/modules/openpayprestashop/views/img/prestashop_partner.png" alt="" />
+                </div>
             </div>
         </div>
         <div class="openpay-module-col2">

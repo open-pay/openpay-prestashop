@@ -29,7 +29,7 @@ img.openpay-cc { margin: 0px 40px 0px 0px; vertical-align: middle; }
 
 .floatRight { float: right; }
 .openpay-module-wrap-video { background-color: #FFFFFF; border: #C3D9EF solid 1px; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; padding: 6px; overflow: hidden; }
-img.openpay-dashboard { margin: 0px; }
+img.openpay-dashboard { margin: 0px; max-width: 100%; }
 a.openpay-module-video-btn { display: inline-block; margin: 15px 0px 0px 0px; position: relative; }
 img.openpay-video-btn { position: absolute; left: 119px; top: 80px; }
 
@@ -363,4 +363,9 @@ hr{
 
 .store-image img{
     max-width: 100%;
+}
+
+.openpay-prestashop-partner img{ margin: 0px; max-width: 70%;  }
+.openpay-prestashop-partner{
+    text-align: center;
 }

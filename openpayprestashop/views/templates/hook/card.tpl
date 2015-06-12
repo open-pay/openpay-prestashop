@@ -23,7 +23,7 @@
 *  International Registered Trademark & Property of PrestaShop SA
 *}
 
-<div class="payment_module">
+<div id="card-container" class="payment_module">
     <div class="openpay-form-container" >
         <div class="row mt30 mb10">
             <div class="col-md-3 store-image" style="border-right: 1px solid #ccc;">

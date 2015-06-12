@@ -23,7 +23,7 @@
 *  International Registered Trademark & Property of PrestaShop SA
 *}
 
-<div class="payment_module" >
+<div id="store-container" class="payment_module {if $card == 1} hidden {/if}" >
     <div class="openpay-form-container">
         <h3 class="openpay_title mt30">Pago en efectivo en tiendas de conveniencia</h3>
         <div class="row">

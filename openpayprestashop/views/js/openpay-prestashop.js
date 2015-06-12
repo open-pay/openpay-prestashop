@@ -31,6 +31,33 @@ $(document).ready(function() {
             'placement': 'top'
         });
 
+
+        $(".radio-button").change(function(){
+
+            var radio = $(this).val();
+
+            switch (radio){
+                case "radio-card":
+                    $("#card-container").removeClass('hidden');
+                    $("#store-container").addClass('hidden');
+                    $("#spei-container").addClass('hidden');
+                    break;
+
+                case "radio-store":
+                    $("#store-container").removeClass('hidden');
+                    $("#card-container").addClass('hidden');
+                    $("#spei-container").addClass('hidden');
+                    break;
+
+                case "radio-spei":
+                    $("#spei-container").removeClass('hidden');
+                    $("#store-container").addClass('hidden');
+                    $("#card-container").addClass('hidden');
+                    break;
+            }
+
+        });
+
         $('#card_number').cardNumberInput();
 
         OpenPay.setId(openpay_merchant_id);

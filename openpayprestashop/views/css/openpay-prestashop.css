@@ -186,3 +186,29 @@ a#openpay_error { display: none; }
 .disabled{
     cursor: not-allowed;
 }
+
+.payment-method{
+    border-right: 1px solid #ccc;
+}
+
+.payment-method:last-child{
+    border-right: none;
+}
+
+.payment-method h4{
+    font-size: 17px;
+}
+
+#payment-method-container {
+    border: 1px solid #d6d4d4;
+    border-radius: 4px;
+    color: #333;
+    display: block;
+    font-size: 17px;
+    font-weight: bold;
+    letter-spacing: -1px;
+    line-height: 23px;
+    padding: 20px;
+    position: relative;
+    background: #fbfbfb;
+}
