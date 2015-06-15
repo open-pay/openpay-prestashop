@@ -43,7 +43,7 @@ class OpenpayPrestashop extends PaymentModule
 
 		$this->name = 'openpayprestashop';
 		$this->tab = 'payments_gateways';
-		$this->version = '1.3.1';
+		$this->version = '1.6.1';
 		$this->author = 'Openpay';
 		$this->need_instance = 0;
 		$this->currencies = true;
@@ -112,7 +112,8 @@ class OpenpayPrestashop extends PaymentModule
 			}
 		}
 
-		$ret = parent::install() && $this->registerHook('payment') &&
+		$ret = parent::install() && $this->createPendingState() &&
+				$this->registerHook('payment') &&
 				$this->registerHook('header') &&
 				$this->registerHook('backOfficeHeader') &&
 				$this->registerHook('paymentReturn') &&
@@ -123,6 +124,37 @@ class OpenpayPrestashop extends PaymentModule
 		$this->registerHook('displayMobileHeader');
 
 		return $ret;
+	}
+
+	private function createPendingState()
+	{
+		$state = new OrderState();
+		$languages = Language::getLanguages();
+		$names = array();
+
+		foreach ($languages as $lang)
+			$names[$lang['id_lang']] = 'En espera de pago';
+
+		$state->name = $names;
+		$state->color = '#4169E1';
+		$state->send_email = true;
+		$state->module_name = 'openpayprestashop';
+		$templ = array();
+
+		foreach ($languages as $lang)
+			$templ[$lang['id_lang']] = 'openpayprestashop';
+
+		$state->template = $templ;
+
+		if ($state->save())
+		{
+			Configuration::updateValue('waiting_cash_payment', $state->id);
+			$this->copyMailTemplate();
+		}
+		else
+			return false;
+
+		return true;
 	}
 
 	/**
@@ -209,21 +241,9 @@ class OpenpayPrestashop extends PaymentModule
 				Tools::getValue('controller') == 'orderopc' ||	Tools::getValue('step') == 3)))
 			return;
 
-		/* Load JS and CSS files through CCC */
+		/* Load CSS files through CCC */
 		$this->context->controller->addCSS($this->_path.'views/css/openpay-prestashop.css');
-		$this->context->controller->addJS('https://openpay.s3.amazonaws.com/openpay.v1.min.js');
-		$this->context->controller->addJS('https://openpay.s3.amazonaws.com/openpay-data.v1.min.js');
 
-		$pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PUBLIC_KEY_LIVE') : Configuration::get('OPENPAY_PUBLIC_KEY_TEST');
-		$id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
-
-		return '
-            <script type="text/javascript">
-                var openpay_public_key = \''.addslashes($pk).'\';
-                var openpay_merchant_id = \''.addslashes($id).'\';
-                var mode = \''.addslashes(Configuration::get('OPENPAY_MODE')).'\';
-            </script>
-            <script type="text/javascript" src="'.$this->_path.'views/js/openpay-prestashop.js"></script>';
 	}
 
 	/**
@@ -253,9 +273,6 @@ class OpenpayPrestashop extends PaymentModule
 		$this->smarty->assign('store', Configuration::get('OPENPAY_STORES'));
 		$this->smarty->assign('spei', Configuration::get('OPENPAY_SPEI'));
 		$this->smarty->assign('openpay_ps_version', _PS_VERSION_);
-
-		$this->path_to_tpl_folder = _PS_MODULE_DIR_.$this->name.'/views/templates/hook';
-		$this->context->smarty->assign('tpl_path', $this->path_to_tpl_folder);
 
 		return $this->display(__FILE__, './views/templates/hook/payment.tpl');
 	}
@@ -437,11 +454,7 @@ class OpenpayPrestashop extends PaymentModule
 					$barcode_url = $result_json->payment_method->barcode_url;
 					$reference = $result_json->payment_method->reference;
 
-					$this->copyMailTemplate();
-					$mail_detail = '<br/><img src="'.$barcode_url.'"><br/><span style="color:#333"><strong>Referencia:</strong></span>'.$reference;
-
-					$module = Module::getInstanceByName('openpayprestashop');
-					$module->extra_mail_vars = array('{detail}' => $mail_detail);
+					$mail_detail = '<br/><img src="'.$barcode_url.'" /><br/><span style="color:#333"><strong>Referencia:</strong></span>'.$reference;
 
 					break;
 
@@ -453,13 +466,9 @@ class OpenpayPrestashop extends PaymentModule
 					$clabe = $result_json->payment_method->clabe;
 					$reference = $result_json->payment_method->name;
 
-					$this->copyMailTemplate();
-					$mail_detail = '<br/><br/><span style="color:#333"><strong>Banco:</strong></span> STP<br />
+					$mail_detail = '<br/><span style="color:#333"><strong>Banco:</strong></span> STP<br />
                             <span style="color:#333"><strong>CLABE:</strong></span> '.$clabe.'<br>
                             <span style="color:#333"><strong>Referencia:</strong></span> '.$reference;
-
-					$module = Module::getInstanceByName('openpayprestashop');
-					$module->extra_mail_vars = array('{detail}' => $mail_detail);
 
 					break;
 			}
@@ -477,7 +486,7 @@ class OpenpayPrestashop extends PaymentModule
 			$this->validateOrder(
 					(int)$this->context->cart->id,
 					(int)$order_status, $result_json->amount,
-					$this->displayName, $message, array(), null,
+					$this->displayName, $message, array('{detail}' => $mail_detail), null,
 					false, $this->context->customer->secure_key
 			);
 
@@ -540,13 +549,12 @@ class OpenpayPrestashop extends PaymentModule
 
 			if (class_exists('Logger'))
 				Logger::addLog(
-						$this->l('Openpay - Payment transaction failed').' '.$message, 1, null, 'Cart', (int)$this->context->cart->id, true
+					$this->l('Openpay - Payment transaction failed').' '.$message, 1, null, 'Cart', (int)$this->context->cart->id, true
 				);
 
 			$this->context->cookie->__set('openpay_error', $e->getMessage());
-			$controller = Configuration::get('PS_ORDER_PROCESS_TYPE') ? 'order-opc.php' : 'order.php';
 
-			$redirect = $this->context->link->getPageLink($controller).(strpos($controller, '?') !== false ? '&' : '?').'step=3#openpay_error';
+			$redirect = $this->context->link->getModuleLink('openpayprestashop', 'cardpayment');
 			Tools::redirect($redirect);
 			exit;
 		}
@@ -764,6 +772,23 @@ class OpenpayPrestashop extends PaymentModule
 		));
 
 		return $this->display(__FILE__, 'views/templates/admin/configuration.tpl');
+	}
+
+	public function checkCurrency($cart)
+	{
+		$currency_order = new Currency($cart->id_currency);
+		$currencies_module = $this->getCurrency($cart->id_currency);
+
+		if (is_array($currencies_module))
+			foreach ($currencies_module as $currency_module)
+				if ($currency_order->id == $currency_module['id_currency'])
+					return true;
+		return false;
+	}
+
+	public function getPath()
+	{
+		return $this->_path;
 	}
 
 	public function getOpenpayCustomer($customer_id)
@@ -1081,17 +1106,28 @@ class OpenpayPrestashop extends PaymentModule
 
 	public function copyMailTemplate()
 	{
-		$lang = $this->context->language->iso_code;
-
 		$html_file_origin = _PS_MODULE_DIR_.$this->name.'/mails/es/openpayprestashop.html';
-		$html_file_destination = dirname(__FILE__).'/../../mails/'.$lang.'/openpayprestashop.html';
-		if (!Tools::copy($html_file_origin, $html_file_destination))
-			throw new Exception;
-
 		$txt_file_origin = _PS_MODULE_DIR_.$this->name.'/mails/es/openpayprestashop.txt';
-		$txt_file_destination = dirname(__FILE__).'/../../mails/'.$lang.'/openpayprestashop.txt';
-		if (!Tools::copy($txt_file_origin, $txt_file_destination))
-			throw new Exception;
+		$directory = _PS_MAIL_DIR_;
+		if ($dhvalue = opendir($directory))
+		{
+			while (($file = readdir($dhvalue)) !== false)
+			{
+				if (is_dir($directory.$file) && $file[0] != '.')
+				{
+					$html_file_destination = $directory.$file.'/openpayprestashop.html';
+					if (!Tools::copy($html_file_origin, $html_file_destination))
+						throw new Exception;
+
+					$txt_file_destination = $directory.$file.'/openpayprestashop.txt';
+					if (!Tools::copy($txt_file_origin, $txt_file_destination))
+						throw new Exception;
+
+				}
+			}
+			closedir($dhvalue);
+		}
+
 	}
 
 	public function getLongGlobalDateFormat($input)

@@ -212,3 +212,55 @@ a#openpay_error { display: none; }
     position: relative;
     background: #fbfbfb;
 }
+
+.openpay-payment-module a.openpay::after{
+    color: #777;
+    content: "";
+    display: block;
+    font-family: "FontAwesome";
+    font-size: 25px;
+    height: 22px;
+    margin-top: -11px;
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    width: 14px;
+}
+
+.openpay-payment-module a {
+    border: 1px solid #d6d4d4;
+    border-radius: 4px;
+    color: #333;
+    display: block;
+    font-size: 17px;
+    font-weight: bold;
+    letter-spacing: -1px;
+    line-height: 23px;
+    padding: 20px 40px 20px 20px;
+    position: relative;
+    background: #fbfbfb none repeat scroll 0 0;
+}
+
+.openpay-payment-module a:hover, .openpay-payment-module a:active{
+    background: #f6f6f6;
+
+}
+
+.openpay-payment-module a:link,
+.openpay-payment-module a:hover,
+.openpay-payment-module a:active,
+.openpay-payment-module a:visited{
+    text-decoration: none;
+}
+
+.openpay-payment-module i{
+    font-size: 40px;
+    vertical-align: middle;
+    margin-right: 10px;
+    color: #B8B8B8;
+}
+
+.cart_navigation{
+    overflow: hidden;
+    margin: 0;
+}

@@ -5,17 +5,23 @@ Hola {firstname} {lastname},
 
 Le agradecemos por realizar sus compras en {shop_name}!
 
-PEDIDO: {order_name} {detail}
+Su pedido con la referencia {order_name} se ha realizado con
+éxito y será ENVIADO TAN PRONTO COMO RECIBAMOS SU PAGO.
+
+Detalle de pago.
+
+IMPORTE: {total_paid}
+
+DETALLE: {detail}
 
 Usted puede revisar su pedido y descargar la factura desde
 "Historial de pedidos" [{history_url}] de su cuenta
 de cliente, haga clic en [{my_account_url}] en
 nuestra tienda.
 
-Si tiene una cuenta de invitado, puede seguir su pedido desde la
-sección: "Seguimiento de invitado"
-[{guest_tracking_url}?id_order={order_name}] en
-nuestra tienda.
+Si usted tiene una cuenta de invitado, puede seguir su pedido a
+través del "Tracking Invitado"
+[{guest_tracking_url}] sección de nuestra tienda.
 
 {shop_name} [{shop_url}] creado por
 PrestaShop(tm) [http://www.prestashop.com/]

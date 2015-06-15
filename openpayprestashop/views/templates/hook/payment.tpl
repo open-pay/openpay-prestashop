@@ -23,48 +23,26 @@
 *  International Registered Trademark & Property of PrestaShop SA
 *}
 
-<div class="payment_module">
-    <div id="payment-method-container">
-        <div class="row">
-            {if $card == 1}
-                <div class="col-md-4 payment-method">
-                    <h4>
-                        <input {if $card == 1}checked{/if} class="radio-button" type="radio" name="payment-method" id="radio-card" value="radio-card">
-                        <i class="icon-credit-card"></i> Pago con tarjetas de crédito/débito
-                    </h4>
-                </div>
-            {/if}
-
-            {if $store == 1}
-                <div class="col-md-4 payment-method">
-                    <h4>
-                        <input {if $card == 0} checked {/if} class="radio-button" type="radio" name="payment-method" id="radio-store" value="radio-store">
-                        <i class="icon-money"></i> Pago en efectivo en tiendas de conveniencia
-                    </h4>
-                </div>
-            {/if}
-
-            {if $spei == 1}
-                <div class="col-md-4 payment-method">
-                    <h4>
-                        <input {if $card == 0 && $store == 0} checked {/if} class="radio-button" type="radio" name="payment-method" id="radio-spei" value="radio-spei">
-                        <i class="icon-laptop"></i> Pago con transferencia electrónica (SPEI)
-                    </h4>
-                </div>
-            {/if}
-        </div>
-    </div>
-</div>
-
-
 {if $card == 1}
-    {include file="$tpl_path/card.tpl"}
+    <div class="openpay-payment-module mb10">
+        <a class="openpay" title="Pago con tarjeta de crédito/débito" href="{$link->getModuleLink('openpayprestashop', 'cardpayment')}">
+            <i class="icon-credit-card"></i> Pago con tarjeta de crédito/débito
+        </a>
+    </div>
 {/if}
 
 {if $store == 1}
-    {include file="$tpl_path/store.tpl"}
+    <div class="openpay-payment-module mb10">
+        <a class="openpay" title="Pago en efectivo en tiendas de conveniencia" href="{$link->getModuleLink('openpayprestashop', 'storepayment')}">
+            <i class="icon-money"></i> Pago en efectivo en tiendas de conveniencia
+        </a>
+    </div>
 {/if}
 
 {if $spei == 1}
-    {include file="$tpl_path/spei.tpl"}
+    <div class="openpay-payment-module mb10">
+        <a class="openpay" title="Pago con transferencia electrónica (SPEI)" href="{$link->getModuleLink('openpayprestashop', 'speipayment')}">
+            <i class="icon-laptop"></i> Pago con transferencia electrónica (SPEI)
+        </a>
+    </div>
 {/if}
