@@ -1,4 +1,4 @@
-## Plugin para PrestaShop - Openpay
+![Openpay Prestashop](http://www.openpay.mx/img/github/prestashop.jpg)
 
 =================
 
