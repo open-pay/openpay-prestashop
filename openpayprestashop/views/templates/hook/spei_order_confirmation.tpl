@@ -27,6 +27,15 @@
     #order_step{
         display: none;
     }
+
+    .Yellow1, .Yellow2, .Yellow3{
+        background-color: {$openpay_order.bg_color};
+    }
+
+    .amount, .marketing h4, .amount small{
+        color: {$openpay_order.bg_color};
+    }
+
 </style>
 
 <div class="container container-bank-receipt">

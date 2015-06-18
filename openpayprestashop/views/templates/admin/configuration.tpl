@@ -256,6 +256,26 @@
                 </tr>
 
                 <tr>
+                    <td colspan="2">
+                        <h3>Diseño de recibos de pago (<a title="Ver recibo de pago" href="{$receipt}" target="_blank"><i class="icon-question"></i></a>)</h3>
+                        <table cellspacing="0" cellpadding="0" class="innerTable">
+                            <tr>
+                                <td valign="middle" align="left">Color de cintillos y fondos</td>
+                                <td valign="middle" align="left">
+                                    <input type="text" name="openpay_background_color" placeholder="Color en hexadecimal" value="{if $openpay_configuration.OPENPAY_BACKGROUND_COLOR}{$openpay_configuration.OPENPAY_BACKGROUND_COLOR|escape:'htmlall':'UTF-8'}{/if}">
+                                </td>
+                                <td width="15"></td>
+                                <td class="vertBorder" width="15"></td>
+                                <td valign="middle" align="left">Color de letra en fondos</td>
+                                <td valign="middle" align="left">
+                                    <input type="text" name="openpay_font_color" placeholder="Color en hexadecimal" value="{if $openpay_configuration.OPENPAY_FONT_COLOR}{$openpay_configuration.OPENPAY_FONT_COLOR|escape:'htmlall':'UTF-8'}{/if}">
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <tr>
                     <td colspan="2" class="td-noborder save"><input type="submit" class="button" name="SubmitOpenpay" value="Guardar configuración" /></td>
                 </tr>
             </table>

@@ -67,10 +67,6 @@
             <br>
             <form data-ajax="false" action="{$validation_url}" method="POST" id="openpay-cash-form">
                 <input type="hidden" name="payment_method" value="store" id="payment_method">
-
-                <span style="font-weight: normal; font-size: 14px; margin-right: 10px;">
-                    {if $total >= '10000'} Forma de pago no permitida para montos superiores a los $10,000 {/if}
-                </span>
                 <p class="cart_navigation" id="cart_navigation">
                     <button type="submit"  class="button btn btn-default button-medium" {if $total >= '10000'} disabled style="cursor: not-allowed;" {/if}>
                         <span>

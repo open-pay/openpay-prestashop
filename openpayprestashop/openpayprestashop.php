@@ -44,10 +44,7 @@ class OpenpayPrestashop extends PaymentModule
 		$this->name = 'openpayprestashop';
 		$this->tab = 'payments_gateways';
 		$this->version = '1.6.1';
-		$this->author = 'Openpay';
-		$this->need_instance = 0;
-		$this->currencies = true;
-		$this->currencies_mode = 'checkbox';
+		$this->author = 'Openpay SAPI de C.V.';
 
 		parent::__construct();
 		$backward_compatibility_url = 'http://addons.prestashop.com/en/modules-prestashop/6222-backwardcompatibility.html';
@@ -118,6 +115,11 @@ class OpenpayPrestashop extends PaymentModule
 				$this->registerHook('backOfficeHeader') &&
 				$this->registerHook('paymentReturn') &&
 				Configuration::updateValue('OPENPAY_MODE', 0) &&
+				Configuration::updateValue('OPENPAY_CARDS', 1) &&
+				Configuration::updateValue('OPENPAY_STORES', 1) &&
+				Configuration::updateValue('OPENPAY_SPEI', 1) &&
+				Configuration::updateValue('OPENPAY_BACKGROUND_COLOR', '#003A5B') &&
+				Configuration::updateValue('OPENPAY_FONT_COLOR', '#ffffff') &&
 				$this->installDb();
 
 		/* The hook "displayMobileHeader" has been introduced in v1.5.x - Called separately to fail silently if the hook does not exist */
@@ -214,6 +216,8 @@ class OpenpayPrestashop extends PaymentModule
 				Configuration::deleteByName('OPENPAY_CARDS') &&
 				Configuration::deleteByName('OPENPAY_STORES') &&
 				Configuration::deleteByName('OPENPAY_SPEI') &&
+				Configuration::deleteByName('OPENPAY_BACKGROUND_COLOR') &&
+				Configuration::deleteByName('OPENPAY_FONT_COLOR') &&
 				Db::getInstance()->Execute('DROP TABLE `'._DB_PREFIX_.'openpay_customer`') &&
 				Db::getInstance()->Execute('DROP TABLE `'._DB_PREFIX_.'openpay_transaction`');
 	}
@@ -371,7 +375,7 @@ class OpenpayPrestashop extends PaymentModule
 						'openpay_order', array(
 							'barcode' => $transaction['reference'],
 							'barcode_url' => $transaction['barcode'],
-							'amount' => $transaction['amount'],
+							'amount' => number_format($transaction['amount'], 2),
 							'currency' => $transaction['currency'],
 							'email' => $customer->email,
 							'date' => $this->getLongGlobalDateFormat($transaction['date_add']),
@@ -380,6 +384,8 @@ class OpenpayPrestashop extends PaymentModule
 							'email' => Configuration::get('PS_SHOP_EMAIL'),
 							'phone' => Configuration::get('BLOCKCONTACTINFOS_PHONE'),
 							'shop_name' => Configuration::get('PS_SHOP_NAME'),
+							'bg_color' => Configuration::get('OPENPAY_BACKGROUND_COLOR'),
+							'font_color' => Configuration::get('OPENPAY_FONT_COLOR')
 						)
 				);
 
@@ -401,7 +407,9 @@ class OpenpayPrestashop extends PaymentModule
 							'shop_name' => Configuration::get('PS_SHOP_NAME'),
 							'due_date' => $this->getLongGlobalDateFormat($transaction['due_date']),
 							'email' => Configuration::get('PS_SHOP_EMAIL'),
-							'phone' => Configuration::get('BLOCKCONTACTINFOS_PHONE')
+							'phone' => Configuration::get('BLOCKCONTACTINFOS_PHONE'),
+							'bg_color' => Configuration::get('OPENPAY_BACKGROUND_COLOR'),
+							'font_color' => Configuration::get('OPENPAY_FONT_COLOR')
 						)
 				);
 
@@ -436,17 +444,25 @@ class OpenpayPrestashop extends PaymentModule
 		$clabe = null;
 		$content = '';
 		$mail_detail = '';
+		$message_aux = '';
 
 		try
 		{
 			switch ($payment_method)
 			{
 				case 'card':
+					$display_name = 'Openpay pago con tarjeta';
 					$result_json = $this->cardPayment($token, $device_session_id);
 					$order_status = (int)Configuration::get('PS_OS_PAYMENT');
+
+					$message_aux = $this->l(Tools::ucfirst($result_json->card->type).' card:').' '.
+						Tools::ucfirst($result_json->card->brand).' (Exp: '.$result_json->card->expiration_month.'/'.$result_json->card->expiration_year.')'."\n".
+						$this->l('Card number:').' '.$result_json->card->card_number."\n";
+
 					break;
 
 				case 'store':
+					$display_name = 'Openpay pago en tiendas';
 					$content = '&content_only=1';
 					$result_json = $this->othersPayment($payment_method);
 					$order_status = (int)Configuration::get('waiting_cash_payment');
@@ -456,9 +472,12 @@ class OpenpayPrestashop extends PaymentModule
 
 					$mail_detail = '<br/><img src="'.$barcode_url.'" /><br/><span style="color:#333"><strong>Referencia:</strong></span>'.$reference;
 
+					$message_aux = $this->l('Reference:').' '.$reference."\n";
+
 					break;
 
 				case 'bank_account':
+					$display_name = 'Openpay pago vía SPEI';
 					$content = '&content_only=1';
 					$result_json = $this->othersPayment($payment_method);
 					$order_status = (int)Configuration::get('waiting_cash_payment');
@@ -470,23 +489,26 @@ class OpenpayPrestashop extends PaymentModule
                             <span style="color:#333"><strong>CLABE:</strong></span> '.$clabe.'<br>
                             <span style="color:#333"><strong>Referencia:</strong></span> '.$reference;
 
+					$message_aux = $this->l('CLABE:').' '.$clabe."\n".
+							$this->l('Reference:').' '.$reference."\n";
+
 					break;
 			}
 
 			$message = $this->l('Openpay Transaction Details:')."\n\n".
-					$this->l('Openpay Transaction ID:').' '.$result_json->id."\n".
-					$this->l('Amount:').' '.($result_json->amount)."\n".
-					$this->l('Status:').' '.($result_json->status == 'completed' ? $this->l('Paid') : $this->l('Unpaid'))."\n".
+					$this->l('Transaction ID:').' '.$result_json->id."\n".
+					$this->l('Payment method:').' '.Tools::ucfirst($payment_method)."\n".
+					$message_aux.
+					$this->l('Amount:').' $'.number_format($result_json->amount, 2).' '.Tools::strtoupper($result_json->currency)."\n".
+					//$this->l('Status:').' '.($result_json->status == 'completed' ? $this->l('Paid') : $this->l('Unpaid'))."\n".
 					$this->l('Processed on:').' '.date('Y-m-d H:i:s')."\n".
-					$this->l('Currency:').' '.Tools::strtoupper($result_json->currency)."\n".
-					$this->l('Reference:').' '.$reference."\n".
 					$this->l('Mode:').' '.(Configuration::get('OPENPAY_MODE') == 'true' ? $this->l('Live') : $this->l('Test'))."\n";
 
 			/* Create the PrestaShop order in database */
 			$this->validateOrder(
 					(int)$this->context->cart->id,
 					(int)$order_status, $result_json->amount,
-					$this->displayName, $message, array('{detail}' => $mail_detail), null,
+					$display_name, $message, array('{detail}' => $mail_detail), null,
 					false, $this->context->customer->secure_key
 			);
 
@@ -692,7 +714,9 @@ class OpenpayPrestashop extends PaymentModule
 					'OPENPAY_DEADLINE_SPEI' => trim(Tools::getValue('openpay_deadline_spei')),
 					'OPENPAY_CARDS' => Tools::getValue('openpay_cards'),
 					'OPENPAY_STORES' => Tools::getValue('openpay_stores'),
-					'OPENPAY_SPEI' => Tools::getValue('openpay_spei')
+					'OPENPAY_SPEI' => Tools::getValue('openpay_spei'),
+					'OPENPAY_BACKGROUND_COLOR' => Tools::getValue('openpay_background_color'),
+					'OPENPAY_FONT_COLOR' => Tools::getValue('openpay_font_color')
 				);
 
 				foreach ($configuration_values as $configuration_key => $configuration_value)
@@ -714,6 +738,8 @@ class OpenpayPrestashop extends PaymentModule
 					Configuration::deleteByName('OPENPAY_CARDS');
 					Configuration::deleteByName('OPENPAY_STORES');
 					Configuration::deleteByName('OPENPAY_SPEI');
+					Configuration::deleteByName('OPENPAY_BACKGROUND_COLOR');
+					Configuration::deleteByName('OPENPAY_FONT_COLOR');
 				}
 			}
 		}
@@ -748,6 +774,7 @@ class OpenpayPrestashop extends PaymentModule
 			$validation_title = $this->l('Hay al menos un problema que te impdide usar Opepay. Favor de reparar el problema y recarga la página.');
 
 		$this->context->smarty->assign(array(
+			'receipt' => $this->_path.'views/img/recibo.png',
 			'openpay_form_link' => Tools::safeOutput($_SERVER['REQUEST_URI']),
 			'openpay_configuration' => Configuration::getMultiple(
 					array(
@@ -762,7 +789,9 @@ class OpenpayPrestashop extends PaymentModule
 						'OPENPAY_DEADLINE_SPEI',
 						'OPENPAY_CARDS',
 						'OPENPAY_STORES',
-						'OPENPAY_SPEI'
+						'OPENPAY_SPEI',
+						'OPENPAY_BACKGROUND_COLOR',
+						'OPENPAY_FONT_COLOR'
 					)
 			),
 			'openpay_ssl' => Configuration::get('PS_SSL_ENABLED'),

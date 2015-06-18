@@ -264,3 +264,8 @@ a#openpay_error { display: none; }
     overflow: hidden;
     margin: 0;
 }
+
+.openpay-payment-module a span {
+    color: #777;
+    font-weight: bold;
+}

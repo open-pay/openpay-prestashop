@@ -33,8 +33,8 @@
 
 {if $store == 1}
     <div class="openpay-payment-module mb10">
-        <a class="openpay" title="Pago en efectivo en tiendas de conveniencia" href="{$link->getModuleLink('openpayprestashop', 'storepayment')}">
-            <i class="icon-money"></i> Pago en efectivo en tiendas de conveniencia
+        <a {if $amount >= '10000'} style="pointer-events: none;" {/if} class="openpay" title="Pago en efectivo en tiendas de conveniencia" href="{$link->getModuleLink('openpayprestashop', 'storepayment')}">
+            <i class="icon-money"></i> Pago en efectivo en tiendas de conveniencia {if $amount >= '10000'} <span> (forma de pago no permitida para montos superiores a $10,000) </span> {/if}
         </a>
     </div>
 {/if}

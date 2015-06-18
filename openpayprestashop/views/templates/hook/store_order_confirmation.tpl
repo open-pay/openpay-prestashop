@@ -27,6 +27,16 @@
     #order_step{
         display: none;
     }
+
+    .data_amount{
+        background-color: {$openpay_order.bg_color};
+        color: {$openpay_order.font_color};
+    }
+
+    .Big_Bullet span{
+        background-color: {$openpay_order.bg_color};
+    }
+
 </style>
 
 <div class="container container-receipt">
