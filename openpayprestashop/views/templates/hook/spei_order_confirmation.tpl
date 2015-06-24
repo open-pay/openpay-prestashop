@@ -29,11 +29,15 @@
     }
 
     .Yellow1, .Yellow2, .Yellow3{
-        background-color: {$openpay_order.bg_color};
+        background-color: {$openpay_order.bg_color|escape:'htmlall':'UTF-8'};
     }
 
     .amount, .marketing h4, .amount small{
-        color: {$openpay_order.bg_color};
+        color: {$openpay_order.bg_color|escape:'htmlall':'UTF-8'};
+    }
+
+    .Yellow2 span{
+        color: {$openpay_order.font_color|escape:'htmlall':'UTF-8'};
     }
 
 </style>
@@ -53,9 +57,9 @@
         <div class="row nomargin">
             <div class="col-xs-9 col-sm-8 col-md-8 col-lg-8 nopadding">
                 <h1><strong>Total a pagar</strong></h1>
-                <h2 class="amount">${$openpay_order.amount}<small> {$openpay_order.currency}</small></h2>
+                <h2 class="amount">${$openpay_order.amount|escape:'htmlall':'UTF-8'}<small> {$openpay_order.currency|escape:'htmlall':'UTF-8'}</small></h2>
                 <h1><strong>Fecha límite de pago:</strong></h1>
-                <h1>{$openpay_order.due_date}</h1>
+                <h1>{$openpay_order.due_date|escape:'htmlall':'UTF-8'}</h1>
             </div>
             <div class="col-xs-3 col-sm-4 col-md-4 col-lg-4 nopadding">
                 <a class="spei" href="http://www.openpay.mx/bancos.html" target="_blank"><img class="img-responsive" src="/modules/openpayprestashop/views/img/spei.gif"  alt="SPEI"></a>
@@ -72,23 +76,23 @@
                 </tr>
                 <tr class="even">
                     <td>CLABE:</td>
-                    <td>{$openpay_order.clabe}</td>
+                    <td>{$openpay_order.clabe|escape:'htmlall':'UTF-8'}</td>
                 </tr>
                 <tr class="odd">
                     <td>Referencia:</td>
-                    <td>{$openpay_order.reference}</td>
+                    <td>{$openpay_order.reference|escape:'htmlall':'UTF-8'}</td>
                 </tr>
                 <tr class="even">
                     <td>Beneficiario:</td>
-                    <td>{$openpay_order.shop_name}</td>
+                    <td>{$openpay_order.shop_name|escape:'htmlall':'UTF-8'}</td>
                 </tr>
             </table>
 
             <div class="col-lg-12" style="text-align: center; margin-top: 20px;">
                 <p>¿Tienes alguna dudas o problema? Llámanos al teléfono</p>
-                <h4>{$openpay_order.phone}</h4>
+                <h4>{$openpay_order.phone|escape:'htmlall':'UTF-8'}</h4>
                 <p>O escríbenos a</p>
-                <h4>{$openpay_order.email}</h4>
+                <h4>{$openpay_order.email|escape:'htmlall':'UTF-8'}</h4>
                 <div class="col-lg-6 mb30" style="text-align:right; margin-top:5px;">
                     <a href="javascript:void(0)" class="btn btn-info btn-lg" onclick="window.print();">Imprimir recibo</a>
                 </div>

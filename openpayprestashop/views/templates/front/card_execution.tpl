@@ -25,7 +25,7 @@
 
 
 {capture name=path}
-    <a href="{$link->getPageLink('order', true, NULL, "step=3")}" title="{l s='Go back to the Checkout' mod='openpayprestashop'}">{l s='Checkout' mod='openpayprestashop'}</a><span class="navigation-pipe">{$navigationPipe}</span>{l s='Pago con tarjeta de cŕedito/débito' mod='openpayprestashop'}
+    <a href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'htmlall':'UTF-8'}" title="{l s='Go back to the Checkout' mod='openpayprestashop'}">{l s='Checkout' mod='openpayprestashop'}</a><span class="navigation-pipe">{$navigationPipe|escape:'htmlall':'UTF-8'}</span>{l s='Pago con tarjeta de cŕedito/débito' mod='openpayprestashop'}
 {/capture}
 
 <h2>{l s='Resumen del pedido ' mod='openpayprestashop'}</h2>
@@ -51,10 +51,10 @@
             </div>
 
             <div id="openpay-ajax-loader"><img src="/modules/openpayprestashop/views/img/ajax-loader.gif" alt="" /> Estamos registrando tu pago, por favor espera.</div>
-            <form action="{$validation_url}" method="POST" id="openpay-payment-form">
+            <form action="{$validation_url|escape:'htmlall':'UTF-8'}" method="POST" id="openpay-payment-form">
                 <input type="hidden" name="payment_method" value="card" id="payment_method">
                 <br>
-                <div class="openpay-payment-errors">{if isset($openpay_error)}{$openpay_error}{/if}</div>
+                <div class="openpay-payment-errors">{if isset($openpay_error)}{$openpay_error|escape:'htmlall':'UTF-8'}{/if}</div>
                 <a name="openpay_error" style="display:none"></a>
 
                 <div class="row">
@@ -91,7 +91,7 @@
                             {assign var='endyear' value=($smarty.now|date_format:"%y" + 10)}
 
                             {for $i=$startyear to $endyear}
-                                <option value="{$i}">20{$i}</option>
+                                <option value="{$i|escape:'htmlall':'UTF-8'}">20{$i|escape:'htmlall':'UTF-8'}</option>
                             {/for}
                         </select>
 
@@ -126,15 +126,15 @@
     </div>
 
     <p class="cart_navigation" id="cart_navigation">
-        <a href="{$link->getPageLink('order', true, NULL, "step=3")}" class="button-exclusive btn btn-default"><i class="icon-chevron-left"></i> Otros modos de pago </a>
+        <a href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'htmlall':'UTF-8'}" class="button-exclusive btn btn-default"><i class="icon-chevron-left"></i> Otros modos de pago </a>
     </p>
     <script type="text/javascript">
 
         $(document).ready(function() {
 
-            var openpay_public_key = "{$pk}";
-            var openpay_merchant_id = "{$id}";
-            var mode = "{$mode}";
+            var openpay_public_key = "{$pk|escape:'htmlall':'UTF-8'}";
+            var openpay_merchant_id = "{$id|escape:'htmlall':'UTF-8'}";
+            var mode = "{$mode|escape:'htmlall':'UTF-8'}";
 
             $('[data-toggle="popover"]').popover({
                 trigger: 'hover',

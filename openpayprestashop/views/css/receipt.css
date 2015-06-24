@@ -201,10 +201,12 @@ li {
 
 .odd{
     background-color: #F3F3F3;
+    line-height: 18px;
 }
 
 .even{
     background-color: #DCDCDC;
+    line-height: 18px;
 }
 
 .detail{

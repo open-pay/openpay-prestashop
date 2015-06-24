@@ -44,7 +44,7 @@ class OpenpayPrestashop extends PaymentModule
 		$this->name = 'openpayprestashop';
 		$this->tab = 'payments_gateways';
 		$this->version = '1.6.1';
-		$this->author = 'Openpay SAPI de C.V.';
+		$this->author = 'Openpay SAPI de CV';
 
 		parent::__construct();
 		$backward_compatibility_url = 'http://addons.prestashop.com/en/modules-prestashop/6222-backwardcompatibility.html';
@@ -354,8 +354,8 @@ class OpenpayPrestashop extends PaymentModule
 			$id_order = (int)$params['objOrder']->id;
 
 			$this->smarty->assign('openpay_order', array(
-				'reference' => isset($params['objOrder']->reference) ? $params['objOrder']->reference : '#'.sprintf('%06d', $id_order),
-				'valid' => $params['objOrder']->valid
+						'reference' => isset($params['objOrder']->reference) ? $params['objOrder']->reference : '#'.sprintf('%06d', $id_order),
+						'valid' => $params['objOrder']->valid
 					)
 			);
 			$this->context->controller->addCSS($this->_path.'views/css/openpay-prestashop.css');
@@ -364,6 +364,9 @@ class OpenpayPrestashop extends PaymentModule
 			$query = 'SELECT * FROM '._DB_PREFIX_.'openpay_transaction WHERE id_order = '.(int)$id_order.'';
 			$transaction = Db::getInstance()->getRow($query);
 		}
+
+		$info_email = Configuration::get('BLOCKCONTACTINFOS_EMAIL');
+		$shop_email = $info_email ? $info_email : Configuration::get('PS_SHOP_EMAIL');
 
 		switch ($transaction['type'])
 		{
@@ -381,7 +384,7 @@ class OpenpayPrestashop extends PaymentModule
 							'date' => $this->getLongGlobalDateFormat($transaction['date_add']),
 							'due_date' => $this->getLongGlobalDateFormat($transaction['due_date']),
 							'logo' => '/img/'.Configuration::get('PS_LOGO'),
-							'email' => Configuration::get('PS_SHOP_EMAIL'),
+							'shop_email' => $shop_email,
 							'phone' => Configuration::get('BLOCKCONTACTINFOS_PHONE'),
 							'shop_name' => Configuration::get('PS_SHOP_NAME'),
 							'bg_color' => Configuration::get('OPENPAY_BACKGROUND_COLOR'),
@@ -406,7 +409,7 @@ class OpenpayPrestashop extends PaymentModule
 							'currency' => $transaction['currency'],
 							'shop_name' => Configuration::get('PS_SHOP_NAME'),
 							'due_date' => $this->getLongGlobalDateFormat($transaction['due_date']),
-							'email' => Configuration::get('PS_SHOP_EMAIL'),
+							'email' => $shop_email,
 							'phone' => Configuration::get('BLOCKCONTACTINFOS_PHONE'),
 							'bg_color' => Configuration::get('OPENPAY_BACKGROUND_COLOR'),
 							'font_color' => Configuration::get('OPENPAY_FONT_COLOR')
@@ -594,7 +597,7 @@ class OpenpayPrestashop extends PaymentModule
 			'device_session_id' => $device_session_id,
 			'amount' => $cart->getOrderTotal(),
 			'description' => $this->l('PrestaShop Cart ID:').' '.(int)$cart->id,
-			'order_id' => 'Cart ID: '.(int)$cart->id
+			'order_id' => (int)$cart->id
 		);
 
 		$result_json = $this->createOpenpayCharge($openpay_customer, $charge_request);

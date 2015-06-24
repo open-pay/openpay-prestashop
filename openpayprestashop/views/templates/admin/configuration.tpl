@@ -67,7 +67,7 @@
                         <div class="row">
                             {for $i=1 to 4}
                                 <div class="col-xs-2 store-image">
-                                    <img src="/modules/openpayprestashop/views/img/credit_cards/{sprintf("%02d", $i)}.png">
+                                    <img src="/modules/openpayprestashop/views/img/credit_cards/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
                                 </div>
                             {/for}
                         </div>
@@ -76,7 +76,7 @@
                         <div class="row">
                             {for $i=1 to 4}
                                 <div class="col-xs-2 store-image">
-                                    <img src="/modules/openpayprestashop/views/img/debit_cards/{sprintf("%02d", $i)}.png">
+                                    <img src="/modules/openpayprestashop/views/img/debit_cards/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
                                 </div>
                             {/for}
                         </div>
@@ -102,7 +102,7 @@
                         <h3>Acepta pagos en efectivo en tiendas</h3>
                         {for $i=1 to 4}
                             <div class="col-xs-2 store-image">
-                                <img src="/modules/openpayprestashop/views/img/stores/{sprintf("%02d", $i)}.png">
+                                <img src="/modules/openpayprestashop/views/img/stores/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
                             </div>
                         {/for}
                         <div>
@@ -153,7 +153,7 @@
         <table cellspacing="0" cellpadding="0" class="openpay-technical">
             {if $openpay_validation}
                 {foreach from=$openpay_validation item=validation}
-                    {html_entity_decode($validation)}
+                    {html_entity_decode($validation|escape:'htmlall':'UTF-8')}
                 {/foreach}
 
             {/if}
@@ -178,7 +178,7 @@
         <br />
     {/if}
 
-    <form action="{$openpay_form_link}" method="post">
+    <form action="{$openpay_form_link|escape:'htmlall':'UTF-8'}" method="post">
         <fieldset class="openpay-settings">
             <legend><img src="/modules/openpayprestashop/views/img/technical-icon.gif" alt="" />Configuraciones</legend>
             <label>Modo</label>
@@ -257,7 +257,7 @@
 
                 <tr>
                     <td colspan="2">
-                        <h3>Diseño de recibos de pago (<a title="Ver recibo de pago" href="{$receipt}" target="_blank"><i class="icon-question"></i></a>)</h3>
+                        <h3>Diseño de recibos de pago (<a title="Ver recibo de pago" href="{$receipt|escape:'htmlall':'UTF-8'}" target="_blank"><i class="icon-question"></i></a>)</h3>
                         <table cellspacing="0" cellpadding="0" class="innerTable">
                             <tr>
                                 <td valign="middle" align="left">Color de cintillos y fondos</td>

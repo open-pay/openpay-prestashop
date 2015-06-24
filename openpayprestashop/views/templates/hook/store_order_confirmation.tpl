@@ -29,12 +29,15 @@
     }
 
     .data_amount{
-        background-color: {$openpay_order.bg_color};
-        color: {$openpay_order.font_color};
+        background-color: {$openpay_order.bg_color|escape:'htmlall':'UTF-8'};
+    }
+
+    .data_amount, .data_amount .amount, .data_amount .amount small{
+        color: {$openpay_order.font_color|escape:'htmlall':'UTF-8'};
     }
 
     .Big_Bullet span{
-        background-color: {$openpay_order.bg_color};
+        background-color: {$openpay_order.bg_color|escape:'htmlall':'UTF-8'};
     }
 
 </style>
@@ -42,7 +45,7 @@
 <div class="container container-receipt">
     <div class="row">
         <div class="col-sm-6 col-md-6 col-lg-6">
-            <img class="img-responsive center-block" src="{$openpay_order.logo}" alt="Logo">
+            <img class="img-responsive center-block" src="{$openpay_order.logo|escape:'htmlall':'UTF-8'}" alt="Logo">
         </div>
         <div class="col-sm-6 col-md-6 col-lg-6">
             <div class="mt30 pull-right">
@@ -59,10 +62,10 @@
                 <span></span>
             </div>
             <h1><strong>Fecha límite de pago</strong></h1>
-            <strong>{$openpay_order.due_date}</strong>
+            <strong>{$openpay_order.due_date|escape:'htmlall':'UTF-8'}</strong>
             <div class="col-lg-12 datos_pago" style="margin-left: 20px;">
-                <img width="300" src="{$openpay_order.barcode_url}" alt="Código de Barras">
-                <span style="font-size: 15px">{$openpay_order.barcode}</span>
+                <img width="300" src="{$openpay_order.barcode_url|escape:'htmlall':'UTF-8'}" alt="Código de Barras">
+                <span style="font-size: 15px">{$openpay_order.barcode|escape:'htmlall':'UTF-8'}</span>
                 <br/>
                 <p>En caso de que el escáner no sea capaz de leer el código de barras, escribir la referencia tal como se muestra.</p>
             </div>
@@ -72,7 +75,7 @@
         <div class="col-sm-6 col-md-6 col-lg-6">
             <div class="data_amount">
                 <h2>Total a pagar</h2>
-                <h2 class="amount">${$openpay_order.amount}<small> {$openpay_order.currency}</small></h2>
+                <h2 class="amount">${$openpay_order.amount|escape:'htmlall':'UTF-8'}<small> {$openpay_order.currency|escape:'htmlall':'UTF-8'}</small></h2>
                 <h2 style="margin-top: 0px;">+8 pesos por comisión</h2>
             </div>
         </div>
@@ -95,11 +98,11 @@
                     </tr>
                     <tr class="even">
                         <td>Fecha y hora:</td>
-                        <td>{$openpay_order.date}</td>
+                        <td>{$openpay_order.date|escape:'htmlall':'UTF-8'}</td>
                     </tr>
                     <tr class="odd">
                         <td>Correo electrónico:</td>
-                        <td>{$openpay_order.email}</td>
+                        <td>{$openpay_order.email|escape:'htmlall':'UTF-8'}</td>
                     </tr>
                 </table>
             </div>
@@ -116,11 +119,11 @@
             <ol style="margin-left: 30px;">
                 <li>Acude a cualquier tienda afiliada</li>
                 <li>Entrega al cajero el código de barras y menciona que realizarás un pago de servicio Paynet</li>
-                <li>Realizar el pago en efectivo por ${$openpay_order.amount} {$openpay_order.currency} (más $8 pesos por comisión)</li>
+                <li>Realizar el pago en efectivo por ${$openpay_order.amount|escape:'htmlall':'UTF-8'} {$openpay_order.currency|escape:'htmlall':'UTF-8'} (más $8 pesos por comisión)</li>
                 <li>Conserva el ticket para cualquier aclaración</li>
             </ol>
             <p style="margin-left: 30px; font-size: 12px;">
-                Si tienes dudas comunícate a {$openpay_order.shop_name} al teléfono {$openpay_order.phone} o al correo {$openpay_order.email}
+                Si tienes dudas comunícate a {$openpay_order.shop_name|escape:'htmlall':'UTF-8'} al teléfono {$openpay_order.phone|escape:'htmlall':'UTF-8'} o al correo {$openpay_order.shop_email|escape:'htmlall':'UTF-8'}.
             </p>
         </div>
         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -141,7 +144,7 @@
         <div class="col-lg-12" style="text-align:center;">
             {for $i=1 to 4}
                 <div class="col-xs-3 store-image">
-                    <img src="/modules/openpayprestashop/views/img/stores/{sprintf("%02d", $i)}.png">
+                    <img src="/modules/openpayprestashop/views/img/stores/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
                 </div>
             {/for}
         </div>
