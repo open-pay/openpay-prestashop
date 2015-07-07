@@ -764,7 +764,7 @@ class OpenpayPrestashop extends PaymentModule
                 <tr>
                     <td><img src="../img/admin/'.($requirement['result'] ? 'ok' : 'forbbiden').'.gif" alt="" /></td>
                     <td>'.
-						$requirement['name'].(!$requirement['result'] &&
+						utf8_encode($requirement['name']).(!$requirement['result'] &&
 						isset($requirement['resolution']) ? '<br />'.Tools::safeOutput($requirement['resolution'], true) : '')
 						.'</td>
                 </tr>';
