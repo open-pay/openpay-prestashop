@@ -778,7 +778,7 @@ class OpenpayPrestashop extends PaymentModule
 
 		$this->context->smarty->assign(array(
 			'receipt' => $this->_path.'views/img/recibo.png',
-			'openpay_form_link' => Tools::safeOutput($_SERVER['REQUEST_URI']),
+			'openpay_form_link' => $_SERVER['REQUEST_URI'],
 			'openpay_configuration' => Configuration::getMultiple(
 					array(
 						'OPENPAY_MODE',
