@@ -45,7 +45,7 @@ class OpenpayPrestashop extends PaymentModule
 		$this->tab = 'payments_gateways';
 		$this->version = '1.6.1';
 		$this->author = 'Openpay SAPI dwe CV';
-		$this->module_key = "23c1a97b2718ec0aec28bb9b3b2fc6d5";
+		$this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';
 
 		parent::__construct();
 		$backward_compatibility_url = 'http://addons.prestashop.com/en/modules-prestashop/6222-backwardcompatibility.html';
