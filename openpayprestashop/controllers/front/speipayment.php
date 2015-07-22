@@ -52,6 +52,7 @@ class OpenpayPrestashopSpeiPaymentModuleFrontController extends ModuleFrontContr
 			'validation_url' => $domain.__PS_BASE_URI__.'index.php?process=validation&fc=module&module=openpayprestashop&controller=default',
 			'nbProducts' => $cart->nbProducts(),
 			'total' => $cart->getOrderTotal(true, Cart::BOTH),
+			'module_dir' => $this->module->getPath()
 		));
 
 		$this->context->controller->addCSS($this->module->getPath().'views/css/openpay-prestashop.css');

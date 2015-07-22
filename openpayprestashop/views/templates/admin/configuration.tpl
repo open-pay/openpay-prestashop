@@ -26,7 +26,7 @@
 <div class="openpay-module-wrapper">
 
     <div class="openpay-module-header">
-        <a href="http://www.openpay.mx" target="_blank" rel="external"><img src="/modules/openpayprestashop/views/img/openpay-logo.png" alt="openpay" class="openpay-logo" /></a>
+        <a href="http://www.openpay.mx" target="_blank" rel="external"><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/openpay-logo.png" alt="Openpay logo" class="openpay-logo" /></a>
         <span class="openpay-module-intro">Comienza a recibir pagos con tarjeta, pagos en efectivo en tiendas y pagos vía SPEI hoy mismo con Openpay.</span>
         <a href="https://sandbox-dashboard.openpay.mx/merchant/production" rel="external" target="_blank" class="openpay-module-create-btn"><span>Crea una Cuenta</span></a>
     </div>
@@ -35,10 +35,10 @@
             <div class="openpay-module-wrap-video">
                 <h3>Panel de administración</h3>
                 <p>Contamos con un panel de administración donde podrás visualizar las diferentes transacciones que procese tu negocio.</p>
-                <a target="_blank" href="http://www.openpay.mx"><img src="/modules/openpayprestashop/views/img/openpay-dashboard.png" alt="openpay dashboard" class="openpay-dashboard" /></a>
+                <a target="_blank" href="http://www.openpay.mx"><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/openpay-dashboard.png" alt="openpay dashboard" class="openpay-dashboard" /></a>
                 <hr>
                 <div class="openpay-prestashop-partner mt30">
-                    <img src="/modules/openpayprestashop/views/img/prestashop_partner.png" alt="" />
+                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/prestashop_partner.png" alt="" />
                 </div>
             </div>
         </div>
@@ -67,7 +67,7 @@
                         <div class="row">
                             {for $i=1 to 4}
                                 <div class="col-xs-2 store-image">
-                                    <img src="/modules/openpayprestashop/views/img/credit_cards/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
+                                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/credit_cards/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
                                 </div>
                             {/for}
                         </div>
@@ -76,7 +76,7 @@
                         <div class="row">
                             {for $i=1 to 4}
                                 <div class="col-xs-2 store-image">
-                                    <img src="/modules/openpayprestashop/views/img/debit_cards/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
+                                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/debit_cards/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
                                 </div>
                             {/for}
                         </div>
@@ -102,7 +102,7 @@
                         <h3>Acepta pagos en efectivo en tiendas</h3>
                         {for $i=1 to 4}
                             <div class="col-xs-2 store-image">
-                                <img src="/modules/openpayprestashop/views/img/stores/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
+                                <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
                             </div>
                         {/for}
                         <div>
@@ -127,7 +127,7 @@
                         <h3>Acepta pagos con transferencia electrónica (SPEI)</h3>
                         <div class="row">
                             <div class="col-md-6 store-image">
-                                <img class="openpay-cc" alt="openpay" src="/modules/openpayprestashop/views/img/spei.png">
+                                <img class="openpay-cc" alt="openpay" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/spei.png">
                             </div>
                         </div>
                         <div>
@@ -148,14 +148,13 @@
         </div>
     </div>
     <fieldset>
-        <legend><img src="/modules/openpayprestashop/views/img/checks-icon.gif" alt="" />Chequeos Técnicos</legend>
+        <legend><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/checks-icon.gif" alt="" />Chequeos Técnicos</legend>
         <div class="conf">{$openpay_validation_title|escape:'htmlall':'UTF-8'}</div>
         <table cellspacing="0" cellpadding="0" class="openpay-technical">
             {if $openpay_validation}
                 {foreach from=$openpay_validation item=validation}
                     {html_entity_decode($validation|escape:'htmlall':'UTF-8')}
                 {/foreach}
-
             {/if}
         </table>
     </fieldset>
@@ -180,7 +179,7 @@
 
     <form action="{$openpay_form_link|escape:'htmlall':'UTF-8'}" method="post">
         <fieldset class="openpay-settings">
-            <legend><img src="/modules/openpayprestashop/views/img/technical-icon.gif" alt="" />Configuraciones</legend>
+            <legend><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/technical-icon.gif" alt="" />Configuraciones</legend>
             <label>Modo</label>
             <input type="radio" name="openpay_mode" value="0" {if $openpay_configuration.OPENPAY_MODE == 0} checked="checked"{/if} /> Sandbox
             <input type="radio" name="openpay_mode" value="1" {if $openpay_configuration.OPENPAY_MODE == 1} checked="checked"{/if} /> Producción
@@ -281,7 +280,7 @@
             </table>
         </fieldset>
         <fieldset class="openpay-cc-numbers">
-            <legend><img src="/modules/openpayprestashop/views/img/cc-icon.gif" alt="" />Números de tarjetas de prueba</legend>
+            <legend><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/cc-icon.gif" alt="" />Números de tarjetas de prueba</legend>
             <table cellspacing="0" cellpadding="0" class="openpay-cc-numbers">
                 <thead>
                     <tr>

@@ -42,15 +42,15 @@
             <div class="row mt30 mb10">
                 <div class="col-md-3 store-image" style="border-right: 1px solid #ccc;">
                     <h3 class="openpay_title">Tarjetas de crédito</h3>
-                    <img src="/modules/openpayprestashop/views/img/credit_cards.png">
+                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/credit_cards.png">
                 </div>
                 <div class="col-md-6 store-image">
                     <h3 class="openpay_title">Tarjetas de débito</h3>
-                    <img src="/modules/openpayprestashop/views/img/debit_cards.png">
+                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/debit_cards.png">
                 </div>
             </div>
 
-            <div id="openpay-ajax-loader"><img src="/modules/openpayprestashop/views/img/ajax-loader.gif" alt="" /> Estamos registrando tu pago, por favor espera.</div>
+            <div id="openpay-ajax-loader"><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/ajax-loader.gif" alt="" /> Estamos registrando tu pago, por favor espera.</div>
             <form action="{$validation_url|escape:'htmlall':'UTF-8'}" method="POST" id="openpay-payment-form">
                 <input type="hidden" name="payment_method" value="card" id="payment_method">
                 <br>
@@ -105,10 +105,10 @@
                     <div class="col-md-2">
                         <br />
                         <a href="javascript:void(0)" class="" style="border: none;" data-toggle="popover" data-content="{l s='MasterCard y VISA presentan este código código de tres dígitos en el dorso de la tarjeta.' mod='openpayprestashop'}" >
-                            <img src="/modules/openpayprestashop/views/img/cvc_back.png">
+                            <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/cvc_back.png">
                         </a>
                         <a href="javascript:void(0)" class="openpay-card-cvc-info" style="border: none;" data-toggle="popover" data-content="{l s='American Express presenta este código código de tres dígitos en la parte frontal de la tarjeta.' mod='openpayprestashop'}">
-                            <img src="/modules/openpayprestashop/views/img/cvc_front.png">
+                            <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/cvc_front.png">
                         </a>
                     </div>
 

@@ -45,7 +45,7 @@ class OpenpayPrestashop extends PaymentModule
 		$this->tab = 'payments_gateways';
 		$this->version = '1.6.2';
 		$this->author = 'Openpay SAPI de CV';
-		$this->module_key = "23c1a97b2718ec0aec28bb9b3b2fc6d5";
+		$this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';
 
 		parent::__construct();
 		$backward_compatibility_url = 'http://addons.prestashop.com/en/modules-prestashop/6222-backwardcompatibility.html';
@@ -78,7 +78,7 @@ class OpenpayPrestashop extends PaymentModule
 	 */
 	public function install()
 	{
-		if (!$this->backward && _PS_VERSION_ < 1.5)
+		if (!$this->active && _PS_VERSION_ < 1.5)
 		{
 			echo '<div class="error">'.Tools::safeOutput($this->backward_error).'</div>';
 			return false;
@@ -136,7 +136,7 @@ class OpenpayPrestashop extends PaymentModule
 		$names = array();
 
 		foreach ($languages as $lang)
-			$names[$lang['id_lang']] = 'En espera de pago';
+			$names[$lang['id_lang']] = 'Awaiting payment';
 
 		$state->name = $names;
 		$state->color = '#4169E1';
@@ -219,8 +219,8 @@ class OpenpayPrestashop extends PaymentModule
 				Configuration::deleteByName('OPENPAY_SPEI') &&
 				Configuration::deleteByName('OPENPAY_BACKGROUND_COLOR') &&
 				Configuration::deleteByName('OPENPAY_FONT_COLOR') &&
-				Db::getInstance()->Execute('DROP TABLE `'._DB_PREFIX_.'openpay_customer`') &&
-				Db::getInstance()->Execute('DROP TABLE `'._DB_PREFIX_.'openpay_transaction`');
+				Db::getInstance()->Execute('DROP TABLE IF EXISTS `'._DB_PREFIX_.'openpay_customer`') &&
+				Db::getInstance()->Execute('DROP TABLE IF EXISTS `'._DB_PREFIX_.'openpay_transaction`');
 	}
 
 	public function hookDisplayMobileHeader()
@@ -236,8 +236,7 @@ class OpenpayPrestashop extends PaymentModule
 	 */
 	public function hookHeader()
 	{
-		/* If 1.4 and no backward, then leave */
-		if (!$this->backward)
+		if (!$this->active)
 			return;
 
 		/* Continue only if we are in the checkout process */
@@ -252,14 +251,13 @@ class OpenpayPrestashop extends PaymentModule
 	}
 
 	/**
-	 * Display the Openpay's payment form
+	 * Display the Openpay's payment methods
 	 *
 	 * @return string Openpay's Smarty template content
 	 */
 	public function hookPayment()
 	{
-		/* If 1.4 and no backward then leave */
-		if (!$this->backward)
+		if (!$this->active)
 			return;
 
 		if (!empty($this->context->cookie->openpay_error))
@@ -273,10 +271,12 @@ class OpenpayPrestashop extends PaymentModule
 				'validation_url', $domain.__PS_BASE_URI__.'index.php?process=validation&fc=module&module=openpayprestashop&controller=default'
 		);
 
+		$this->smarty->assign('module_configured', $this->getMerchantInfo());
 		$this->smarty->assign('amount', $this->context->cart->getOrderTotal());
 		$this->smarty->assign('card', Configuration::get('OPENPAY_CARDS'));
 		$this->smarty->assign('store', Configuration::get('OPENPAY_STORES'));
 		$this->smarty->assign('spei', Configuration::get('OPENPAY_SPEI'));
+		$this->smarty->assign('module_dir', $this->_path);
 		$this->smarty->assign('openpay_ps_version', _PS_VERSION_);
 
 		return $this->display(__FILE__, './views/templates/hook/payment.tpl');
@@ -294,8 +294,7 @@ class OpenpayPrestashop extends PaymentModule
 		if (version_compare(_PS_VERSION_, 1.6, '>='))
 			return;
 
-		/* If 1.4 and no backward, then leave */
-		if (!$this->backward)
+		if (!$this->active)
 			return;
 
 		if (!Tools::getIsset('vieworder') || !Tools::getIsset('id_order'))
@@ -439,8 +438,7 @@ class OpenpayPrestashop extends PaymentModule
 	 */
 	public function processPayment($payment_method, $token = null, $device_session_id = null)
 	{
-		/* If 1.4 and no backward, then leave */
-		if (!$this->backward)
+		if (!$this->active)
 			return;
 
 		$barcode_url = null;
@@ -739,11 +737,6 @@ class OpenpayPrestashop extends PaymentModule
 					Configuration::deleteByName('OPENPAY_PRIVATE_KEY_'.$mode);
 					Configuration::deleteByName('OPENPAY_DEADLINE_STORES');
 					Configuration::deleteByName('OPENPAY_DEADLINE_SPEI');
-					Configuration::deleteByName('OPENPAY_CARDS');
-					Configuration::deleteByName('OPENPAY_STORES');
-					Configuration::deleteByName('OPENPAY_SPEI');
-					Configuration::deleteByName('OPENPAY_BACKGROUND_COLOR');
-					Configuration::deleteByName('OPENPAY_FONT_COLOR');
 				}
 			}
 		}
@@ -856,7 +849,7 @@ class OpenpayPrestashop extends PaymentModule
 			catch (Exception $e)
 			{
 				if (class_exists('Logger'))
-					Logger::addLog($this->l('Openpay - Invalid Credit Card'), 1, null, 'Cart', (int)$this->context->cart->id, true);
+					Logger::addLog($this->l('Openpay - Can not create Openpay Customer'), 1, null, 'Cart', (int)$this->context->cart->id, true);
 			}
 		}
 		else
