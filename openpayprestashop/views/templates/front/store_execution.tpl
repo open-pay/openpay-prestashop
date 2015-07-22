@@ -42,7 +42,7 @@
             <h3 class="openpay_title mt30">Pago en efectivo en tiendas de conveniencia</h3>
             <div class="row">
                 <div class="col-md-8 store-image">
-                    <img src="/modules/openpayprestashop/views/img/stores.png">
+                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores.png">
                 </div>
             </div>
             <div><small><a target="_blank" href="http://www.openpay.mx/tiendas-de-conveniencia.html">Consulta las tiendas afiliadas</a></small></div>
@@ -51,15 +51,15 @@
 
             <div class="row mb30">
                 <div class="col-md-4 center">
-                    <div><img src="/modules/openpayprestashop/views/img/step1.png"></div>
+                    <div><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/step1.png"></div>
                     <p>Haz clic en el botón "Generar ficha de pago", donde tu compra quedará en espera de que realices tu pago.</p>
                 </div>
                 <div class="col-md-4 center">
-                    <div><img src="/modules/openpayprestashop/views/img/step_store.png"></div>
+                    <div><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/step_store.png"></div>
                     <p>Imprime tu recibo, llévalo a tu tienda de conveniencia más cercana y realiza el pago.</p>
                 </div>
                 <div class="col-md-4 center">
-                    <div><img src="/modules/openpayprestashop/views/img/step3.png"></div>
+                    <div><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/step3.png"></div>
                     <p>Inmediatamente después de recibir tu pago te enviaremos un correo electrónico con la confirmación de pago.</p>
                 </div>
             </div>

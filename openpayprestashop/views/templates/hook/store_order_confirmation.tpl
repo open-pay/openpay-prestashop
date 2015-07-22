@@ -50,7 +50,7 @@
         <div class="col-sm-6 col-md-6 col-lg-6">
             <div class="mt30 pull-right">
                 <span style="font-size: 20px;font-weight: lighter;">Servicio a pagar</span>
-                <img class="logo_paynet" src="/modules/openpayprestashop/views/img/paynet_logo.png" alt="Logo">
+                <img class="logo_paynet" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/paynet_logo.png" alt="Logo">
             </div>
         </div>
     </div>
@@ -144,7 +144,7 @@
         <div class="col-lg-12" style="text-align:center;">
             {for $i=1 to 4}
                 <div class="col-xs-3 store-image">
-                    <img src="/modules/openpayprestashop/views/img/stores/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
+                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
                 </div>
             {/for}
         </div>
@@ -160,7 +160,7 @@
     </div>
 
     <div class="footer">
-        <img src="/modules/openpayprestashop/views/img/powered_openpay.png" alt="Powered by Openpay">
+        <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/powered_openpay.png" alt="Powered by Openpay">
     </div>
 
 </div>

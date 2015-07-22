@@ -56,7 +56,8 @@ class OpenpayPrestashopCardPaymentModuleFrontController extends ModuleFrontContr
 			'id' => $id,
 			'mode' => Configuration::get('OPENPAY_MODE'),
 			'nbProducts' => $cart->nbProducts(),
-			'total' => $cart->getOrderTotal(true, Cart::BOTH)
+			'total' => $cart->getOrderTotal(true, Cart::BOTH),
+			'module_dir' => $this->module->getPath()
 		));
 
 		$this->context->controller->addJS('https://openpay.s3.amazonaws.com/openpay.v1.min.js');

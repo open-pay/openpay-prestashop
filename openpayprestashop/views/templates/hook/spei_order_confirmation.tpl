@@ -62,7 +62,7 @@
                 <h1>{$openpay_order.due_date|escape:'htmlall':'UTF-8'}</h1>
             </div>
             <div class="col-xs-3 col-sm-4 col-md-4 col-lg-4 nopadding">
-                <a class="spei" href="http://www.openpay.mx/bancos.html" target="_blank"><img class="img-responsive" src="/modules/openpayprestashop/views/img/spei.gif"  alt="SPEI"></a>
+                <a class="spei" href="http://www.openpay.mx/bancos.html" target="_blank"><img class="img-responsive" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/spei.gif"  alt="SPEI"></a>
             </div>
         </div>
 
@@ -104,7 +104,7 @@
     </div>
 
     <div class="footer">
-        <img src="/modules/openpayprestashop/views/img/powered_openpay.png" alt="Powered by Openpay">
+        <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/powered_openpay.png" alt="Powered by Openpay">
     </div>
 
 </div>

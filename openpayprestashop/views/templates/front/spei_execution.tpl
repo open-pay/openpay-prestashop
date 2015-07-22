@@ -43,7 +43,7 @@
 
             <div class="row">
                 <div class="col-md-4 store-image">
-                    <img src="/modules/openpayprestashop/views/img/spei.png">
+                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/spei.png">
                 </div>
                 <div class="col-md-4">
                     <h4 class="subtitle">¿Qué es SPEI?</h4>
@@ -55,15 +55,15 @@
 
             <div class="row mb30">
                 <div class="col-md-4 center">
-                    <div><img src="/modules/openpayprestashop/views/img/step1.png"></div>
+                    <div><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/step1.png"></div>
                     <p>Haz clic en el botón "Generar CLABE", donde tu compra quedará en espera de que realices tu pago.</p>
                 </div>
                 <div class="col-md-4 center">
-                    <div><img src="/modules/openpayprestashop/views/img/step_spei.png"></div>
+                    <div><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/step_spei.png"></div>
                     <p>Sigue la guía para realizar el pago SPEI a través del portal de tu banco.</p>
                 </div>
                 <div class="col-md-4 center">
-                    <div><img src="/modules/openpayprestashop/views/img/step3.png"></div>
+                    <div><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/step3.png"></div>
                     <p>Inmediatamente después de recibir tu pago te enviaremos un correo electrónico con la confirmación de pago.</p>
                 </div>
             </div>
