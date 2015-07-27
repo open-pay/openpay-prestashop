@@ -27,14 +27,14 @@
 
     <div class="openpay-module-header">
         <a href="http://www.openpay.mx" target="_blank" rel="external"><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/openpay-logo.png" alt="Openpay logo" class="openpay-logo" /></a>
-        <span class="openpay-module-intro">Comienza a recibir pagos con tarjeta, pagos en efectivo en tiendas y pagos vía SPEI hoy mismo con Openpay.</span>
-        <a href="https://sandbox-dashboard.openpay.mx/merchant/production" rel="external" target="_blank" class="openpay-module-create-btn"><span>Crea una Cuenta</span></a>
+        <span class="openpay-module-intro">{l s='Start accepting card payments, cash payments and bank payments today with Openpay.' mod='openpayprestashop'}</span>
+        <a href="https://sandbox-dashboard.openpay.mx/merchant/production" rel="external" target="_blank" class="openpay-module-create-btn"><span>{l s='Create an account' mod='openpayprestashop'}</span></a>
     </div>
     <div class="openpay-module-wrap">
         <div class="openpay-module-col1 floatRight">
             <div class="openpay-module-wrap-video">
-                <h3>Panel de administración</h3>
-                <p>Contamos con un panel de administración donde podrás visualizar las diferentes transacciones que procese tu negocio.</p>
+                <h3>{l s='Management panel' mod='openpayprestashop'}</h3>
+                <p>{l s='We have an administration panel where you can check your business transactions.' mod='openpayprestashop'}</p>
                 <a target="_blank" href="http://www.openpay.mx"><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/openpay-dashboard.png" alt="openpay dashboard" class="openpay-dashboard" /></a>
                 <hr>
                 <div class="openpay-prestashop-partner mt30">
@@ -45,17 +45,17 @@
         <div class="openpay-module-col2">
             <div class="row">
                 <div class="col-md-6">
-                     <h3>Beneficios</h3>
-                    <p>Openpay ofrece una estructura sencilla de costos todo incluido para todo tipo de soluciones e-commerce o m-commerce.</p>
+                    <h3>{l s='Benefits' mod='openpayprestashop'}</h3>
+                    <p>{l s='Openpay offers a simple cost structure all-inclusive for all types of e-commerce or m-commerce solutions.' mod='openpayprestashop'}</p>
                 </div>
                 <div class="col-md-5">
                     <h3>&nbsp;</h3>
                     <ul>
-                        <li>Sin renta mensual</li>
-                        <li>Sin costos de integración</li>
-                        <li>Sin comisiones de configuración</li>
-                        <li>Sin plazos forzosos</li>
-                        <li>Sin cargos ocultos ni letras chiquitas</li>
+                        <li>{l s='No monthly rent' mod='openpayprestashop'}</li>
+                        <li>{l s='Without integration costs' mod='openpayprestashop'}</li>
+                        <li>{l s='No fee configuration' mod='openpayprestashop'}</li>
+                        <li>{l s='No compulsory terms' mod='openpayprestashop'}</li>
+                        <li>{l s='No hidden fees or fine print' mod='openpayprestashop'}</li>
                     </ul>
                 </div>
             </div>
@@ -63,7 +63,7 @@
             <div class="openpay-module-col2inner">
                 <div class="row">
                     <div class="col-md-7">
-                        <h3>Acepta pagos con tarjetas de crédito</h3>
+                        <h3>{l s='Accept credit card payments' mod='openpayprestashop'}</h3>
                         <div class="row">
                             {for $i=1 to 4}
                                 <div class="col-xs-2 store-image">
@@ -72,7 +72,7 @@
                             {/for}
                         </div>
                         <br><br>
-                        <h3>Acepta pagos con tarjetas de débito</h3>
+                        <h3>{l s='Accept debit card payments' mod='openpayprestashop'}</h3>
                         <div class="row">
                             {for $i=1 to 4}
                                 <div class="col-xs-2 store-image">
@@ -81,17 +81,15 @@
                             {/for}
                         </div>
                         <div>
-                            <strong><a href="http://www.openpay.mx/tarjetas.html" target="_blank" class="openpay-module-btn">Consulta las tarjetas soportadas</a></strong>
+                            <strong><a href="http://www.openpay.mx/tarjetas.html" target="_blank" class="openpay-module-btn">{l s='Supported cards' mod='openpayprestashop'}</a></strong>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <h3>Comisión por cargo exitoso: Visa y MasterCard</h3>
-                        <p class="comision">2.9% + $2.5 MXN</p>
+                        <h3>{l s='Fee for successful transaction: Visa y MasterCard' mod='openpayprestashop'}</h3>
+                        <p class="comision">{l s='2.9% + $2.5 MXN' mod='openpayprestashop'}</p>
                         <br><br>
-                        <h3>Comisión por cargo exitoso: American Express</h3>
-                        <p class="comision">4.5% + $2.5 MXN</p>
-
-
+                        <h3>{l s='Fee for successful transaction: American Express' mod='openpayprestashop'}</h3>
+                        <p class="comision">{l s='4.5% + $2.5 MXN' mod='openpayprestashop'}</p>
                     </div>
                 </div>
             </div>
@@ -99,7 +97,7 @@
             <div class="openpay-module-col2inner">
                 <div class="row">
                     <div class="col-md-7">
-                        <h3>Acepta pagos en efectivo en tiendas</h3>
+                        <h3>{l s='Accept cash payments' mod='openpayprestashop'}</h3>
                         {for $i=1 to 4}
                             <div class="col-xs-2 store-image">
                                 <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
@@ -108,14 +106,14 @@
                         <div>
                             <strong>
                                 <a href="http://www.openpay.mx/tiendas-de-conveniencia.html" target="_blank" class="openpay-module-btn">
-                                    Consulta las tiendas afiliadas
+                                    {l s='Affiliated stores' mod='openpayprestashop'}
                                 </a>
                             </strong>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <h3>Comisión por cargo exitoso</h3>
-                        <p class="comision">2.9% + $2.5 MXN</p>
+                        <h3>{l s='Fee for successful transaction' mod='openpayprestashop'}</h3>
+                        <p class="comision">{l s='2.9% + $2.5 MXN' mod='openpayprestashop'}</p>
                     </div>
                 </div>
             </div>
@@ -124,7 +122,7 @@
 
                 <div class="row">
                     <div class="col-md-7">
-                        <h3>Acepta pagos con transferencia electrónica (SPEI)</h3>
+                        <h3>{l s='Accept bank payments (SPEI)' mod='openpayprestashop'}</h3>
                         <div class="row">
                             <div class="col-md-6 store-image">
                                 <img class="openpay-cc" alt="openpay" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/spei.png">
@@ -133,14 +131,14 @@
                         <div>
                             <strong>
                                 <a href="http://www.openpay.mx/bancos.html" target="_blank" class="openpay-module-btn">
-                                    Consulta los bancos soportados
+                                    {l s='Supported banks' mod='openpayprestashop'}
                                 </a>
                             </strong>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <h3>Comisión por cargo exitoso</h3>
-                        <p class="comision">$8 MXN</p>
+                        <h3>{l s='Fee for successful transaction' mod='openpayprestashop'}</h3>
+                        <p class="comision">{l s='$8 MXN' mod='openpayprestashop'}</p>
                     </div>
                 </div>
 
@@ -148,7 +146,7 @@
         </div>
     </div>
     <fieldset>
-        <legend><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/checks-icon.gif" alt="" />Chequeos Técnicos</legend>
+        <legend><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/checks-icon.gif" alt="" />{l s='Technical checks' mod='openpayprestashop'}</legend>
         <div class="conf">{$openpay_validation_title|escape:'htmlall':'UTF-8'}</div>
         <table cellspacing="0" cellpadding="0" class="openpay-technical">
             {if $openpay_validation}
@@ -179,37 +177,37 @@
 
     <form action="{$openpay_form_link|escape:'htmlall':'UTF-8'}" method="post">
         <fieldset class="openpay-settings">
-            <legend><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/technical-icon.gif" alt="" />Configuraciones</legend>
+            <legend><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/technical-icon.gif" alt="" />{l s='Configurations' mod='openpayprestashop'}</legend>
             <label>Modo</label>
-            <input type="radio" name="openpay_mode" value="0" {if $openpay_configuration.OPENPAY_MODE == 0} checked="checked"{/if} /> Sandbox
-            <input type="radio" name="openpay_mode" value="1" {if $openpay_configuration.OPENPAY_MODE == 1} checked="checked"{/if} /> Producción
+            <input type="radio" name="openpay_mode" value="0" {if $openpay_configuration.OPENPAY_MODE == 0} checked="checked"{/if} /> {l s='Sandbox' mod='openpayprestashop'}
+            <input type="radio" name="openpay_mode" value="1" {if $openpay_configuration.OPENPAY_MODE == 1} checked="checked"{/if} /> {l s='Live' mod='openpayprestashop'}
             <br /><br />
             <table cellspacing="0" cellpadding="0" class="openpay-settings">
                 <tr>
                     <td align="center" valign="middle" colspan="2">
                         <table cellspacing="0" cellpadding="0" class="innerTable">
                             <tr>
-                                <td align="left" valign="middle">Merchant ID sandbox</td>
+                                <td align="left" valign="middle">{l s='Sandbox merchant ID' mod='openpayprestashop'}</td>
                                 <td align="left" valign="middle"><input type="text" name="openpay_merchant_id_test" value="{if $openpay_configuration.OPENPAY_MERCHANT_ID_TEST}{$openpay_configuration.OPENPAY_MERCHANT_ID_TEST|escape:'htmlall':'UTF-8'}{/if}" /></td>
                                 <td width="15"></td>
                                 <td width="15" class="vertBorder"></td>
-                                <td align="left" valign="middle">Merchant ID producción</td>
+                                <td align="left" valign="middle">{l s='Live merchant ID' mod='openpayprestashop'}</td>
                                 <td align="left" valign="middle"><input type="text" name="openpay_merchant_id_live" value="{if $openpay_configuration.OPENPAY_MERCHANT_ID_LIVE}{$openpay_configuration.OPENPAY_MERCHANT_ID_LIVE|escape:'htmlall':'UTF-8'}{/if}" /></td>
                             </tr>
                             <tr>
-                                <td align="left" valign="middle">Llave privada sandbox</td>
+                                <td align="left" valign="middle">{l s='Sandbox priavate key' mod='openpayprestashop'}</td>
                                 <td align="left" valign="middle"><input type="password" name="openpay_private_key_test" value="{if $openpay_configuration.OPENPAY_PRIVATE_KEY_TEST}{$openpay_configuration.OPENPAY_PRIVATE_KEY_TEST|escape:'htmlall':'UTF-8'}{/if}" /></td>
                                 <td width="15"></td>
                                 <td width="15" class="vertBorder"></td>
-                                <td align="left" valign="middle">Llave privada producción</td>
+                                <td align="left" valign="middle">{l s='Live priavate key' mod='openpayprestashop'}</td>
                                 <td align="left" valign="middle"><input type="password" name="openpay_private_key_live" value="{if $openpay_configuration.OPENPAY_PRIVATE_KEY_LIVE}{$openpay_configuration.OPENPAY_PRIVATE_KEY_LIVE|escape:'htmlall':'UTF-8'}{/if}" /></td>
                             </tr>
                             <tr>
-                                <td align="left" valign="middle">Llave pública sandbox</td>
+                                <td align="left" valign="middle">{l s='Sandbox public key' mod='openpayprestashop'}</td>
                                 <td align="left" valign="middle"><input type="text" name="openpay_public_key_test" value="{if $openpay_configuration.OPENPAY_PUBLIC_KEY_TEST}{$openpay_configuration.OPENPAY_PUBLIC_KEY_TEST|escape:'htmlall':'UTF-8'}{/if}" /></td>
                                 <td width="15"></td>
                                 <td width="15" class="vertBorder"></td>
-                                <td align="left" valign="middle">Llave pública producción</td>
+                                <td align="left" valign="middle">{l s='Live piblic key' mod='openpayprestashop'}</td>
                                 <td align="left" valign="middle"><input type="text" name="openpay_public_key_live" value="{if $openpay_configuration.OPENPAY_PUBLIC_KEY_LIVE}{$openpay_configuration.OPENPAY_PUBLIC_KEY_LIVE|escape:'htmlall':'UTF-8'}{/if}" /></td>
                             </tr>
                         </table>
@@ -217,17 +215,17 @@
                 </tr>
                 <tr>
                     <td colspan="2">
-                        <h3>Formas de pago aceptadas</h3>
+                        <h3>{l s='Payment methods' mod='openpayprestashop'}</h3>
                         <table cellspacing="0" cellpadding="0" class="innerTable">
                             <tr>
                                 <td align="left" valign="middle">
-                                    <input type="checkbox" name="openpay_cards" id="openpay_cards" value="1" {if $openpay_configuration.OPENPAY_CARDS == 1} checked="checked"{/if}> Tarjeta de crédito/débito
+                                    <input type="checkbox" name="openpay_cards" id="openpay_cards" value="1" {if $openpay_configuration.OPENPAY_CARDS == 1} checked="checked"{/if}> {l s='Credit-debit card payment' mod='openpayprestashop'}
                                 </td>
                                 <td align="left" valign="middle">
-                                    <input type="checkbox" name="openpay_stores" id="openpay_stores" value="1" {if $openpay_configuration.OPENPAY_STORES == 1} checked="checked"{/if}> Pago en tiendas
+                                    <input type="checkbox" name="openpay_stores" id="openpay_stores" value="1" {if $openpay_configuration.OPENPAY_STORES == 1} checked="checked"{/if}> {l s='Cash payment' mod='openpayprestashop'}
                                 </td>
                                 <td align="left" valign="middle">
-                                    <input type="checkbox" name="openpay_spei" id="openpay_spei" value="1" {if $openpay_configuration.OPENPAY_SPEI == 1} checked="checked" {/if}> Transferencia bancaria
+                                    <input type="checkbox" name="openpay_spei" id="openpay_spei" value="1" {if $openpay_configuration.OPENPAY_SPEI == 1} checked="checked" {/if}> {l s='Bank payment' mod='openpayprestashop'}
                                 </td>
                             </tr>
                         </table>
@@ -236,18 +234,18 @@
 
                 <tr>
                     <td colspan="2">
-                        <h3>Tiempo límite para recibir pagos</h3>
+                        <h3>{l s='Time limit for payment' mod='openpayprestashop'}</h3>
                         <table cellspacing="0" cellpadding="0" class="innerTable">
                             <tr>
-                                <td valign="middle" align="left">Pago en tiendas de conveniencia (hrs.)</td>
+                                <td valign="middle" align="left">{l s='Cash payment (hrs)' mod='openpayprestashop'}</td>
                                 <td valign="middle" align="left">
-                                    <input type="text" name="openpay_deadline_stores" placeholder="Horas" value="{if $openpay_configuration.OPENPAY_DEADLINE_STORES}{$openpay_configuration.OPENPAY_DEADLINE_STORES|escape:'htmlall':'UTF-8'}{/if}">
+                                    <input type="text" name="openpay_deadline_stores" placeholder="{l s='Hours' mod='openpayprestashop'}" value="{if $openpay_configuration.OPENPAY_DEADLINE_STORES}{$openpay_configuration.OPENPAY_DEADLINE_STORES|escape:'htmlall':'UTF-8'}{/if}">
                                 </td>
                                 <td width="15"></td>
                                 <td class="vertBorder" width="15"></td>
-                                <td valign="middle" align="left">Transferencias interbancarias (hrs.)</td>
+                                <td valign="middle" align="left">{l s='Bank payment (hrs.)' mod='openpayprestashop'}</td>
                                 <td valign="middle" align="left">
-                                    <input type="text" name="openpay_deadline_spei" placeholder="Horas" value="{if $openpay_configuration.OPENPAY_DEADLINE_SPEI}{$openpay_configuration.OPENPAY_DEADLINE_SPEI|escape:'htmlall':'UTF-8'}{/if}">
+                                    <input type="text" name="openpay_deadline_spei" placeholder="{l s='Hours' mod='openpayprestashop'}" value="{if $openpay_configuration.OPENPAY_DEADLINE_SPEI}{$openpay_configuration.OPENPAY_DEADLINE_SPEI|escape:'htmlall':'UTF-8'}{/if}">
                                 </td>
                             </tr>
                         </table>
@@ -256,18 +254,18 @@
 
                 <tr>
                     <td colspan="2">
-                        <h3>Diseño de recibos de pago (<a title="Ver recibo de pago" href="{$receipt|escape:'htmlall':'UTF-8'}" target="_blank"><i class="icon-question"></i></a>)</h3>
+                        <h3>{l s='Design for payment receipt' mod='openpayprestashop'} (<a title="{l s='See payment receipt' mod='openpayprestashop'}" href="{$receipt|escape:'htmlall':'UTF-8'}" target="_blank"><i class="icon-question"></i></a>)</h3>
                         <table cellspacing="0" cellpadding="0" class="innerTable">
                             <tr>
-                                <td valign="middle" align="left">Color de cintillos y fondos</td>
+                                <td valign="middle" align="left">{l s='Background color' mod='openpayprestashop'}</td>
                                 <td valign="middle" align="left">
-                                    <input type="text" name="openpay_background_color" placeholder="Color en hexadecimal" value="{if $openpay_configuration.OPENPAY_BACKGROUND_COLOR}{$openpay_configuration.OPENPAY_BACKGROUND_COLOR|escape:'htmlall':'UTF-8'}{/if}">
+                                    <input type="text" name="openpay_background_color" placeholder="{l s='Color in hexadecimal' mod='openpayprestashop'}" value="{if $openpay_configuration.OPENPAY_BACKGROUND_COLOR}{$openpay_configuration.OPENPAY_BACKGROUND_COLOR|escape:'htmlall':'UTF-8'}{/if}">
                                 </td>
                                 <td width="15"></td>
                                 <td class="vertBorder" width="15"></td>
-                                <td valign="middle" align="left">Color de letra en fondos</td>
+                                <td valign="middle" align="left">{l s='Font color' mod='openpayprestashop'}</td>
                                 <td valign="middle" align="left">
-                                    <input type="text" name="openpay_font_color" placeholder="Color en hexadecimal" value="{if $openpay_configuration.OPENPAY_FONT_COLOR}{$openpay_configuration.OPENPAY_FONT_COLOR|escape:'htmlall':'UTF-8'}{/if}">
+                                    <input type="text" name="openpay_font_color" placeholder="{l s='Color in hexadecimal' mod='openpayprestashop'}" value="{if $openpay_configuration.OPENPAY_FONT_COLOR}{$openpay_configuration.OPENPAY_FONT_COLOR|escape:'htmlall':'UTF-8'}{/if}">
                                 </td>
                             </tr>
                         </table>
@@ -275,17 +273,17 @@
                 </tr>
 
                 <tr>
-                    <td colspan="2" class="td-noborder save"><input type="submit" class="button" name="SubmitOpenpay" value="Guardar configuración" /></td>
+                    <td colspan="2" class="td-noborder save"><input type="submit" class="button" name="SubmitOpenpay" value="{l s='Save configuration' mod='openpayprestashop'}" /></td>
                 </tr>
             </table>
         </fieldset>
         <fieldset class="openpay-cc-numbers">
-            <legend><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/cc-icon.gif" alt="" />Números de tarjetas de prueba</legend>
+            <legend><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/cc-icon.gif" alt="" />{l s='Test card numbers' mod='openpayprestashop'}</legend>
             <table cellspacing="0" cellpadding="0" class="openpay-cc-numbers">
                 <thead>
                     <tr>
-                        <th>Numero</th>
-                        <th>Tipo de tarjeta</th>
+                        <th>{l s='Number' mod='openpayprestashop'}</th>
+                        <th>{l s='Card type' mod='openpayprestashop'}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -295,9 +293,9 @@
                     <tr><td class="number"><code>5105105105105100</code></td><td>MasterCard</td></tr>
                     <tr><td class="number"><code>345678000000007</code></td><td>American Express</td></tr>
                     <tr><td class="number"><code>343434343434343</code></td><td>American Express</td></tr>
-                    <tr><td class="number"><code>4222222222222220</code></td><td>La tarjeta fue rechazada</td></tr>
-                    <tr><td class="number"><code>4000000000000069</code></td><td>La tarjeta ha expirado</td></tr>
-                    <tr><td class="number"><code>4444444444444448</code></td><td>La tarjeta no tiene fondos suficientes</td></tr>
+                    <tr><td class="number"><code>4222222222222220</code></td><td>{l s='Card was declined' mod='openpayprestashop'}</td></tr>
+                    <tr><td class="number"><code>4000000000000069</code></td><td>{l s='Card was expired' mod='openpayprestashop'}</td></tr>
+                    <tr><td class="number"><code>4444444444444448</code></td><td>{l s='Card has insufficient funds' mod='openpayprestashop'}</td></tr>
                 </tbody>
             </table>
         </fieldset>

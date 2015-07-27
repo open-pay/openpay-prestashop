@@ -49,16 +49,16 @@
             <img style="background-color: #fff;" class="img-responsive center-block" src="/img/logo.jpg" alt="Logo">
         </div>
         <div class="Yellow2 col-sm-6 col-md-6 col-lg-6">
-            <span>Esperamos tu pago</span>
+            <span>{l s='We expect your payment' mod='openpayprestashop'}</span>
         </div>
     </div>
 
     <div class="subcontainer">
         <div class="row nomargin">
             <div class="col-xs-9 col-sm-8 col-md-8 col-lg-8 nopadding">
-                <h1><strong>Total a pagar</strong></h1>
+                <h1><strong>{l s='Total' mod='openpayprestashop'}</strong></h1>
                 <h2 class="amount">${$openpay_order.amount|escape:'htmlall':'UTF-8'}<small> {$openpay_order.currency|escape:'htmlall':'UTF-8'}</small></h2>
-                <h1><strong>Fecha límite de pago:</strong></h1>
+                <h1><strong>{l s='Due date' mod='openpayprestashop'}</strong></h1>
                 <h1>{$openpay_order.due_date|escape:'htmlall':'UTF-8'}</h1>
             </div>
             <div class="col-xs-3 col-sm-4 col-md-4 col-lg-4 nopadding">
@@ -67,37 +67,37 @@
         </div>
 
         <div class="marketing mt30">
-            <h1><strong>Datos para transferencia electrónica</strong></h1>
+            <h1><strong>{l s='Electronic data transfer' mod='openpayprestashop'}</strong></h1>
 
             <table class="detail">
                 <tr class="odd">
-                    <td>Banco:</td>
-                    <td>STP</td>
+                    <td>{l s='Bank' mod='openpayprestashop'}:</td>
+                    <td>{l s='STP' mod='openpayprestashop'}</td>
                 </tr>
                 <tr class="even">
-                    <td>CLABE:</td>
+                    <td>{l s='CLABE' mod='openpayprestashop'}:</td>
                     <td>{$openpay_order.clabe|escape:'htmlall':'UTF-8'}</td>
                 </tr>
                 <tr class="odd">
-                    <td>Referencia:</td>
+                    <td>{l s='Reference' mod='openpayprestashop'}:</td>
                     <td>{$openpay_order.reference|escape:'htmlall':'UTF-8'}</td>
                 </tr>
                 <tr class="even">
-                    <td>Beneficiario:</td>
+                    <td>{l s='Beneficiary' mod='openpayprestashop'}:</td>
                     <td>{$openpay_order.shop_name|escape:'htmlall':'UTF-8'}</td>
                 </tr>
             </table>
 
             <div class="col-lg-12" style="text-align: center; margin-top: 20px;">
-                <p>¿Tienes alguna dudas o problema? Llámanos al teléfono</p>
+                <p>{l s='Have a question or problem? Call us on the phone' mod='openpayprestashop'}</p>
                 <h4>{$openpay_order.phone|escape:'htmlall':'UTF-8'}</h4>
-                <p>O escríbenos a</p>
+                <p>{l s='Or write to us at' mod='openpayprestashop'}</p>
                 <h4>{$openpay_order.email|escape:'htmlall':'UTF-8'}</h4>
                 <div class="col-lg-6 mb30" style="text-align:right; margin-top:5px;">
-                    <a href="javascript:void(0)" class="btn btn-info btn-lg" onclick="window.print();">Imprimir recibo</a>
+                    <a href="javascript:void(0)" class="btn btn-info btn-lg" onclick="window.print();">{l s='Print receipt' mod='openpayprestashop'}</a>
                 </div>
                 <div class="col-lg-6 mb30" style="text-align:left; margin-top:5px;">
-                    <a  class="btn btn-success btn-lg" href="/">Seguir comprando</a>
+                    <a  class="btn btn-success btn-lg" href="/">{l s='Continue shopping' mod='openpayprestashop'}</a>
                 </div>
             </div>
         </div>

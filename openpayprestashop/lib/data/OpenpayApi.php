@@ -1,7 +1,7 @@
-<?php 
+<?php
 /**
  * Openpay API v1 Client for PHP (version 1.0.3)
- * 
+ *
  * Copyright © Openpay SAPI de C.V. All rights reserved.
  * http://www.openpay.mx/
  * soporte@openpay.mx
@@ -83,7 +83,7 @@ class OpenpayApi extends OpenpayApiResourceBase {
 			'Payout' => array(),
 			'Fee' => array(),
 			'Plan' => array(),
-                        'Webhook' => array());
+			'Webhook' => array());
 
 	public static function getInstance($r, $p = null) {
 		$resourceName = get_class();

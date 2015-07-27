@@ -49,7 +49,7 @@
         </div>
         <div class="col-sm-6 col-md-6 col-lg-6">
             <div class="mt30 pull-right">
-                <span style="font-size: 20px;font-weight: lighter;">Servicio a pagar</span>
+                <span style="font-size: 20px;font-weight: lighter;">{l s='Service to pay' mod='openpayprestashop'}</span>
                 <img class="logo_paynet" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/paynet_logo.png" alt="Logo">
             </div>
         </div>
@@ -61,26 +61,24 @@
             <div class="Big_Bullet">
                 <span></span>
             </div>
-            <h1><strong>Fecha límite de pago</strong></h1>
+            <h1><strong>{l s='Due date' mod='openpayprestashop'}</strong></h1>
             <strong>{$openpay_order.due_date|escape:'htmlall':'UTF-8'}</strong>
             <div class="col-lg-12 datos_pago" style="margin-left: 20px;">
                 <img width="300" src="{$openpay_order.barcode_url|escape:'htmlall':'UTF-8'}" alt="Código de Barras">
                 <span style="font-size: 15px">{$openpay_order.barcode|escape:'htmlall':'UTF-8'}</span>
                 <br/>
-                <p>En caso de que el escáner no sea capaz de leer el código de barras, escribir la referencia tal como se muestra.</p>
+                <p>{l s='If the scanner is unable to read the barcode, write the reference as shown.' mod='openpayprestashop'}</p>
             </div>
 
         </div>
 
         <div class="col-sm-6 col-md-6 col-lg-6">
             <div class="data_amount">
-                <h2>Total a pagar</h2>
+                <h2>{l s='Total' mod='openpayprestashop'}</h2>
                 <h2 class="amount">${$openpay_order.amount|escape:'htmlall':'UTF-8'}<small> {$openpay_order.currency|escape:'htmlall':'UTF-8'}</small></h2>
-                <h2 style="margin-top: 0px;">+8 pesos por comisión</h2>
+                <h2 style="margin-top: 0px;">{l s='+8 pesos fee' mod='openpayprestashop'}</h2>
             </div>
         </div>
-
-
     </div>
 
     <div class="row data">
@@ -89,19 +87,19 @@
             <div class="Big_Bullet">
                 <span></span>
             </div>
-            <h1 style="padding-top: 7px;"><strong>Detalles de la compra</strong></h1>
+            <h1 style="padding-top: 7px;"><strong>{l s='Purchase details' mod='openpayprestashop'}</strong></h1>
             <div class="datos_tiendas">
                 <table class="detail">
                     <tr class="odd">
-                        <td width="40%">Orden:</td>
-                        <td width="60%">122015</td>
+                        <td width="40%">{l s='Order' mod='openpayprestashop'}:</td>
+                        <td width="60%">{$openpay_order.order|escape:'htmlall':'UTF-8'}</td>
                     </tr>
                     <tr class="even">
-                        <td>Fecha y hora:</td>
+                        <td>{l s='Date' mod='openpayprestashop'}:</td>
                         <td>{$openpay_order.date|escape:'htmlall':'UTF-8'}</td>
                     </tr>
                     <tr class="odd">
-                        <td>Correo electrónico:</td>
+                        <td>{l s='Email' mod='openpayprestashop'}:</td>
                         <td>{$openpay_order.email|escape:'htmlall':'UTF-8'}</td>
                     </tr>
                 </table>
@@ -115,26 +113,26 @@
             <div class="Big_Bullet">
                 <span></span>
             </div>
-            <h1><strong>Como realizar el pago</strong></h1>
+            <h1><strong>{l s='How to pay?' mod='openpayprestashop'}</strong></h1>
             <ol style="margin-left: 30px;">
-                <li>Acude a cualquier tienda afiliada</li>
-                <li>Entrega al cajero el código de barras y menciona que realizarás un pago de servicio Paynet</li>
-                <li>Realizar el pago en efectivo por ${$openpay_order.amount|escape:'htmlall':'UTF-8'} {$openpay_order.currency|escape:'htmlall':'UTF-8'} (más $8 pesos por comisión)</li>
-                <li>Conserva el ticket para cualquier aclaración</li>
+                <li>{l s='Go to any affiliated store' mod='openpayprestashop'}</li>
+                <li>{l s='Delivery cashier barcode and mentions that will take an Paynet payment service' mod='openpayprestashop'}</li>
+                <li>{l s='Make payment for' mod='openpayprestashop'} ${$openpay_order.amount|escape:'htmlall':'UTF-8'} {$openpay_order.currency|escape:'htmlall':'UTF-8'} {l s='($8 pesos fee)' mod='openpayprestashop'}</li>
+                <li>{l s='Retains the ticket for any clarification' mod='openpayprestashop'}</li>
             </ol>
             <p style="margin-left: 30px; font-size: 12px;">
-                Si tienes dudas comunícate a {$openpay_order.shop_name|escape:'htmlall':'UTF-8'} al teléfono {$openpay_order.phone|escape:'htmlall':'UTF-8'} o al correo {$openpay_order.shop_email|escape:'htmlall':'UTF-8'}.
+                {l s='If you have questions contact to' mod='openpayprestashop'} {$openpay_order.shop_name|escape:'htmlall':'UTF-8'} {l s='at the phone' mod='openpayprestashop'} {$openpay_order.phone|escape:'htmlall':'UTF-8'} {l s='or email' mod='openpayprestashop'} {$openpay_order.shop_email|escape:'htmlall':'UTF-8'}.
             </p>
         </div>
         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-            <h1><strong>Instrucciones para el cajero</strong></h1>
+            <h1><strong>{l s='Cashier instructions' mod='openpayprestashop'}</strong></h1>
             <ol>
-                <li>Ingresar al menú de Pago de Servicios</li>
-                <li>Seleccionar Paynet</li>
-                <li>Escanear el código de barras o ingresar el núm. de referencia</li>
-                <li>Ingresa la cantidad total a pagar</li>
-                <li>Cobrar al cliente el monto total más la comisión de $8 pesos</li>
-                <li>Confirmar la transacción y entregar el ticket al cliente</li>
+                <li>{l s='Enter the menu Payment Services' mod='openpayprestashop'}</li>
+                <li>{l s='Select Paynet' mod='openpayprestashop'}</li>
+                <li>{l s='Scan the barcode or enter the reference' mod='openpayprestashop'}</li>
+                <li>{l s='Enter the total amount due' mod='openpayprestashop'}</li>
+                <li>{l s='Charge the customer the full amount plus $ 8 pesos fee' mod='openpayprestashop'}</li>
+                <li>{l s='Confirm the transaction and deliver the ticket to the customer' mod='openpayprestashop'}</li>
             </ol>
         </div>
     </div>
@@ -149,13 +147,13 @@
             {/for}
         </div>
         <div class="col-lg-12" style="text-align:center;">
-            <div class="link_tiendas">¿Quieres pagar en otras tiendas? visita: <a target="_blank" href="http://www.openpay.mx/tiendas-de-conveniencia.html">www.openpay.mx/tiendas</a></div>
+            <div class="link_tiendas">{l s='Do you want to pay in other stores? Visit:' mod='openpayprestashop'} <a target="_blank" href="http://www.openpay.mx/tiendas-de-conveniencia.html">www.openpay.mx/tiendas</a></div>
         </div>
         <div class="col-lg-6 mb30" style="text-align:right; margin-top:5px;">
-            <a href="javascript:void(0)" class="btn btn-info btn-lg" onclick="window.print();">Imprimir recibo</a>
+            <a href="javascript:void(0)" class="btn btn-info btn-lg" onclick="window.print();">{l s='Print Receipt' mod='openpayprestashop'}</a>
         </div>
         <div class="col-lg-6 mb30" style="text-align:left; margin-top:5px;">
-            <a  class="btn btn-success btn-lg" href="/">Seguir comprando</a>
+            <a  class="btn btn-success btn-lg" href="/">{l s='Continue shopping' mod='openpayprestashop'}</a>
         </div>
     </div>
 

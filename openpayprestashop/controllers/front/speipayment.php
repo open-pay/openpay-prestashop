@@ -40,8 +40,6 @@ class OpenpayPrestashopSpeiPaymentModuleFrontController extends ModuleFrontContr
 		if (!$this->module->checkCurrency($cart))
 			Tools::redirect('index.php?controller=order');
 
-		$domain = (Configuration::get('PS_SSL_ENABLED') ? 'https' : 'http').'://'.$_SERVER['HTTP_HOST'];
-
 		if (!empty($this->context->cookie->openpay_error))
 		{
 			$this->context->smarty->assign('openpay_error', $this->context->cookie->openpay_error);
@@ -49,7 +47,7 @@ class OpenpayPrestashopSpeiPaymentModuleFrontController extends ModuleFrontContr
 		}
 
 		$this->context->smarty->assign(array(
-			'validation_url' => $domain.__PS_BASE_URI__.'index.php?process=validation&fc=module&module=openpayprestashop&controller=default',
+			'validation_url' => './index.php?process=validation&fc=module&module=openpayprestashop&controller=default',
 			'nbProducts' => $cart->nbProducts(),
 			'total' => $cart->getOrderTotal(true, Cart::BOTH),
 			'module_dir' => $this->module->getPath()

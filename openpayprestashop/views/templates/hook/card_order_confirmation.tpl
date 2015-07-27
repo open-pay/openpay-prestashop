@@ -24,7 +24,7 @@
 *}
 
 {if $openpay_order.valid == 1}
-    <div class="conf confirmation">{l s='Felicitaciones , su pago ha sido aprobado, el número de referencia de su pedido es: ' mod='openpayprestashop'} <b>{$openpay_order.reference|escape:'htmlall':'UTF-8'}</b>.</div>
+    <div class="conf confirmation">{l s='Congratulations, your payment is approved, the reference number of your order is:' mod='openpayprestashop'} <b>{$openpay_order.reference|escape:'htmlall':'UTF-8'}</b>.</div>
 {else}
     {if $order_pending}
         <div class="error">{l s='Unfortunately we detected a problem while processing your order and it needs to be reviewed.' mod='openpayprestashop'}<br/><br/>
@@ -32,7 +32,7 @@
             {l s='Your Orders Reference:' mod='openpayprestashop'} <b>{$openpay_order.reference|escape:'htmlall':'UTF-8'}</b>
         </div>
     {else}
-        <div class="error">{l s='Sorry, unfortunately an error occured during the transaction.' mod='openpayprestashop'}<br /><br />
+        <div class="error">{l s='Sorry, unfortunately an error occurred during the transaction.' mod='openpayprestashop'}<br /><br />
             {l s='Please double-check your credit card details and try again or feel free to contact us to resolve this issue.' mod='openpayprestashop'}<br /><br />
             {l s='Your Orders Reference:' mod='openpayprestashop'} <b>{$openpay_order.reference|escape:'htmlall':'UTF-8'}</b>
         </div>

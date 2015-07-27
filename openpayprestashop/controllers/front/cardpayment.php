@@ -42,7 +42,6 @@ class OpenpayPrestashopCardPaymentModuleFrontController extends ModuleFrontContr
 
 		$pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PUBLIC_KEY_LIVE') : Configuration::get('OPENPAY_PUBLIC_KEY_TEST');
 		$id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
-		$domain = (Configuration::get('PS_SSL_ENABLED') ? 'https' : 'http').'://'.$_SERVER['HTTP_HOST'];
 
 		if (!empty($this->context->cookie->openpay_error))
 		{
@@ -51,7 +50,7 @@ class OpenpayPrestashopCardPaymentModuleFrontController extends ModuleFrontContr
 		}
 
 		$this->context->smarty->assign(array(
-			'validation_url' => $domain.__PS_BASE_URI__.'index.php?process=validation&fc=module&module=openpayprestashop&controller=default',
+			'validation_url' => './index.php?process=validation&fc=module&module=openpayprestashop&controller=default',
 			'pk' => $pk,
 			'id' => $id,
 			'mode' => Configuration::get('OPENPAY_MODE'),

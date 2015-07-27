@@ -25,11 +25,11 @@ div.payment_module{
     font-size: 14px;
 }
 
-small > a{
+.openpay-form-container small > a{
     color: #0083ff;
 }
 
-small > a:hover{
+.openpay-form-container small > a:hover{
     color: #0083ff;
     text-decoration: underline;
 }
@@ -44,7 +44,6 @@ small > a:hover{
 }
 
 .openpay_title img { float: none; margin-right: 8px; margin-top: -2px; vertical-align: middle; }
-#openpay-payment-form {}
 #openpay-payment-form label { display: inline-block; margin-bottom: 4px; text-transform: uppercase; }
 #openpay-payment-form label.lowercase { text-transform: none; }
 #openpay-payment-form input[type="text"], #openpay-payment-form select, #openpay-payment-form input[type="password"]
@@ -53,54 +52,7 @@ small > a:hover{
     padding: 13px 60px 13px 13px;
     height: 45px;
 }
-#openpay-payment-form input[type="checkbox"] { margin-bottom: 15px; }
-#openpay-payment-form input.openpay-card-number { width: 210px; }
-#openpay-payment-form input.openpay-card-cvc {  }
-#openpay-payment-form a { display: inline; position: relative; }
-a.openpay-card-cvc-info { font-style: italic; }
-a.openpay-card-cvc-info div.cvc-info {
-	background-color: #BDE5F8;
-	border: #00529B solid 1px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-	color: #00529B!important;
-	display: none;
-	font-style: normal;
-	padding: 8px;
-	position: absolute;
-	right: -200px;
-        top: 30px;
-	text-decoration: none;
-	width: 200px;
-        font-size: 13px;
-        z-index: 9999;
-}
-a.openpay-card-cvc-info:hover div.cvc-info { display: block; }
-div.cvc-info:hover { cursor: default; }
-#openpay-payment-form img.cc-icon { border: #CCCCCC solid 1px; margin-right: 5px;  }
-.block-left { display: inline-block; float: left; margin-right: 20px; }
-img.disable { opacity: 0.3; display: none; }
-img.enable { opacity: 1;  display: inline-block;}
-#openpay-payment-form-cc .openpay-submit-button-cc { margin-left: 5px; }
-#openpay-payment-form-cc a { display: inline; font-size: 11px; text-decoration: underline; }
-#openpay-payment-form .openpay-submit-button, #openpay-payment-form-cc .openpay-submit-button-cc {
-	position:relative;
-	display:inline-block;
-	padding:5px 7px;
-	border:1px solid #cc9900;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-	font-weight:bold;
-	color:#000;
-	background:#f4b61b;
-	cursor: pointer;
-}
-#openpay-payment-form .openpay-submit-button:hover, #openpay-payment-form-cc .openpay-submit-button-cc:hover {
-	text-decoration:none;
-	background-position: left -50px
-}
+
 div.openpay-payment-errors {
 	margin: 0 0 10px 0;
 	padding: 10px;
@@ -110,45 +62,12 @@ div.openpay-payment-errors {
 	display: none;
 }
 
-div.openpay-card-deleted {
-	margin: 0 0 10px 0;
-	padding: 10px;
-	border: 1px solid #ade27d;
-	font-size: 13px;
-	background: #d3ffab;
-	display: none;
-	text-transform: none;
-}
-
 #openpay-translations, #openpay-ajax-loader { display: none; }
-#openpay_save_token { vertical-align: top; }
 a#openpay_error { display: none; }
-#openpay-payment-form input, #openpay-payment-form select { margin-left: 0; }
-#openpay-replace-card, #openpay-delete-card { border: none; padding: 0; cursor: pointer; }
 
-
-.openpay-payment-16 {
-	display: block;
-	border: 1px solid #d6d4d4;
-	-webkit-border-radius: 4px;
-	-moz-border-radius: 4px;
-	border-radius: 4px;
-	line-height: 23px;
-	color: #333;
-	padding: 33px 40px 33px 40px;
-	letter-spacing: -1px;
-	position: relative;
-}
-
-.openpay-payment-15 {
-	border: 1px solid #595A5E;
-	padding: 0.6em;
-	margin-left: 0.7em;
-}
 .store-image img{
     max-width: 100%;
 }
-
 
 .mt30{
     margin-top: 30px;
@@ -258,11 +177,6 @@ a#openpay_error { display: none; }
     vertical-align: middle;
     margin-right: 10px;
     color: #B8B8B8;
-}
-
-.cart_navigation{
-    overflow: hidden;
-    margin: 0;
 }
 
 .openpay-payment-module a span {

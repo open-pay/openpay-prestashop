@@ -25,32 +25,32 @@
 
 
 {capture name=path}
-    <a href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'htmlall':'UTF-8'}" title="{l s='Go back to the Checkout' mod='openpayprestashop'}">{l s='Checkout' mod='openpayprestashop'}</a><span class="navigation-pipe">{$navigationPipe|escape:'htmlall':'UTF-8'}</span>{l s='Pago con tarjeta de cŕedito/débito' mod='openpayprestashop'}
+    <a href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'htmlall':'UTF-8'}" title="{l s='Go back to the Checkout' mod='openpayprestashop'}">{l s='Checkout' mod='openpayprestashop'}</a><span class="navigation-pipe">{$navigationPipe|escape:'htmlall':'UTF-8'}</span>{l s='Credit-debit card payment' mod='openpayprestashop'}
 {/capture}
 
-<h2>{l s='Resumen del pedido ' mod='openpayprestashop'}</h2>
+<h2>{l s='Order Summary' mod='openpayprestashop'}</h2>
 
 {assign var='current_step' value='payment'}
 {include file="$tpl_dir./order-steps.tpl"}
 
 {if $nbProducts <= 0}
-    <p class="warning">Tu carrito esta vacío.</p>
+    <p class="warning">{l s='Your shopping cart is empty.' mod='openpayprestashop'}</p>
 {else}
 
     <div id="card-container" class="payment_module">
         <div class="openpay-form-container" >
             <div class="row mt30 mb10">
                 <div class="col-md-3 store-image" style="border-right: 1px solid #ccc;">
-                    <h3 class="openpay_title">Tarjetas de crédito</h3>
+                    <h3 class="openpay_title">{l s='Credit cards' mod='openpayprestashop'}</h3>
                     <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/credit_cards.png">
                 </div>
                 <div class="col-md-6 store-image">
-                    <h3 class="openpay_title">Tarjetas de débito</h3>
+                    <h3 class="openpay_title">{l s='Debit cards' mod='openpayprestashop'}</h3>
                     <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/debit_cards.png">
                 </div>
             </div>
 
-            <div id="openpay-ajax-loader"><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/ajax-loader.gif" alt="" /> Estamos registrando tu pago, por favor espera.</div>
+            <div id="openpay-ajax-loader"><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/ajax-loader.gif" alt="" /> {l s='We are registering your payment, please wait.' mod='openpayprestashop'}</div>
             <form action="{$validation_url|escape:'htmlall':'UTF-8'}" method="POST" id="openpay-payment-form">
                 <input type="hidden" name="payment_method" value="card" id="payment_method">
                 <br>
@@ -59,31 +59,31 @@
 
                 <div class="row">
                     <div class="col-md-4">
-                        <label>Nombre del tarjetahabiente</label><br />
-                        <input type="text" autocomplete="off" id="holder_name" data-openpay-card="holder_name" class="form-control" placeholder="Como aparece en la tarjeta" />
+                        <label>{l s='Card holder' mod='openpayprestashop'}</label><br />
+                        <input type="text" autocomplete="off" id="holder_name" data-openpay-card="holder_name" class="form-control" placeholder="{l s='As it appears on the card' mod='openpayprestashop'}" />
                     </div>
                     <div class="col-md-4">
-                        <label>Número de tarjeta</label><br />
+                        <label>{l s='Number card' mod='openpayprestashop'}</label><br />
                         <input type="text" autocomplete="off" id="card_number" data-openpay-card="card_number" class="form-control" placeholder="•••• •••• •••• ••••" />
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-4">
 
-                        <label>FECHA DE EXPIRACIÓN</label><br />
+                        <label>{l s='Expiration date' mod='openpayprestashop'}</label><br />
                         <select id="expiration_month" data-openpay-card="expiration_month" class="openpay-card-expiry-month">
-                            <option value="01">Enero</option>
-                            <option value="02">Febrero</option>
-                            <option value="03">Marzo</option>
-                            <option value="04">Abril</option>
-                            <option value="05">Mayo</option>
-                            <option value="06">Junio</option>
-                            <option value="07">Julio</option>
-                            <option value="08">Agosto</option>
-                            <option value="09">Septiembre</option>
-                            <option value="10">Octubre</option>
-                            <option value="11">Noviembre</option>
-                            <option value="12">Diciembre</option>
+                            <option value="01">{l s='January' mod='openpayprestashop'}</option>
+                            <option value="02">{l s='February' mod='openpayprestashop'}</option>
+                            <option value="03">{l s='March' mod='openpayprestashop'}</option>
+                            <option value="04">{l s='April' mod='openpayprestashop'}</option>
+                            <option value="05">{l s='May' mod='openpayprestashop'}</option>
+                            <option value="06">{l s='June' mod='openpayprestashop'}</option>
+                            <option value="07">{l s='July' mod='openpayprestashop'}</option>
+                            <option value="08">{l s='August' mod='openpayprestashop'}</option>
+                            <option value="09">{l s='September' mod='openpayprestashop'}</option>
+                            <option value="10">{l s='October' mod='openpayprestashop'}</option>
+                            <option value="11">{l s='November' mod='openpayprestashop'}</option>
+                            <option value="12">{l s='December' mod='openpayprestashop'}</option>
                         </select>
                         <span> / </span>
                         <select id="expiration_year" data-openpay-card="expiration_year" class="openpay-card-expiry-year">
@@ -98,36 +98,39 @@
                     </div>
 
                     <div class="col-md-2">
-                        <label>Código de seguridad</label><br />
+                        <label>{l s='Card security code' mod='openpayprestashop'}</label><br />
                         <input id="cvv2" type="password" size="4" autocomplete="off" data-openpay-card="cvv2" class="form-control" placeholder="CVV" />
                     </div>
 
                     <div class="col-md-2">
                         <br />
-                        <a href="javascript:void(0)" class="" style="border: none;" data-toggle="popover" data-content="{l s='MasterCard y VISA presentan este código código de tres dígitos en el dorso de la tarjeta.' mod='openpayprestashop'}" >
+                        <a href="javascript:void(0)" class="" style="border: none;" data-toggle="popover" data-content="{l s='MasterCard and VISA present this three-digit code on the back of the card.' mod='openpayprestashop'}" >
                             <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/cvc_back.png">
                         </a>
-                        <a href="javascript:void(0)" class="openpay-card-cvc-info" style="border: none;" data-toggle="popover" data-content="{l s='American Express presenta este código código de tres dígitos en la parte frontal de la tarjeta.' mod='openpayprestashop'}">
+                        <a href="javascript:void(0)" class="openpay-card-cvc-info" style="border: none;" data-toggle="popover" data-content="{l s='American Express presents this three-digit code on the front of the card.' mod='openpayprestashop'}">
                             <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/cvc_front.png">
                         </a>
                     </div>
 
                 </div>
-                <p class="cart_navigation" id="cart_navigation">
-                    <button type="submit"  class="button btn btn-default button-medium">
-                        <span>
-                            Realizar pago
-                            <i class="icon-chevron-right right"></i>
-                        </span>
-                    </button>
-                </p>
-            </form>
+
         </div>
     </div>
 
-    <p class="cart_navigation" id="cart_navigation">
-        <a href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'htmlall':'UTF-8'}" class="button-exclusive btn btn-default"><i class="icon-chevron-left"></i> Otros modos de pago </a>
+    <p class="cart_navigation mt30">
+        <a href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'htmlall':'UTF-8'}" class="button-exclusive btn btn-default">
+            <i class="icon-chevron-left"></i> {l s='Other payment methods' mod='openpayprestashop'}
+        </a>
+        <button type="submit"  class="button btn btn-default standard-checkout button-medium">
+            <span>
+                {l s='Pay now' mod='openpayprestashop'}
+                <i class="icon-chevron-right right"></i>
+            </span>
+        </button>
     </p>
+
+    </form>
+
     <script type="text/javascript">
 
         $(document).ready(function() {
@@ -199,100 +202,11 @@
 
 
         var error_callbak = function(response) {
-
-            var msg = "";
-            switch (response.data.error_code) {
-                case 1000:
-                    msg = "Servicio no disponible.";
-                    break;
-
-                case 1001:
-                    msg = "Los campos no tienen el formato correcto, o la petición no tiene campos que son requeridos.";
-                    break;
-
-                case 1004:
-                    msg = "Servicio no disponible.";
-                    break;
-
-                case 1005:
-                    msg = "Servicio no disponible.";
-                    break;
-
-                case 2004:
-                    msg = "El dígito verificador del número de tarjeta es inválido de acuerdo al algoritmo Luhn.";
-                    break;
-
-                case 2005:
-                    msg = "La fecha de expiración de la tarjeta es anterior a la fecha actual.";
-                    break;
-
-                case 2006:
-                    msg = "El código de seguridad de la tarjeta (CVV2) no fue proporcionado.";
-                    break;
-
-                case 3001:
-                    msg = "La tarjeta fue rechazada.";
-                    break;
-
-                case 3002:
-                    msg = "La tarjeta ha expirado.";
-                    break;
-
-                case 3003:
-                    msg = "La tarjeta no tiene fondos suficientes.";
-                    break;
-
-                case 3004:
-                    msg = "La tarjeta fue rechazada.";
-                    break;
-
-                case 3005:
-                    msg = "La tarjeta fue rechazada.";
-                    break;
-
-                case 3006:
-                    msg = "La operación no esta permitida para este cliente o esta transacción.";
-                    break;
-
-                case 3007:
-                    msg = "Deprecado. La tarjeta fue declinada.";
-                    break;
-
-                case 3008:
-                    msg = "La tarjeta no es soportada en transacciones en línea.";
-                    break;
-
-                case 3009:
-                    msg = "La tarjeta fue reportada como perdida.";
-                    break;
-
-                case 3010:
-                    msg = "El banco ha restringido la tarjeta.";
-                    break;
-
-                case 3011:
-                    msg = "El banco ha solicitado que la tarjeta sea retenida. Contacte al banco.";
-                    break;
-
-                case 3012:
-                    msg = "Se requiere solicitar al banco autorización para realizar este pago.";
-                    break;
-
-                case 3009:
-                    msg = "La tarjeta fue reportada como perdida.";
-                    break;
-
-                default: //Demás errores 400
-                    msg = "La petición no pudo ser procesada.";
-                    break;
-            }
-
             $('.openpay-payment-errors').fadeIn(1000);
-            $('.openpay-payment-errors').text('ERROR ' + response.data.error_code + '. ' + msg).fadeIn(1000);
+            $('.openpay-payment-errors').text('ERROR ' + response.data.error_code + '. ' + response.message).fadeIn(1000);
             $('.openpay-submit-button').prop('disabled', false);
             $('#openpay-payment-form').show();
             $('#openpay-ajax-loader').hide();
-
         };
 
     </script>

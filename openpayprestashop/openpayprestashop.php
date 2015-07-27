@@ -113,7 +113,6 @@ class OpenpayPrestashop extends PaymentModule
 		$ret = parent::install() && $this->createPendingState() &&
 				$this->registerHook('payment') &&
 				$this->registerHook('header') &&
-				$this->registerHook('backOfficeHeader') &&
 				$this->registerHook('paymentReturn') &&
 				Configuration::updateValue('OPENPAY_MODE', 0) &&
 				Configuration::updateValue('OPENPAY_CARDS', 1) &&
@@ -136,7 +135,7 @@ class OpenpayPrestashop extends PaymentModule
 		$names = array();
 
 		foreach ($languages as $lang)
-			$names[$lang['id_lang']] = 'Awaiting payment';
+			$names[$lang['id_lang']] = $this->l('Awaiting payment');
 
 		$state->name = $names;
 		$state->color = '#4169E1';
@@ -266,11 +265,6 @@ class OpenpayPrestashop extends PaymentModule
 			$this->context->cookie->__set('openpay_error', null);
 		}
 
-		$domain = (Configuration::get('PS_SSL_ENABLED') ? 'https' : 'http').'://'.$_SERVER['HTTP_HOST'];
-		$this->smarty->assign(
-				'validation_url', $domain.__PS_BASE_URI__.'index.php?process=validation&fc=module&module=openpayprestashop&controller=default'
-		);
-
 		$this->smarty->assign('module_configured', $this->getMerchantInfo());
 		$this->smarty->assign('amount', $this->context->cart->getOrderTotal());
 		$this->smarty->assign('card', Configuration::get('OPENPAY_CARDS'));
@@ -280,62 +274,6 @@ class OpenpayPrestashop extends PaymentModule
 		$this->smarty->assign('openpay_ps_version', _PS_VERSION_);
 
 		return $this->display(__FILE__, './views/templates/hook/payment.tpl');
-	}
-
-	/**
-	 * Display the two fieldsets containing Openpay's transactions details
-	 * Visible on the Order's detail page in the Back-office only
-	 *
-	 * @return string HTML/JS Content
-	 */
-	public function hookBackOfficeHeader()
-	{
-		//do not use this function for PS v1.6+
-		if (version_compare(_PS_VERSION_, 1.6, '>='))
-			return;
-
-		if (!$this->active)
-			return;
-
-		if (!Tools::getIsset('vieworder') || !Tools::getIsset('id_order'))
-			return;
-
-		$id_order = (int)Tools::getValue('id_order');
-
-		if (Db::getInstance()->getValue('SELECT module FROM '._DB_PREFIX_.'orders WHERE id_order = '.(int)$id_order) == $this->name)
-		{
-			$query = 'SELECT * FROM '._DB_PREFIX_.'openpay_transaction WHERE id_order = '.(int)$id_order.'';
-			$transaction_details = Db::getInstance()->getRow($query);
-			$img = '<img src="../img/admin/money.gif" alt="" />';
-			$output = '
-                <script type="text/javascript">
-                $(document).ready(function() {
-                    $(\'<fieldset'.(_PS_VERSION_ < 1.5 ? 'style="width: 400px;"' : '').'>'.$img.'<legend>'.$this->l('Payment Details').'</legend>';
-
-			if (isset($transaction_details['id_transaction']))
-			{
-
-				$color = $transaction_details['status'] == 'paid' ? 'green' : '#CC0000';
-				$label = $transaction_details['status'] == 'paid' ? $this->l('Paid') : $this->l('Unpaid');
-
-				$mode_color = $transaction_details['mode'] == 'live' ? 'green' : '#CC0000';
-				$mode_label = $transaction_details['mode'] == 'live' ? $this->l('Live') : $this->l('Test');
-
-				$output .=
-						$this->l('Openpay Transaction ID:').' '.Tools::safeOutput($transaction_details['id_transaction']).'<br /><br />'.
-						$this->l('Status:').'</b> <span style="font-weight: bold; color: '.$color.'">'.$label.'</span><br>'.
-						$this->l('Amount:').' '.Tools::displayPrice($transaction_details['amount']).'<br />'.
-						$this->l('Processed on:').' '.Tools::safeOutput($transaction_details['date_add']).'<br />'.
-						$this->l('Processing Fee:').' '.Tools::displayPrice($transaction_details['fee']).'<br /><br />'.
-						$this->l('Mode:').'</b> <span style="font-weight: bold; color: '.$mode_color.'">'.$mode_label.'</span>';
-			}
-			else
-			{
-				$text = 'An error occured (check details at the bottom of this page)';
-				$output .= '<b style="color: #CC0000;">'.$this->l('Warning:').'</b> '.$this->l($text);
-			}
-			return $output;
-		}
 	}
 
 	/**
@@ -376,13 +314,14 @@ class OpenpayPrestashop extends PaymentModule
 
 				$this->smarty->assign(
 						'openpay_order', array(
+							'order' => $id_order,
 							'barcode' => $transaction['reference'],
 							'barcode_url' => $transaction['barcode'],
 							'amount' => number_format($transaction['amount'], 2),
 							'currency' => $transaction['currency'],
 							'email' => $customer->email,
-							'date' => $this->getLongGlobalDateFormat($transaction['date_add']),
-							'due_date' => $this->getLongGlobalDateFormat($transaction['due_date']),
+							'date' => Tools::displayDate($transaction['date_add'], (int)$this->context->language->id, true),
+							'due_date' => Tools::displayDate($transaction['due_date'], (int)$this->context->language->id, true),
 							'logo' => '/img/'.Configuration::get('PS_LOGO'),
 							'shop_email' => $shop_email,
 							'phone' => Configuration::get('BLOCKCONTACTINFOS_PHONE'),
@@ -408,7 +347,7 @@ class OpenpayPrestashop extends PaymentModule
 							'amount' => number_format($transaction['amount'], 2),
 							'currency' => $transaction['currency'],
 							'shop_name' => Configuration::get('PS_SHOP_NAME'),
-							'due_date' => $this->getLongGlobalDateFormat($transaction['due_date']),
+							'due_date' => Tools::displayDate($transaction['due_date'], (int)$this->context->language->id, true),
 							'email' => $shop_email,
 							'phone' => Configuration::get('BLOCKCONTACTINFOS_PHONE'),
 							'bg_color' => Configuration::get('OPENPAY_BACKGROUND_COLOR'),
@@ -453,7 +392,7 @@ class OpenpayPrestashop extends PaymentModule
 			switch ($payment_method)
 			{
 				case 'card':
-					$display_name = 'Openpay pago con tarjeta';
+					$display_name = $this->l('Openpay card payment');
 					$result_json = $this->cardPayment($token, $device_session_id);
 					$order_status = (int)Configuration::get('PS_OS_PAYMENT');
 
@@ -464,7 +403,7 @@ class OpenpayPrestashop extends PaymentModule
 					break;
 
 				case 'store':
-					$display_name = 'Openpay pago en tiendas';
+					$display_name = $this->l('Openpay cash payment');
 					$content = '&content_only=1';
 					$result_json = $this->othersPayment($payment_method);
 					$order_status = (int)Configuration::get('waiting_cash_payment');
@@ -479,7 +418,7 @@ class OpenpayPrestashop extends PaymentModule
 					break;
 
 				case 'bank_account':
-					$display_name = 'Openpay pago vía SPEI';
+					$display_name = $this->l('Openpay bank payment');
 					$content = '&content_only=1';
 					$result_json = $this->othersPayment($payment_method);
 					$order_status = (int)Configuration::get('waiting_cash_payment');
@@ -502,7 +441,7 @@ class OpenpayPrestashop extends PaymentModule
 					$this->l('Payment method:').' '.Tools::ucfirst($payment_method)."\n".
 					$message_aux.
 					$this->l('Amount:').' $'.number_format($result_json->amount, 2).' '.Tools::strtoupper($result_json->currency)."\n".
-					//$this->l('Status:').' '.($result_json->status == 'completed' ? $this->l('Paid') : $this->l('Unpaid'))."\n".
+					$this->l('Status:').' '.($result_json->status == 'completed' ? $this->l('Paid') : $this->l('Unpaid'))."\n".
 					$this->l('Processed on:').' '.date('Y-m-d H:i:s')."\n".
 					$this->l('Mode:').' '.(Configuration::get('OPENPAY_MODE') == 'true' ? $this->l('Live') : $this->l('Test'))."\n";
 
@@ -660,20 +599,20 @@ class OpenpayPrestashop extends PaymentModule
 		$tests = array('result' => true);
 
 		$tests['curl'] = array(
-			'name' => $this->l('La extensión PHP CURL tiene que estar activada en su servidor'),
+			'name' => $this->l('PHP cURL extension must be enabled on your server'),
 			'result' => extension_loaded('curl'));
 
 		if (Configuration::get('OPENPAY_MODE'))
 			$tests['ssl'] = array(
-				'name' => $this->l('SSL tiene que ser habilitado en su tienda online ( antes de entrar en el modo activo)'),
+				'name' => $this->l('SSL must be enabled on your store (before entering Live mode)'),
 				'result' => Configuration::get('PS_SSL_ENABLED') || (!empty($_SERVER['HTTPS']) && Tools::strtolower($_SERVER['HTTPS']) != 'off'));
 
 		$tests['php52'] = array(
-			'name' => $this->l('Su servidor tiene que soportar minimo PHP 5.2'),
+			'name' => $this->l('Your server must run PHP 5.2 or greater'),
 			'result' => version_compare(PHP_VERSION, '5.2.0', '>='));
 
 		$tests['configuration'] = array(
-			'name' => $this->l('Configurar las credenciales de Openpay en este módulo (Merchant ID , llave privada, llave pública)'),
+			'name' => $this->l('You must sign-up for Openpay and configure your account settings in the module (publishable key, secret key...etc.)'),
 			'result' => $this->getMerchantInfo());
 
 		if (_PS_VERSION_ < 1.5)
@@ -730,7 +669,7 @@ class OpenpayPrestashop extends PaymentModule
 
 				if (!$this->getMerchantInfo())
 				{
-					$errors[] = 'Las credenciales de Openpay son incorrectas.';
+					$errors[] = 'Openpay keys are incorrect.';
 					$mode = Tools::getValue('openpay_mode') ? 'LIVE' : 'TEST';
 					Configuration::deleteByName('OPENPAY_PUBLIC_KEY_'.$mode);
 					Configuration::deleteByName('OPENPAY_MERCHANT_ID_'.$mode);
@@ -766,9 +705,9 @@ class OpenpayPrestashop extends PaymentModule
 		}
 
 		if ($requirements['result'])
-			$validation_title = $this->l('Todos los chequeos fueron exitosos. Ahora puedes configurar el módulo y comenzar a usar Openpay.');
+			$validation_title = $this->l('All the checks were successfully performed. You can now configure your module and start using Openpay.');
 		else
-			$validation_title = $this->l('Hay al menos un problema que te impdide usar Opepay. Favor de reparar el problema y recarga la página.');
+			$validation_title = $this->l('At least one issue is preventing you from using Openpay. Please fix the issue and reload this page.');
 
 		$this->context->smarty->assign(array(
 			'receipt' => $this->_path.'views/img/recibo.png',
@@ -881,26 +820,6 @@ class OpenpayPrestashop extends PaymentModule
 			$customer = $openpay->customers->add($customer_data);
 			return $customer;
 		}
-		catch (OpenpayApiTransactionError $e)
-		{
-			$this->error($e);
-		}
-		catch (OpenpayApiRequestError $e)
-		{
-			$this->error($e);
-		}
-		catch (OpenpayApiConnectionError $e)
-		{
-			$this->error($e);
-		}
-		catch (OpenpayApiAuthError $e)
-		{
-			$this->error($e);
-		}
-		catch (OpenpayApiError $e)
-		{
-			$this->error($e);
-		}
 		catch (Exception $e)
 		{
 			$this->error($e);
@@ -919,26 +838,6 @@ class OpenpayPrestashop extends PaymentModule
 		{
 			$charge = $customer->charges->create($charge_request);
 			return $charge;
-		}
-		catch (OpenpayApiTransactionError $e)
-		{
-			$this->error($e);
-		}
-		catch (OpenpayApiRequestError $e)
-		{
-			$this->error($e);
-		}
-		catch (OpenpayApiConnectionError $e)
-		{
-			$this->error($e);
-		}
-		catch (OpenpayApiAuthError $e)
-		{
-			$this->error($e);
-		}
-		catch (OpenpayApiError $e)
-		{
-			$this->error($e);
 		}
 		catch (Exception $e)
 		{
@@ -978,26 +877,6 @@ class OpenpayPrestashop extends PaymentModule
 			$webhook = $openpay->webhooks->add($webhook_data);
 			return $webhook;
 		}
-		catch (OpenpayApiTransactionError $e)
-		{
-			return $this->error($e, true);
-		}
-		catch (OpenpayApiRequestError $e)
-		{
-			return $this->error($e, true);
-		}
-		catch (OpenpayApiConnectionError $e)
-		{
-			return $this->error($e, true);
-		}
-		catch (OpenpayApiAuthError $e)
-		{
-			return $this->error($e, true);
-		}
-		catch (OpenpayApiError $e)
-		{
-			return $this->error($e, true);
-		}
 		catch (Exception $e)
 		{
 			return $this->error($e, true);
@@ -1032,97 +911,7 @@ class OpenpayPrestashop extends PaymentModule
 
 	public function error($e, $backend = false)
 	{
-		/* 6001 el webhook ya existe */
-		switch ($e->getErrorCode())
-		{
-
-			/* ERRORES GENERALES */
-			case '1000':
-				$msg = 'Servicio no disponible.';
-				break;
-
-			case '1001':
-				$msg = 'Los campos no tienen el formato correcto, o la petición no tiene campos que son requeridos.';
-				break;
-
-			case '1004':
-				$msg = 'Servicio no disponible.';
-				break;
-
-			case '1005':
-				$msg = 'Servicio no disponible.';
-				break;
-
-			/* ERRORES ALMACENAMIENTO */
-			case '2004':
-				$msg = 'El dígito verificador del número de tarjeta es inválido de acuerdo al algoritmo Luhn.';
-				break;
-
-			case '2005':
-				$msg = 'La fecha de expiración de la tarjeta es anterior a la fecha actual.';
-				break;
-
-			case '2006':
-				$msg = 'El código de seguridad de la tarjeta (CVV2) no fue proporcionado.';
-				break;
-
-			/* ERRORES TARJETA */
-			case '3001':
-			case '3004':
-			case '3005':
-				$msg = 'La tarjeta fue rechazada.';
-				break;
-
-			case '3002':
-				$msg = 'La tarjeta ha expirado.';
-				break;
-
-			case '3003':
-				$msg = 'La tarjeta no tiene fondos suficientes.';
-				break;
-
-			case '3006':
-				$msg = 'La operación no esta permitida para este cliente o esta transacción.';
-				break;
-
-			case '3007':
-				$msg = 'La tarjeta fue declinada.';
-				break;
-
-			case '3008':
-				$msg = 'La tarjeta no es soportada en transacciones en línea.';
-				break;
-
-			case '3009':
-				$msg = 'La tarjeta fue reportada como perdida.';
-				break;
-
-			case '3010':
-				$msg = 'El banco ha restringido la tarjeta.';
-				break;
-
-			case '3011':
-				$msg = 'El banco ha solicitado que la tarjeta sea retenida. Contacte al banco.';
-				break;
-
-			case '3012':
-				$msg = 'Se requiere solicitar al banco autorización para realizar este pago.';
-				break;
-
-			case '6002':
-			case '6002':
-				$domain = (Configuration::get('PS_SSL_ENABLED') ? 'https' : 'http').'://'.$_SERVER['HTTP_HOST'];
-				$msg = 'Ha ocurrido un error al crear el webhook.';
-				$msg .= 'Verifica en tu panel de Openpay que este haya sido creado, es necesario instalarlo para recibir notificaciones de pago.';
-				$msg .= '<br>El webhook deberá ser: '.$domain.__PS_BASE_URI__.'modules/openpayprestashop/notification.php';
-				break;
-
-			default: /* Demás errores 400 */
-				$msg = 'La petición no pudo ser procesada.';
-				break;
-		}
-
-		$error = 'ERROR '.$e->getErrorCode().'. '.$msg;
+		$error = 'ERROR '.$e->getErrorCode().'. '.$e->getMessage();
 
 		if ($backend)
 			return Tools::jsonDecode(Tools::jsonEncode(array('error' => $e->getErrorCode(), 'msg' => $error)), false);
@@ -1132,8 +921,6 @@ class OpenpayPrestashop extends PaymentModule
 
 	public function copyMailTemplate()
 	{
-		$html_file_origin = _PS_MODULE_DIR_.$this->name.'/mails/es/openpayprestashop.html';
-		$txt_file_origin = _PS_MODULE_DIR_.$this->name.'/mails/es/openpayprestashop.txt';
 		$directory = _PS_MAIL_DIR_;
 		if ($dhvalue = opendir($directory))
 		{
@@ -1141,49 +928,44 @@ class OpenpayPrestashop extends PaymentModule
 			{
 				if (is_dir($directory.$file) && $file[0] != '.')
 				{
-					$html_file_destination = $directory.$file.'/openpayprestashop.html';
-					if (!Tools::copy($html_file_origin, $html_file_destination))
-						throw new Exception;
 
+					$html_file_origin = _PS_MODULE_DIR_.$this->name.'/mails/'.$file.'/openpayprestashop.html';
+					$txt_file_origin = _PS_MODULE_DIR_.$this->name.'/mails/'.$file.'/openpayprestashop.txt';
+
+					/*
+					 * If origin files does not exist, skip the loop
+					 */
+					if (!file_exists($html_file_origin) && !file_exists($txt_file_origin))
+						continue;
+
+					$html_file_destination = $directory.$file.'/openpayprestashop.html';
 					$txt_file_destination = $directory.$file.'/openpayprestashop.txt';
-					if (!Tools::copy($txt_file_origin, $txt_file_destination))
-						throw new Exception;
+
+					/*
+					 * Tools::copy function does not supported in PrestaShop 1.4.X.X
+					 */
+					if (_PS_VERSION_ < '1.5')
+					{
+						if (!copy($html_file_origin, $html_file_destination))
+							throw new Exception;
+
+						if (!copy($txt_file_origin, $txt_file_destination))
+							throw new Exception;
+					}
+					else
+					{
+						if (!Tools::copy($html_file_origin, $html_file_destination))
+							throw new Exception;
+
+						if (!Tools::copy($txt_file_origin, $txt_file_destination))
+							throw new Exception;
+					}
 
 				}
 			}
 			closedir($dhvalue);
 		}
 
-	}
-
-	public function getLongGlobalDateFormat($input)
-	{
-		$time = strtotime($input);
-
-		$string_month = $this->getLongStringForMonth(date('n', $time));
-
-		// Formato "12 de Julio de 2014, a las 6:36 PM"
-		return date('j', $time).' de '.$string_month.' de '.date('Y', $time).', a las '.date('g:i A', $time);
-	}
-
-	public function getLongStringForMonth($month_number)
-	{
-		$months_array = array(
-			1 => 'Enero',
-			2 => 'Febrero',
-			3 => 'Marzo',
-			4 => 'Abril',
-			5 => 'Mayo',
-			6 => 'Junio',
-			7 => 'Julio',
-			8 => 'Agosto',
-			9 => 'Septiembre',
-			10 => 'Octubre',
-			11 => 'Noviembre',
-			12 => 'Diciembre'
-		);
-
-		return isset($months_array[$month_number]) ? $months_array[$month_number] : '';
 	}
 
 }

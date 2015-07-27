@@ -24,29 +24,12 @@
  *  International Registered Trademark & Property of PrestaShop SA
  */
 
-include(dirname(__FILE__).'/../../config/config.inc.php');
-include(dirname(__FILE__).'/../../init.php');
+header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
 
-/* To configure, add webhook in account storename.com/modules/openpayprestahsop/notification.php */
-$objeto = Tools::file_get_contents('php://input');
-$json = Tools::jsonDecode($objeto);
+header("Cache-Control: no-store, no-cache, must-revalidate");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
 
-if (!count($json) > 0)
-	return true;
-
-if ($json->type == 'charge.succeeded' && ($json->transaction->method == 'store' || $json->transaction->method == 'bank_account'))
-{
-	$order_id = (int)$json->transaction->order_id;
-	$order = Order::getOrderByCartId($order_id);
-	if ($order)
-	{
-		$order_history = new OrderHistory();
-		$order_history->id_order = $order;
-		$order_history->changeIdOrderState(Configuration::get('PS_OS_PAYMENT'), $order);
-		$order_history->addWithemail();
-
-		Db::getInstance()->Execute(
-				'UPDATE '._DB_PREFIX_.'openpay_transaction SET status = "paid" WHERE id_transaction = "'.(int)$json->transaction->id.'"'
-		);
-	}
-}
+header("Location: ../");
+exit;
