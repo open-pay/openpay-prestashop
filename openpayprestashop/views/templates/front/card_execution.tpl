@@ -148,7 +148,9 @@
 
             OpenPay.setId(openpay_merchant_id);
             OpenPay.setApiKey(openpay_public_key);
-            OpenPay.setSandboxMode(mode);
+
+            if(mode == "0")
+                OpenPay.setSandboxMode(true);
 
             //antifraudes
             OpenPay.deviceData.setup("openpay-payment-form", "device_session_id");
@@ -191,8 +193,6 @@
             return false;
         }
 
-
-
         var success_callbak = function(response) {
             $('.openpay-payment-errors').hide();
             var token_id = response.data.id;
@@ -200,10 +200,35 @@
             $('#openpay-payment-form').get(0).submit();
         };
 
-
         var error_callbak = function(response) {
+
+            var msg = "";
+            switch (response.data.error_code) {
+                case 1000:
+                case 1004:
+                case 1005:
+                    msg = "{l s='Service not available.' mod='openpayprestashop'}";
+                    break;
+
+                case 1001:
+                    msg = "{l s='The fields do not have the correct format, or the request does not have fields are required.' mod='openpayprestashop'}";
+                    break;
+
+                case 2005:
+                    msg = "{l s='The expiration date has already passed.' mod='openpayprestashop'}";
+                    break;
+
+                case 2006:
+                    msg = "{l s='The CVV2 security code is required.' mod='openpayprestashop'}";
+                    break;
+
+                default: //Demás errores 400
+                    msg = "{l s='The request could not be processed.' mod='openpayprestashop'}";
+                    break;
+            }
+
             $('.openpay-payment-errors').fadeIn(1000);
-            $('.openpay-payment-errors').text('ERROR ' + response.data.error_code + '. ' + response.message).fadeIn(1000);
+            $('.openpay-payment-errors').text('ERROR ' + response.data.error_code + '. ' + msg).fadeIn(1000);
             $('.openpay-submit-button').prop('disabled', false);
             $('#openpay-payment-form').show();
             $('#openpay-ajax-loader').hide();

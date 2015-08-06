@@ -31,7 +31,6 @@ class OpenpayPrestashop extends PaymentModule
 {
 	private $error = array();
 	private $validation = array();
-	protected $backward = false;
 
 	public function __construct()
 	{
@@ -48,27 +47,11 @@ class OpenpayPrestashop extends PaymentModule
 		$this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';
 
 		parent::__construct();
-		$backward_compatibility_url = 'http://addons.prestashop.com/en/modules-prestashop/6222-backwardcompatibility.html';
 		$warning = 'All the Openpay transaction details saved in your database will be deleted. Are you sure you want uninstall this module?';
 		$this->displayName = $this->l('Openpay');
 		$this->description = $this->l('Accept payments by credit-debit card, cash payments and via SPEI with Openpay');
 		$this->confirmUninstall = $this->l($warning);
-
-		/* Backward compatibility */
-		if (_PS_VERSION_ < '1.5')
-		{
-			$this->backward_error = $this->l('In order to work properly in PrestaShop v1.4, the Openpay module requires the backward compatibility')
-					.'<br />'.$this->l('You can download this module for free here: '.$backward_compatibility_url);
-			if (file_exists(_PS_MODULE_DIR_.'backwardcompatibility/backward_compatibility/backward.php'))
-			{
-				include(_PS_MODULE_DIR_.'backwardcompatibility/backward_compatibility/backward.php');
-				$this->backward = true;
-			}
-			else
-				$this->warning = $this->backward_error;
-		}
-		else
-			$this->backward = true;
+		$this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
 	}
 
 	/**
@@ -78,12 +61,6 @@ class OpenpayPrestashop extends PaymentModule
 	 */
 	public function install()
 	{
-		if (!$this->active && _PS_VERSION_ < 1.5)
-		{
-			echo '<div class="error">'.Tools::safeOutput($this->backward_error).'</div>';
-			return false;
-		}
-
 		/* For 1.4.3 and less compatibility */
 		$update_config = array(
 			'PS_OS_CHEQUE' => 1,
@@ -169,7 +146,7 @@ class OpenpayPrestashop extends PaymentModule
 		return Db::getInstance()->Execute('
 		CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'openpay_customer` (
                     `id_openpay_customer` int(10) unsigned NOT NULL AUTO_INCREMENT,
-                    `openpay_customer_id` varchar(32) NOT NULL,
+                    `openpay_customer_id` varchar(32) NULL,
                     `id_customer` int(10) unsigned NOT NULL,
                     `date_add` datetime NOT NULL,
                     PRIMARY KEY (`id_openpay_customer`),
@@ -488,18 +465,11 @@ class OpenpayPrestashop extends PaymentModule
 				));
 
 			/** Redirect the user to the order confirmation page history */
-			if (_PS_VERSION_ < 1.5)
-				$redirect = __PS_BASE_URI__.'order-confirmation.php?id_cart='.(int)$this->context->cart->id.
-						$content.
-						'&id_module='.(int)$this->id.
-						'&id_order='.(int)$this->currentOrder.
-						'&key='.$this->context->customer->secure_key;
-			else
-				$redirect = __PS_BASE_URI__.'index.php?controller=order-confirmation&id_cart='.(int)$this->context->cart->id.
-						$content.
-						'&id_module='.(int)$this->id.
-						'&id_order='.(int)$this->currentOrder.
-						'&key='.$this->context->customer->secure_key;
+			$redirect = __PS_BASE_URI__.'index.php?controller=order-confirmation&id_cart='.(int)$this->context->cart->id.
+					$content.
+					'&id_module='.(int)$this->id.
+					'&id_order='.(int)$this->currentOrder.
+					'&key='.$this->context->customer->secure_key;
 
 			Tools::redirect($redirect);
 			exit;
@@ -614,11 +584,6 @@ class OpenpayPrestashop extends PaymentModule
 		$tests['configuration'] = array(
 			'name' => $this->l('You must sign-up for Openpay and configure your account settings in the module (publishable key, secret key...etc.)'),
 			'result' => $this->getMerchantInfo());
-
-		if (_PS_VERSION_ < 1.5)
-			$tests['backward'] = array(
-				'name' => $this->l('You are using the backward compatibility module'),
-				'result' => $this->backward, 'resolution' => $this->backward_error);
 
 		foreach ($tests as $k => $test)
 			if ($k != 'result' && !$test['result'])
@@ -770,11 +735,31 @@ class OpenpayPrestashop extends PaymentModule
 		{
 			try
 			{
+
+				$address = Db::getInstance()->getRow('
+                    SELECT *
+                    FROM '._DB_PREFIX_.'address
+                    WHERE id_customer = '.(int)$customer_id);
+
+				$state = Db::getInstance()->getRow('
+                    SELECT id_country, name
+                    FROM '._DB_PREFIX_.'state
+                    WHERE id_state = '.(int)$address['id_state']);
+
 				$customer_data = array(
+					'requires_account' => false,
 					'name' => $customer->firstname,
 					'last_name' => $customer->lastname,
 					'email' => $customer->email,
-					'requires_account' => false
+					'phone_number' => $address['phone'],
+					'address' => array(
+						'line1' => $address['address1'],
+						'line2' => $address['address2'],
+						'postal_code' => $address['postcode'],
+						'city' => $address['city'],
+						'state' => $state['name'],
+						'country_code' => 'MX'
+					)
 				);
 
 				$customer_openpay = $this->createOpenpayCustomer($customer_data);
@@ -911,7 +896,62 @@ class OpenpayPrestashop extends PaymentModule
 
 	public function error($e, $backend = false)
 	{
-		$error = 'ERROR '.$e->getErrorCode().'. '.$e->getMessage();
+		/* 6001 el webhook ya existe */
+		switch ($e->getErrorCode())
+		{
+			/* ERRORES GENERALES */
+			case '1000':
+			case '1004':
+			case '1005':
+				$msg = $this->l('Service not available.');
+				break;
+
+			/* ERRORES TARJETA */
+			case '3001':
+			case '3004':
+			case '3005':
+			case '3007':
+				$msg = $this->l('The card was declined.');
+				break;
+
+			case '3002':
+				$msg = $this->l('The card has expired.');
+				break;
+
+			case '3003':
+				$msg = $this->l('The card does not have sufficient funds');
+				break;
+
+			case '3006':
+				$msg = $this->l('The operation is not permitted for this client or this transaction.');
+				break;
+
+			case '3008':
+				$msg = $this->l('The card is not supported on online transactions.');
+				break;
+
+			case '3009':
+				$msg = $this->l('The card was reported lost.');
+				break;
+
+			case '3010':
+				$msg = $this->l('The bank has restricted the card.');
+				break;
+
+			case '3011':
+				$msg = $this->l('The bank has requested that the card is retained. Contact the bank.');
+				break;
+
+			case '3012':
+				$msg = $this->l('Ask the bank is required to make this payment authorization.');
+				break;
+
+			default: /* Demás errores 400 */
+				$msg = $this->l('The request could not be processed.');
+				break;
+		}
+
+		$error = 'ERROR '.$e->getErrorCode().'. '.$msg;
 
 		if ($backend)
 			return Tools::jsonDecode(Tools::jsonEncode(array('error' => $e->getErrorCode(), 'msg' => $error)), false);
@@ -941,26 +981,11 @@ class OpenpayPrestashop extends PaymentModule
 					$html_file_destination = $directory.$file.'/openpayprestashop.html';
 					$txt_file_destination = $directory.$file.'/openpayprestashop.txt';
 
-					/*
-					 * Tools::copy function does not supported in PrestaShop 1.4.X.X
-					 */
-					if (_PS_VERSION_ < '1.5')
-					{
-						if (!copy($html_file_origin, $html_file_destination))
-							throw new Exception;
+					if (!Tools::copy($html_file_origin, $html_file_destination))
+						throw new Exception;
 
-						if (!copy($txt_file_origin, $txt_file_destination))
-							throw new Exception;
-					}
-					else
-					{
-						if (!Tools::copy($html_file_origin, $html_file_destination))
-							throw new Exception;
-
-						if (!Tools::copy($txt_file_origin, $txt_file_destination))
-							throw new Exception;
-					}
-
+					if (!Tools::copy($txt_file_origin, $txt_file_destination))
+						throw new Exception;
 				}
 			}
 			closedir($dhvalue);
