@@ -215,6 +215,26 @@
                 </tr>
                 <tr>
                     <td colspan="2">
+                        <h3 style="margin-bottom: 0;">{l s='Webhook authentication' mod='openpayprestashop'}</h3>
+                        <p style="margin-top: 0; font-style: italic; ">{l s='Required data for payments notifications' mod='openpayprestashop'}</p>
+                        <table cellspacing="0" cellpadding="0" class="innerTable">
+                            <tr>
+                                <td valign="middle" align="left">{l s='User (required field)' mod='openpayprestashop'}</td>
+                                <td valign="middle" align="left">
+                                    <input type="text" name="openpay_webhook_user" value="{if $openpay_configuration.OPENPAY_WEBHOOK_USER}{$openpay_configuration.OPENPAY_WEBHOOK_USER|escape:'htmlall':'UTF-8'}{/if}">
+                                </td>
+                                <td width="15"></td>
+                                <td class="vertBorder" width="15"></td>
+                                <td valign="middle" align="left">{l s='Password (required field)' mod='openpayprestashop'}</td>
+                                <td valign="middle" align="left">
+                                    <input type="password" name="openpay_webhook_password" value="{if $openpay_configuration.OPENPAY_WEBHOOK_PASSWORD}{$openpay_configuration.OPENPAY_WEBHOOK_PASSWORD|escape:'htmlall':'UTF-8'}{/if}">
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
                         <h3>{l s='Payment methods' mod='openpayprestashop'}</h3>
                         <table cellspacing="0" cellpadding="0" class="innerTable">
                             <tr>

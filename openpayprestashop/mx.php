@@ -76,6 +76,10 @@ $_MODULE['<{openpayprestashop}default-bootstrap>configuration_cd2b339f9c716a39f9
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_52bf767dd13f98ff9ae89a8679073c90'] = 'Llave privada producción';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_5add70ffebb3fc7302c8534276a08d20'] = 'Llave pública sandbox';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_88792babe629258d539766f0f710eb82'] = 'Llave pública producción';
+$_MODULE['<{openpayprestashop}default-bootstrap>configuration_29f8bc570092570cda4f67851333ddaa'] = 'Autenticación de webhook';
+$_MODULE['<{openpayprestashop}default-bootstrap>configuration_aa64d8307c06b252bb394d1d9da0cb30'] = 'Datos requeridos para la notificación de los pagos';
+$_MODULE['<{openpayprestashop}default-bootstrap>configuration_4e8d2b58bfb71e19d2f9593eebb51500'] = 'Usuario (campo requerido)';
+$_MODULE['<{openpayprestashop}default-bootstrap>configuration_04881758f687b9e60312e4f549fb4a77'] = 'Contraseña (campo requerido)';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_0da8d9a75492046bea7f314521e07cae'] = 'Formas de pago aceptadas';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_40fed24d2e43a64767663257cfd5f4b1'] = 'Tarjeta de crédito/débito';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_f9d299b21a010a3778a2f0f5367ed4a7'] = 'Pago en tiendas';

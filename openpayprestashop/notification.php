@@ -26,27 +26,46 @@
 
 include(dirname(__FILE__).'/../../config/config.inc.php');
 include(dirname(__FILE__).'/../../init.php');
+include(dirname(__FILE__).'/openpayprestashop.php');
 
 /* To configure, add webhook in account storename.com/modules/openpayprestahsop/notification.php */
-$objeto = Tools::file_get_contents('php://input');
-$json = Tools::jsonDecode($objeto);
-
-if (!count($json) > 0)
-	return true;
-
-if ($json->type == 'charge.succeeded' && ($json->transaction->method == 'store' || $json->transaction->method == 'bank_account'))
+if (!isset($_SERVER['PHP_AUTH_USER']))
 {
-	$order_id = (int)$json->transaction->order_id;
-	$order = Order::getOrderByCartId($order_id);
-	if ($order)
-	{
-		$order_history = new OrderHistory();
-		$order_history->id_order = $order;
-		$order_history->changeIdOrderState(Configuration::get('PS_OS_PAYMENT'), $order);
-		$order_history->addWithemail();
+	header('HTTP/1.1 501 NOT SUPPORTED');
+	exit;
+}
 
-		Db::getInstance()->Execute(
-				'UPDATE '._DB_PREFIX_.'openpay_transaction SET status = "paid" WHERE id_transaction = "'.(int)$json->transaction->id.'"'
-		);
+$auth_user = Configuration::get('OPENPAY_WEBHOOK_USER');
+$auth_pwd = Configuration::get('OPENPAY_WEBHOOK_PASSWORD');
+
+if ($_SERVER['PHP_AUTH_USER'] == $auth_user && $_SERVER['PHP_AUTH_PW'] == $auth_pwd)
+{
+	$objeto = Tools::file_get_contents('php://input');
+	$json = Tools::jsonDecode($objeto);
+
+	if ($json->type == 'charge.succeeded' && ($json->transaction->method == 'store' || $json->transaction->method == 'bank_account'))
+	{
+		$order_id = (int)$json->transaction->order_id;
+		$order = Order::getOrderByCartId($order_id);
+		if ($order)
+		{
+			$order_history = new OrderHistory();
+			$order_history->id_order = $order;
+			$order_history->changeIdOrderState(Configuration::get('PS_OS_PAYMENT'), $order);
+			$order_history->addWithemail();
+
+			Db::getInstance()->Execute(
+					'UPDATE '._DB_PREFIX_.'openpay_transaction SET status = "paid" WHERE id_transaction = "'.(int)$json->transaction->id.'"'
+			);
+		}
+		header('HTTP/1.1 200 OK');
+		exit;
 	}
 }
+else
+{
+	header('HTTP/1.1 501 NOT SUPPORTED');
+	exit;
+}
+
+
