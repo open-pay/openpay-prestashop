@@ -845,8 +845,8 @@ class OpenpayPrestashop extends PaymentModule
 		$domain = (Configuration::get('PS_SSL_ENABLED') ? 'https' : 'http').'://'.$_SERVER['HTTP_HOST'];
 		$webhook_data = array(
 			'url' => $domain.__PS_BASE_URI__.'modules/openpayprestashop/notification.php',
-			'user' => 'fede',
-			'password' => 'xxx',
+			'user' => Configuration::get('OPENPAY_WEBHOOK_USER'),
+			'password' => Configuration::get('OPENPAY_WEBHOOK_PASSWORD'),
 			'event_types' => array(
 				'verification',
 				'charge.succeeded',
