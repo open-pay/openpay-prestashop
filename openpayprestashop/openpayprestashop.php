@@ -424,7 +424,7 @@ class OpenpayPrestashop extends PaymentModule
 					$this->l('Amount:').' $'.number_format($result_json->amount, 2).' '.Tools::strtoupper($result_json->currency)."\n".
 					$this->l('Status:').' '.($result_json->status == 'completed' ? $this->l('Paid') : $this->l('Unpaid'))."\n".
 					$this->l('Processed on:').' '.date('Y-m-d H:i:s')."\n".
-					$this->l('Mode:').' '.(Configuration::get('OPENPAY_MODE') == 'true' ? $this->l('Live') : $this->l('Test'))."\n";
+					$this->l('Mode:').' '.(Configuration::get('OPENPAY_MODE') ? $this->l('Live') : $this->l('Test'))."\n";
 
 			/* Create the PrestaShop order in database */
 			$this->validateOrder(
