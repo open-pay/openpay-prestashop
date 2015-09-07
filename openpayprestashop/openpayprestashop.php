@@ -131,8 +131,17 @@ class OpenpayPrestashop extends PaymentModule
 
 		if ($state->save())
 		{
-			Configuration::updateValue('waiting_cash_payment', $state->id);
-			$this->copyMailTemplate();
+			try
+			{
+				Configuration::updateValue('waiting_cash_payment', $state->id);
+				$this->copyMailTemplate();
+			}
+			catch (Exception $e)
+			{
+				if (class_exists('Logger'))
+					Logger::addLog($e->getMessage(), 1, null, null, null, true);
+			}
+			
 		}
 		else
 			return false;
