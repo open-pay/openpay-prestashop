@@ -98,7 +98,7 @@ class OpenpayPrestashop extends PaymentModule
 				Configuration::updateValue('OPENPAY_WEBHOOK_ID_TEST', null) &&
 				Configuration::updateValue('OPENPAY_WEBHOOK_ID_LIVE', null) &&
 				Configuration::updateValue('OPENPAY_WEBHOOK_USER', Configuration::get('PS_SHOP_NAME')) &&
-				Configuration::updateValue('OPENPAY_WEBHOOK_PASSWORD', substr(md5(uniqid(rand(), true)), 0, 10)) &&
+				Configuration::updateValue('OPENPAY_WEBHOOK_PASSWORD', Tools::substr(md5(uniqid(rand(), true)), 0, 10)) &&
 				Configuration::updateValue('OPENPAY_BACKGROUND_COLOR', '#003A5B') &&
 				Configuration::updateValue('OPENPAY_FONT_COLOR', '#ffffff') &&
 				$this->installDb();
@@ -1032,7 +1032,6 @@ class OpenpayPrestashop extends PaymentModule
 			}
 			closedir($dhvalue);
 		}
-
 	}
 
 }

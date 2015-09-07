@@ -26,37 +26,37 @@
 
 class OpenpayPrestashopStorePaymentModuleFrontController extends ModuleFrontController
 {
-	public $ssl = true;
-	public $display_column_left = false;
 
-	/**
-	 * @see FrontController::initContent()
-	 */
-	public function initContent()
-	{
-		parent::initContent();
+    public $ssl = true;
+    public $display_column_left = false;
 
-		$cart = $this->context->cart;
-		if (!$this->module->checkCurrency($cart))
-			Tools::redirect('index.php?controller=order');
+    /**
+     * @see FrontController::initContent()
+     */
+    public function initContent()
+    {
+        parent::initContent();
 
-		if (!empty($this->context->cookie->openpay_error))
-		{
-			$this->context->smarty->assign('openpay_error', $this->context->cookie->openpay_error);
-			$this->context->cookie->__set('openpay_error', null);
-		}
+        $cart = $this->context->cart;
+        
+        if (!$this->module->checkCurrency($cart)) {
+            Tools::redirect('index.php?controller=order');
+        }
 
-		$this->context->smarty->assign(array(
-			'validation_url' => './index.php?process=validation&fc=module&module=openpayprestashop&controller=default',
-			'nbProducts' => $cart->nbProducts(),
-			'total' => $cart->getOrderTotal(true, Cart::BOTH),
-			'module_dir' => $this->module->getPath()
-		));
+        if (!empty($this->context->cookie->openpay_error)) {
+            $this->context->smarty->assign('openpay_error', $this->context->cookie->openpay_error);
+            $this->context->cookie->__set('openpay_error', null);
+        }
 
-		$this->context->controller->addCSS($this->module->getPath().'views/css/openpay-prestashop.css');
+        $this->context->smarty->assign(array(
+            'validation_url' => './index.php?process=validation&fc=module&module=openpayprestashop&controller=default',
+            'nbProducts' => $cart->nbProducts(),
+            'total' => $cart->getOrderTotal(true, Cart::BOTH),
+            'module_dir' => $this->module->getPath()
+        ));
 
-		$this->setTemplate('store_execution.tpl');
-	}
+        $this->context->controller->addCSS($this->module->getPath() . 'views/css/openpay-prestashop.css');
 
-
+        $this->setTemplate('store_execution.tpl');
+    }
 }

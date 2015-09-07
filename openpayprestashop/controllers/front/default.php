@@ -26,38 +26,38 @@
 
 class OpenpayPrestashopDefaultModuleFrontController extends ModuleFrontController
 {
-	public function __construct()
-	{
-		$this->auth = false;
-		parent::__construct();
-		$this->context = Context::getContext();
-		include_once($this->module->getLocalPath().'openpayprestashop.php');
-	}
 
-	/**
-	 * @see FrontController::initContent()
-	 */
-	public function initContent()
-	{
-		$this->display_column_left = false;
-		$this->display_column_right = false;
-		parent::initContent();
-		if (Tools::getValue('process') == 'validation')
-			$this->validation();
-	}
+    public function __construct()
+    {
+        $this->auth = false;
+        parent::__construct();
+        $this->context = Context::getContext();
+        include_once($this->module->getLocalPath() . 'openpayprestashop.php');
+    }
 
-	public function validation()
-	{
-		$openpay = new OpenpayPrestashop();
-		if ($openpay->active)
-			$openpay->processPayment(Tools::getValue('payment_method'), Tools::getValue('openpayToken'), Tools::getValue('device_session_id'));
-		else
-		{
-			$this->context->cookie->__set('openpay_error', 'There was a problem with your payment');
-			$controller = Configuration::get('PS_ORDER_PROCESS_TYPE') ? 'order-opc.php' : 'order.php';
-			$redirect = $this->context->link->getPageLink($controller).(strpos($controller, '?') !== false ? '&' : '?').'step=3#openpay_error';
-			Tools::redirect($redirect);
-		}
-	}
+    /**
+     * @see FrontController::initContent()
+     */
+    public function initContent()
+    {
+        $this->display_column_left = false;
+        $this->display_column_right = false;
+        parent::initContent();
+        if (Tools::getValue('process') == 'validation') {
+            $this->validation();
+        }
+    }
 
+    public function validation()
+    {
+        $openpay = new OpenpayPrestashop();
+        if ($openpay->active) {
+            $openpay->processPayment(Tools::getValue('payment_method'), Tools::getValue('openpayToken'), Tools::getValue('device_session_id'));
+        } else {
+            $this->context->cookie->__set('openpay_error', 'There was a problem with your payment');
+            $controller = Configuration::get('PS_ORDER_PROCESS_TYPE') ? 'order-opc.php' : 'order.php';
+            $redirect = $this->context->link->getPageLink($controller) . (strpos($controller, '?') !== false ? '&' : '?') . 'step=3#openpay_error';
+            Tools::redirect($redirect);
+        }
+    }
 }

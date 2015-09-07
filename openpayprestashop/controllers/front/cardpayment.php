@@ -26,46 +26,45 @@
 
 class OpenpayPrestashopCardPaymentModuleFrontController extends ModuleFrontController
 {
-	public $ssl = true;
-	public $display_column_left = false;
 
-	/**
-	 * @see FrontController::initContent()
-	 */
-	public function initContent()
-	{
-		parent::initContent();
+    public $ssl = true;
+    public $display_column_left = false;
 
-		$cart = $this->context->cart;
-		if (!$this->module->checkCurrency($cart))
-			Tools::redirect('index.php?controller=order');
+    /**
+     * @see FrontController::initContent()
+     */
+    public function initContent()
+    {
+        parent::initContent();
 
-		$pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PUBLIC_KEY_LIVE') : Configuration::get('OPENPAY_PUBLIC_KEY_TEST');
-		$id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
+        $cart = $this->context->cart;
+        if (!$this->module->checkCurrency($cart)) {
+            Tools::redirect('index.php?controller=order');
+        }
 
-		if (!empty($this->context->cookie->openpay_error))
-		{
-			$this->context->smarty->assign('openpay_error', $this->context->cookie->openpay_error);
-			$this->context->cookie->__set('openpay_error', null);
-		}
+        $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PUBLIC_KEY_LIVE') : Configuration::get('OPENPAY_PUBLIC_KEY_TEST');
+        $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
 
-		$this->context->smarty->assign(array(
-			'validation_url' => './index.php?process=validation&fc=module&module=openpayprestashop&controller=default',
-			'pk' => $pk,
-			'id' => $id,
-			'mode' => Configuration::get('OPENPAY_MODE'),
-			'nbProducts' => $cart->nbProducts(),
-			'total' => $cart->getOrderTotal(true, Cart::BOTH),
-			'module_dir' => $this->module->getPath()
-		));
+        if (!empty($this->context->cookie->openpay_error)) {
+            $this->context->smarty->assign('openpay_error', $this->context->cookie->openpay_error);
+            $this->context->cookie->__set('openpay_error', null);
+        }
 
-		$this->context->controller->addJS('https://openpay.s3.amazonaws.com/openpay.v1.min.js');
-		$this->context->controller->addJS('https://openpay.s3.amazonaws.com/openpay-data.v1.min.js');
+        $this->context->smarty->assign(array(
+            'validation_url' => './index.php?process=validation&fc=module&module=openpayprestashop&controller=default',
+            'pk' => $pk,
+            'id' => $id,
+            'mode' => Configuration::get('OPENPAY_MODE'),
+            'nbProducts' => $cart->nbProducts(),
+            'total' => $cart->getOrderTotal(true, Cart::BOTH),
+            'module_dir' => $this->module->getPath()
+        ));
 
-		$this->context->controller->addCSS($this->module->getPath().'views/css/openpay-prestashop.css');
+        $this->context->controller->addJS('https://openpay.s3.amazonaws.com/openpay.v1.min.js');
+        $this->context->controller->addJS('https://openpay.s3.amazonaws.com/openpay-data.v1.min.js');
 
-		$this->setTemplate('card_execution.tpl');
-	}
+        $this->context->controller->addCSS($this->module->getPath() . 'views/css/openpay-prestashop.css');
 
-
+        $this->setTemplate('card_execution.tpl');
+    }
 }
