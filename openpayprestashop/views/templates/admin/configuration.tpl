@@ -151,7 +151,14 @@
         <table cellspacing="0" cellpadding="0" class="openpay-technical">
             {if $openpay_validation}
                 {foreach from=$openpay_validation item=validation}
-                    {html_entity_decode($validation|escape:'htmlall':'UTF-8')}
+                    <tr>
+                        <td>
+                            <img src="../img/admin/{($validation['result']) ? 'ok' : 'forbbiden'}.gif" alt="" />
+                        </td>
+                        <td>
+                            {$validation['name']|escape:'htmlall':'UTF-8'}
+                        </td>
+                    </tr>
                 {/foreach}
             {/if}
         </table>
@@ -209,26 +216,6 @@
                                 <td width="15" class="vertBorder"></td>
                                 <td align="left" valign="middle">{l s='Live piblic key' mod='openpayprestashop'}</td>
                                 <td align="left" valign="middle"><input type="text" name="openpay_public_key_live" value="{if $openpay_configuration.OPENPAY_PUBLIC_KEY_LIVE}{$openpay_configuration.OPENPAY_PUBLIC_KEY_LIVE|escape:'htmlall':'UTF-8'}{/if}" /></td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <h3 style="margin-bottom: 0;">{l s='Webhook authentication' mod='openpayprestashop'}</h3>
-                        <p style="margin-top: 0; font-style: italic; ">{l s='Required data for payments notifications' mod='openpayprestashop'}</p>
-                        <table cellspacing="0" cellpadding="0" class="innerTable">
-                            <tr>
-                                <td valign="middle" align="left">{l s='User (required field)' mod='openpayprestashop'}</td>
-                                <td valign="middle" align="left">
-                                    <input type="text" name="openpay_webhook_user" value="{if $openpay_configuration.OPENPAY_WEBHOOK_USER}{$openpay_configuration.OPENPAY_WEBHOOK_USER|escape:'htmlall':'UTF-8'}{/if}">
-                                </td>
-                                <td width="15"></td>
-                                <td class="vertBorder" width="15"></td>
-                                <td valign="middle" align="left">{l s='Password (required field)' mod='openpayprestashop'}</td>
-                                <td valign="middle" align="left">
-                                    <input type="password" name="openpay_webhook_password" value="{if $openpay_configuration.OPENPAY_WEBHOOK_PASSWORD}{$openpay_configuration.OPENPAY_WEBHOOK_PASSWORD|escape:'htmlall':'UTF-8'}{/if}">
-                                </td>
                             </tr>
                         </table>
                     </td>

@@ -1,7 +1,7 @@
-<?php 
+<?php
 /**
  * Openpay API v1 Client for PHP (version 1.0.0)
- * 
+ *
  * Copyright © Openpay SAPI de C.V. All rights reserved.
  * http://www.openpay.mx/
  * soporte@openpay.mx
@@ -43,7 +43,7 @@ abstract class OpenpayApiResourceBase {
 			foreach ($derived as $k => $v) {
 				$name = strtolower($k) . 's';
 				$this->derivedResources[$name] = $this->processAttribute($k, $v);
-				
+
 				// unsets the original attribute
 				unset($this->derivedResources[$k]);
 			}
@@ -62,15 +62,15 @@ abstract class OpenpayApiResourceBase {
 		$resource = new $resourceName($resourceName, $props);
 		return $resource;
 	}
-	
-	
+
+
 	// ---------------------------------------------------------
 	// ------------------  PRIVATE FUNCTIONS  ------------------
-	
+
 	private function isList($var) {
 		if (!is_array($var))
 			return false;
-	
+
 		foreach (array_keys($var) as $k) {
 			if (!is_numeric($k))
 				return false;
@@ -80,7 +80,7 @@ abstract class OpenpayApiResourceBase {
 	private function processAttribute($k, $v) {
 		OpenpayConsole::trace('OpenpayApiResourceBase @processAttribute > ' . $k);
 		$value = null;
-	
+
 		$resourceName = $this->getResourceName($k);
 		if ($this->isResource($resourceName)) {
 			// check is its a resource list
@@ -96,7 +96,7 @@ abstract class OpenpayApiResourceBase {
 				$resource->parent = $this;
 				$resource->refreshData($v);
 				$value = $resource;
-				
+
 				if ($resourceName != $this->resourceName) {
 					$this->registerInParent($resource);
 				}
@@ -104,7 +104,7 @@ abstract class OpenpayApiResourceBase {
 		} else {
 			if (is_array($v)) {
 				// if it's an array, then is an object an instance a standar class
-					
+
 				$object = new stdClass();
 				foreach ($v as $key => $value) {
 					$object->$key = $value;
@@ -126,7 +126,7 @@ abstract class OpenpayApiResourceBase {
 	private function isResource($resourceName) {
 		OpenpayConsole::trace('OpenpayApiResourceBase @isResource > ' . $resourceName);
 // 		$resourceName = $this->getResourceName($name);
-	
+
 		return class_exists($resourceName);
 	}
 	private function registerInParent($resource) {
@@ -155,22 +155,22 @@ abstract class OpenpayApiResourceBase {
 		}
 		return false;
 	}
-	
-	
+
+
 	// ---------------------------------------------------------
 	// -----------------  PROTECTED FUNCTIONS  -----------------
-	
+
 	protected function refreshData($data) {
 		OpenpayConsole::trace('OpenpayApiResourceBase @refreshData');
-	
+
 		if (!$data) {
 			return $this;
 		}
-	
+
 		if (!is_array($data)) {
 			throw new OpenpayApiError("Invalid data received for processing, cannot update the Openpay resource");
 		}
-	
+
 		// unsets the unused attributes
 		$removed = array_diff(array_keys($this->serializableData), array_keys($data));
 		if (count($removed)) {
@@ -187,18 +187,18 @@ abstract class OpenpayApiResourceBase {
 				}
 			}
 		}
-	
+
 		foreach ($data as $k => $v) {
 			$k = strtolower($k);
-	
+
 			$value = $this->processAttribute($k, $v);
-	
+
 			if ($k == 'id') {
 				if (!isset($this->id)) {
 					$this->id = $v;
 				}
 				continue;
-			
+
 			// by default, only protected vars & serializable data will be refresh
 			// in this version, noSerializableData does not store any value
 			} else if (property_exists($this, $k)) {
@@ -249,10 +249,10 @@ abstract class OpenpayApiResourceBase {
 		} else {
 			$props = array('id' => $id);
 		}
-	
+
 		$resource = self::getInstance($resourceName, $props);
 		$resource->validateId($id);
-	
+
 		$response = OpenpayApiConnector::request('get', $resource->getUrl());
 		return $resource->refreshData($response);
 	}
@@ -260,7 +260,7 @@ abstract class OpenpayApiResourceBase {
 
 		$resource = self::getInstance($resourceName, $props);
 		$resource->validateParams($params);
-	
+
 		$list = array();
 		$response = OpenpayApiConnector::request('get', $resource->getUrl(), $params);
 		if (self::isList($response)) {
@@ -274,7 +274,7 @@ abstract class OpenpayApiResourceBase {
 	}
 	protected function _update() {
 		$params = $this->getSerializeParameters();
-	
+
 		if (count($params)) {
 			$response  = OpenpayApiConnector::request('put', $this->getUrl(), $params);
 			return $this->refreshData($response);
@@ -282,7 +282,7 @@ abstract class OpenpayApiResourceBase {
 	}
 	protected function _delete() {
 		OpenpayApiConnector::request('delete', $this->getUrl(), null);
-	
+
 		// remove from list, if parent is a list
 		if ($this->id && $this->parent && method_exists($this->parent, 'removeResource')) {
 			$this->parent->removeResource($this->id);
@@ -293,7 +293,7 @@ abstract class OpenpayApiResourceBase {
 
 	// ---------------------------------------------------------
 	// ------------------  PUBLIC FUNCTIONS  -------------------
-	
+
 	public function getUrl() { // $includeId = true
 		OpenpayConsole::trace('OpenpayApiResourceBase @getUrl > class/parent: ' . get_class($this) . '/'. ($this->parent ? 'true' : 'false'));
 		$parentUrl = '';
@@ -311,7 +311,7 @@ abstract class OpenpayApiResourceBase {
 
 	// ---------------------------------------------------------
 	// --------------------  MAGIC METHODS  --------------------
-	
+
 	public function __set($key, $value) {
 		OpenpayConsole::trace('OpenpayApiResourceBase @__set > ' . $key . ' = ' . $value);
 		if ($value === '' || !$value){
@@ -327,14 +327,14 @@ abstract class OpenpayApiResourceBase {
 			$this->serializableData[$key] = $value;
 		} elseif (isset($this->derivedResources[$key])) {
 			$this->derivedResources[$key] = $value;
-		} 
+		}
 	}
 	public function __get($key) {
 		if (property_exists($this, $key)) {
 			return $this->$key;
 		} else  if (array_key_exists($key, $this->serializableData)) {
 			return $this->serializableData[$key];
-		} else if (array_key_exists($key, $this->derivedResources)) {
+		} else if (is_array($this->derivedResources) && array_key_exists($key, $this->derivedResources)) {
 			return $this->derivedResources[$key];
 		} else if (array_key_exists($key, $this->noSerializableData)) {
 			return $this->noSerializableData[$key];

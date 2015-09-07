@@ -95,7 +95,10 @@ class OpenpayPrestashop extends PaymentModule
 				Configuration::updateValue('OPENPAY_CARDS', 1) &&
 				Configuration::updateValue('OPENPAY_STORES', 1) &&
 				Configuration::updateValue('OPENPAY_SPEI', 1) &&
-				Configuration::updateValue('OPENPAY_WEBHOOK_ID', null) &&
+				Configuration::updateValue('OPENPAY_WEBHOOK_ID_TEST', null) &&
+				Configuration::updateValue('OPENPAY_WEBHOOK_ID_LIVE', null) &&
+				Configuration::updateValue('OPENPAY_WEBHOOK_USER', Configuration::get('PS_SHOP_NAME')) &&
+				Configuration::updateValue('OPENPAY_WEBHOOK_PASSWORD', substr(md5(uniqid(rand(), true)), 0, 10)) &&
 				Configuration::updateValue('OPENPAY_BACKGROUND_COLOR', '#003A5B') &&
 				Configuration::updateValue('OPENPAY_FONT_COLOR', '#ffffff') &&
 				$this->installDb();
@@ -181,6 +184,13 @@ class OpenpayPrestashop extends PaymentModule
 	 */
 	public function uninstall()
 	{
+		/* Eliminar webhooks */
+		if(Configuration::get('OPENPAY_WEBHOOK_ID_TEST') != null)
+			$this->deleteWebhook(Configuration::get('OPENPAY_WEBHOOK_ID_TEST'), false);
+
+		if(Configuration::get('OPENPAY_WEBHOOK_ID_LIVE') != null)
+			$this->deleteWebhook(Configuration::get('OPENPAY_WEBHOOK_ID_LIVE'), true);
+
 		return parent::uninstall() &&
 				Configuration::deleteByName('OPENPAY_PUBLIC_KEY_TEST') &&
 				Configuration::deleteByName('OPENPAY_PUBLIC_KEY_LIVE') &&
@@ -191,7 +201,8 @@ class OpenpayPrestashop extends PaymentModule
 				Configuration::deleteByName('OPENPAY_PRIVATE_KEY_LIVE') &&
 				Configuration::deleteByName('OPENPAY_DEADLINE_STORES') &&
 				Configuration::deleteByName('OPENPAY_DEADLINE_SPEI') &&
-				Configuration::deleteByName('OPENPAY_WEBHOOK_ID')	&&
+				Configuration::deleteByName('OPENPAY_WEBHOOK_ID_TEST')	&&
+				Configuration::deleteByName('OPENPAY_WEBHOOK_ID_LIVE')	&&
 				Configuration::deleteByName('OPENPAY_WEBHOOK_USER') &&
 				Configuration::deleteByName('OPENPAY_WEBHOOK_PASSWORD') &&
 				Configuration::deleteByName('OPENPAY_CARDS') &&
@@ -612,44 +623,44 @@ class OpenpayPrestashop extends PaymentModule
 		/** Update Configuration Values when settings are updated */
 		if (Tools::isSubmit('SubmitOpenpay'))
 		{
-			if (empty($errors))
-			{
-				$configuration_values = array(
-					'OPENPAY_MODE' => Tools::getValue('openpay_mode'),
-					'OPENPAY_MERCHANT_ID_TEST' => trim(Tools::getValue('openpay_merchant_id_test')),
-					'OPENPAY_MERCHANT_ID_LIVE' => trim(Tools::getValue('openpay_merchant_id_live')),
-					'OPENPAY_PUBLIC_KEY_TEST' => trim(Tools::getValue('openpay_public_key_test')),
-					'OPENPAY_PUBLIC_KEY_LIVE' => trim(Tools::getValue('openpay_public_key_live')),
-					'OPENPAY_PRIVATE_KEY_TEST' => trim(Tools::getValue('openpay_private_key_test')),
-					'OPENPAY_PRIVATE_KEY_LIVE' => trim(Tools::getValue('openpay_private_key_live')),
-					'OPENPAY_DEADLINE_STORES' => trim(Tools::getValue('openpay_deadline_stores')),
-					'OPENPAY_DEADLINE_SPEI' => trim(Tools::getValue('openpay_deadline_spei')),
-					'OPENPAY_WEBHOOK_USER' => trim(Tools::getValue('openpay_webhook_user')),
-					'OPENPAY_WEBHOOK_PASSWORD' => trim(Tools::getValue('openpay_webhook_password')),
-					'OPENPAY_CARDS' => Tools::getValue('openpay_cards'),
-					'OPENPAY_STORES' => Tools::getValue('openpay_stores'),
-					'OPENPAY_SPEI' => Tools::getValue('openpay_spei'),
-					'OPENPAY_BACKGROUND_COLOR' => Tools::getValue('openpay_background_color'),
-					'OPENPAY_FONT_COLOR' => Tools::getValue('openpay_font_color')
-				);
 
-				foreach ($configuration_values as $configuration_key => $configuration_value)
-					Configuration::updateValue($configuration_key, $configuration_value);
+			$configuration_values = array(
+				'OPENPAY_MODE' => Tools::getValue('openpay_mode'),
+				'OPENPAY_MERCHANT_ID_TEST' => trim(Tools::getValue('openpay_merchant_id_test')),
+				'OPENPAY_MERCHANT_ID_LIVE' => trim(Tools::getValue('openpay_merchant_id_live')),
+				'OPENPAY_PUBLIC_KEY_TEST' => trim(Tools::getValue('openpay_public_key_test')),
+				'OPENPAY_PUBLIC_KEY_LIVE' => trim(Tools::getValue('openpay_public_key_live')),
+				'OPENPAY_PRIVATE_KEY_TEST' => trim(Tools::getValue('openpay_private_key_test')),
+				'OPENPAY_PRIVATE_KEY_LIVE' => trim(Tools::getValue('openpay_private_key_live')),
+				'OPENPAY_DEADLINE_STORES' => trim(Tools::getValue('openpay_deadline_stores')),
+				'OPENPAY_DEADLINE_SPEI' => trim(Tools::getValue('openpay_deadline_spei')),
+				'OPENPAY_CARDS' => Tools::getValue('openpay_cards'),
+				'OPENPAY_STORES' => Tools::getValue('openpay_stores'),
+				'OPENPAY_SPEI' => Tools::getValue('openpay_spei'),
+				'OPENPAY_BACKGROUND_COLOR' => Tools::getValue('openpay_background_color'),
+				'OPENPAY_FONT_COLOR' => Tools::getValue('openpay_font_color')
+			);
 
+			foreach ($configuration_values as $configuration_key => $configuration_value)
+				Configuration::updateValue($configuration_key, $configuration_value);
+
+			$mode = Configuration::get('OPENPAY_MODE') ? 'LIVE' : 'TEST';
+
+			if(Configuration::get('OPENPAY_WEBHOOK_ID_'.$mode) === null){
 				$webhook = $this->createWebhook();
-				if ($webhook->error && $webhook->error != 6001)
+				if ($webhook->error)
 					$errors[] = $webhook->msg;
+			}
 
-				if (!$this->getMerchantInfo())
-				{
-					$errors[] = 'Openpay keys are incorrect.';
-					$mode = Tools::getValue('openpay_mode') ? 'LIVE' : 'TEST';
-					Configuration::deleteByName('OPENPAY_PUBLIC_KEY_'.$mode);
-					Configuration::deleteByName('OPENPAY_MERCHANT_ID_'.$mode);
-					Configuration::deleteByName('OPENPAY_PRIVATE_KEY_'.$mode);
-					Configuration::deleteByName('OPENPAY_DEADLINE_STORES');
-					Configuration::deleteByName('OPENPAY_DEADLINE_SPEI');
-				}
+			if (!$this->getMerchantInfo())
+			{
+				$errors[] = 'Openpay keys are incorrect.';
+				Configuration::deleteByName('OPENPAY_PUBLIC_KEY_'.$mode);
+				Configuration::deleteByName('OPENPAY_MERCHANT_ID_'.$mode);
+				Configuration::deleteByName('OPENPAY_PRIVATE_KEY_'.$mode);
+				Configuration::deleteByName('OPENPAY_WEBHOOK_ID_'.$mode);
+				Configuration::deleteByName('OPENPAY_DEADLINE_STORES');
+				Configuration::deleteByName('OPENPAY_DEADLINE_SPEI');
 			}
 		}
 
@@ -659,21 +670,11 @@ class OpenpayPrestashop extends PaymentModule
 
 		$requirements = $this->checkRequirements();
 
-		foreach ($requirements as $k => $requirement)
+		foreach ($requirements as $key => $requirement)
 		{
-			if ($k != 'result')
+			if ($key != 'result')
 			{
-				/**
-				 * Formato para el arreglo de validaciones
-				 */
-				$this->validation[] = '
-                <tr>
-                    <td><img src="../img/admin/'.($requirement['result'] ? 'ok' : 'forbbiden').'.gif" alt="" /></td>
-                    <td>'.
-						utf8_encode($requirement['name']).(!$requirement['result'] &&
-						isset($requirement['resolution']) ? '<br />'.Tools::safeOutput($requirement['resolution'], true) : '')
-						.'</td>
-                </tr>';
+				$this->validation[] = $requirement;
 			}
 		}
 
@@ -696,8 +697,6 @@ class OpenpayPrestashop extends PaymentModule
 						'OPENPAY_PRIVATE_KEY_LIVE',
 						'OPENPAY_DEADLINE_STORES',
 						'OPENPAY_DEADLINE_SPEI',
-						'OPENPAY_WEBHOOK_USER',
-						'OPENPAY_WEBHOOK_PASSWORD',
 						'OPENPAY_CARDS',
 						'OPENPAY_STORES',
 						'OPENPAY_SPEI',
@@ -706,7 +705,7 @@ class OpenpayPrestashop extends PaymentModule
 					)
 			),
 			'openpay_ssl' => Configuration::get('PS_SSL_ENABLED'),
-			'openpay_validation' => (empty($this->validation) ? false : $this->validation),
+			'openpay_validation' => $this->validation,
 			'openpay_error' => (empty($this->error) ? false : $this->error),
 			'openpay_validation_title' => $validation_title
 		));
@@ -863,6 +862,7 @@ class OpenpayPrestashop extends PaymentModule
 			)
 		);
 
+		$mode = Configuration::get('OPENPAY_MODE') ? 'LIVE' : 'TEST';
 		$pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
 		$id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
 
@@ -872,7 +872,28 @@ class OpenpayPrestashop extends PaymentModule
 		try
 		{
 			$webhook = $openpay->webhooks->add($webhook_data);
+			Configuration::updateValue('OPENPAY_WEBHOOK_ID_'.$mode, $webhook->id);
 			return $webhook;
+		}
+		catch (Exception $e)
+		{
+			return $this->error($e, true);
+		}
+	}
+
+	public function deleteWebhook($webhook_id, $mode)
+	{
+		$pk = $mode ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
+		$id = $mode ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
+
+		$openpay = Openpay::getInstance($id, $pk);
+		Openpay::setProductionMode($mode);
+
+		try
+		{
+			$webhook = $openpay->webhooks->get($webhook_id);
+            $webhook->delete();
+			return true;
 		}
 		catch (Exception $e)
 		{
@@ -994,10 +1015,10 @@ class OpenpayPrestashop extends PaymentModule
 					$txt_file_destination = $directory.$file.'/openpayprestashop.txt';
 
 					if (!Tools::copy($html_file_origin, $html_file_destination))
-						throw new Exception;
+						throw new Exception('Can not copy custom "Awaiting payment" email, please recursive write permission for ~/mails/');
 
 					if (!Tools::copy($txt_file_origin, $txt_file_destination))
-						throw new Exception;
+						throw new Exception('Can not copy custom "Awaiting payment" email, please recursive write permission for ~/mails/');
 				}
 			}
 			closedir($dhvalue);
