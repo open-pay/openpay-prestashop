@@ -17,7 +17,7 @@
 .container-receipt {
     max-width: 730px;
     border: 1px solid #EDEDED;
-    padding: 10px;
+    padding: 15px;
     background-color: #fff;
 }
 
@@ -230,4 +230,13 @@ li {
 
 .nomargin{
     margin: 0;
+}
+
+.bitcoin-receipt-logo{
+    height: auto;
+    max-width: 100%;
+}
+
+.center{
+    text-align: center !important;
 }

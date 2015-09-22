@@ -38,7 +38,6 @@ class OpenpayPrestashopStorePaymentModuleFrontController extends ModuleFrontCont
         parent::initContent();
 
         $cart = $this->context->cart;
-        
         if (!$this->module->checkCurrency($cart)) {
             Tools::redirect('index.php?controller=order');
         }
@@ -55,7 +54,7 @@ class OpenpayPrestashopStorePaymentModuleFrontController extends ModuleFrontCont
             'module_dir' => $this->module->getPath()
         ));
 
-        $this->context->controller->addCSS($this->module->getPath() . 'views/css/openpay-prestashop.css');
+        $this->context->controller->addCSS($this->module->getPath().'views/css/openpay-prestashop.css');
 
         $this->setTemplate('store_execution.tpl');
     }

@@ -46,3 +46,12 @@
         </a>
     </div>
 {/if}
+
+
+{if $bitcoins == 1 && $module_configured}
+    <div class="openpay-payment-module mb10">
+        <a class="openpay" href="{$link->getModuleLink('openpayprestashop', 'bitcoinpayment')|escape:'htmlall':'UTF-8'}" style="padding: 15px 40px 15px 20px;">
+            <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/bitcoin.png" style="height: 50px;">
+        </a>
+    </div>
+{/if}

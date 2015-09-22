@@ -234,6 +234,9 @@
                                 <td align="left" valign="middle">
                                     <input type="checkbox" name="openpay_spei" id="openpay_spei" value="1" {if $openpay_configuration.OPENPAY_SPEI == 1} checked="checked" {/if}> {l s='Bank payment' mod='openpayprestashop'}
                                 </td>
+                                <td align="left" valign="middle">
+                                    <input type="checkbox" name="openpay_bitcoins" id="openpay_bitcoins" value="1" {if $openpay_configuration.OPENPAY_BITCOINS == 1} checked="checked" {/if}> {l s='Bitcoins' mod='openpayprestashop'}
+                                </td>
                             </tr>
                         </table>
                     </td>

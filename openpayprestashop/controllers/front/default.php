@@ -32,7 +32,7 @@ class OpenpayPrestashopDefaultModuleFrontController extends ModuleFrontControlle
         $this->auth = false;
         parent::__construct();
         $this->context = Context::getContext();
-        include_once($this->module->getLocalPath() . 'openpayprestashop.php');
+        include_once($this->module->getLocalPath().'openpayprestashop.php');
     }
 
     /**
@@ -56,7 +56,7 @@ class OpenpayPrestashopDefaultModuleFrontController extends ModuleFrontControlle
         } else {
             $this->context->cookie->__set('openpay_error', 'There was a problem with your payment');
             $controller = Configuration::get('PS_ORDER_PROCESS_TYPE') ? 'order-opc.php' : 'order.php';
-            $redirect = $this->context->link->getPageLink($controller) . (strpos($controller, '?') !== false ? '&' : '?') . 'step=3#openpay_error';
+            $redirect = $this->context->link->getPageLink($controller).(strpos($controller, '?') !== false ? '&' : '?').'step=3#openpay_error';
             Tools::redirect($redirect);
         }
     }

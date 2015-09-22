@@ -63,7 +63,7 @@ class OpenpayPrestashopCardPaymentModuleFrontController extends ModuleFrontContr
         $this->context->controller->addJS('https://openpay.s3.amazonaws.com/openpay.v1.min.js');
         $this->context->controller->addJS('https://openpay.s3.amazonaws.com/openpay-data.v1.min.js');
 
-        $this->context->controller->addCSS($this->module->getPath() . 'views/css/openpay-prestashop.css');
+        $this->context->controller->addCSS($this->module->getPath().'views/css/openpay-prestashop.css');
 
         $this->setTemplate('card_execution.tpl');
     }
