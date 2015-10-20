@@ -2,7 +2,7 @@
 <module>
     <name>openpayprestashop</name>
     <displayName><![CDATA[Openpay]]></displayName>
-    <version><![CDATA[1.6.3]]></version>
+    <version><![CDATA[2.0.0]]></version>
     <description><![CDATA[Accept payments by credit-debit card, cash payments and via SPEI with Openpay]]></description>
     <author><![CDATA[Openpay SAPI de CV]]></author>
     <tab><![CDATA[payments_gateways]]></tab>

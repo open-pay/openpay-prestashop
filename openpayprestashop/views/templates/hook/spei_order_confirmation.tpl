@@ -46,7 +46,7 @@
     <div class="row nomargin">
         <div class="Yellow1 col-md-1"></div>
         <div class="col-sm-5 col-md-5 col-lg-5">
-            <img style="background-color: #fff;" class="img-responsive center-block" src="/img/logo.jpg" alt="Logo">
+            <img style="background-color: #fff;" class="img-responsive center-block" src="{$openpay_order.logo|escape:'htmlall':'UTF-8'}" alt="Logo">
         </div>
         <div class="Yellow2 col-sm-6 col-md-6 col-lg-6">
             <span>{l s='We expect your payment' mod='openpayprestashop'}</span>

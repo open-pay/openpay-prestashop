@@ -38,11 +38,9 @@ class OpenpayPrestashopBitcoinPaymentModuleFrontController extends ModuleFrontCo
         parent::initContent();
 
         $cart = $this->context->cart;
-        if (!$this->module->checkCurrency($cart)) {
+        if (!$this->module->checkCurrency()) {
             Tools::redirect('index.php?controller=order');
         }
-
-        $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
 
         if (!empty($this->context->cookie->openpay_error)) {
             $this->context->smarty->assign('openpay_error', $this->context->cookie->openpay_error);
@@ -51,10 +49,7 @@ class OpenpayPrestashopBitcoinPaymentModuleFrontController extends ModuleFrontCo
 
         $this->context->smarty->assign(array(
             'validation_url' => './index.php?process=validation&fc=module&module=openpayprestashop&controller=default',
-            'id' => $id,
-            'mode' => Configuration::get('OPENPAY_MODE'),
             'nbProducts' => $cart->nbProducts(),
-            'total' => $cart->getOrderTotal(true, Cart::BOTH),
             'module_dir' => $this->module->getPath()
         ));
 

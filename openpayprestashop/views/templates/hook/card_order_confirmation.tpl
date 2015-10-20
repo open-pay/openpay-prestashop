@@ -24,7 +24,7 @@
 *}
 
 {if $openpay_order.valid == 1}
-    <div class="conf confirmation">{l s='Congratulations, your payment is approved, the reference number of your order is:' mod='openpayprestashop'} <b>{$openpay_order.reference|escape:'htmlall':'UTF-8'}</b>.</div>
+    <div class="conf confirmation" style="font-size: 16px;">{l s='Congratulations, your payment is approved, the reference number of your order is:' mod='openpayprestashop'} <b>{$openpay_order.reference|escape:'htmlall':'UTF-8'}</b>.</div>
 {else}
     {if $order_pending}
         <div class="error">{l s='Unfortunately we detected a problem while processing your order and it needs to be reviewed.' mod='openpayprestashop'}<br/><br/>

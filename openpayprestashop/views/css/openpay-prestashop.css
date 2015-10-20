@@ -1,3 +1,18 @@
+.openpay-bitcoin-container {
+    border: 1px solid #d6d4d4;
+    border-radius: 4px;
+    color: #333;
+    display: block;
+    font-size: 17px;
+    font-weight: bold;
+    letter-spacing: -1px;
+    line-height: 23px;
+    padding: 0px 40px 30px 40px;
+    position: relative;
+    background: #fff;
+    text-align: center;
+}
+
 .openpay-form-container {
     border: 1px solid #d6d4d4;
     border-radius: 4px;

@@ -52,7 +52,7 @@ class OpenpayApiConnector {
 		$absUrl .= '/' . $myId . $url;
 
 		//$params = self::_encodeObjects($params);
-		$headers = array('User-Agent: OpenpayPrestashop/v1');
+		$headers = array('User-Agent: OpenpayPrestashop/v2');
 
 		list($rbody, $rcode) = $this->_curlRequest($method, $absUrl, $headers, $params, $myApiKey);
 		return $this->interpretResponse($rbody, $rcode);

@@ -23,37 +23,5 @@
 *  International Registered Trademark & Property of PrestaShop SA
 *}
 
-<style>
-    #order_step{
-        display: none;
-    }
-</style>
 
-<div class="container container-receipt center">
-    <div class="row">
-        <div class="col-md-12 center">
-            <img class="bitcoin-receipt-logo" src="{$logo|escape:'htmlall':'UTF-8'}" alt="Logo">
-        </div>
-        <div class="col-sm-6 col-md-6 col-lg-6">
-        </div>
-    </div>
-    <div class="row data">
-        <div id="bitcoin_div"></div>
-    </div>    
-</div>
-
-<script type="text/javascript">
-  $(document).ready(function() {
-        var merchant_id = "{$merchant_id|escape:'htmlall':'UTF-8'}";
-        var transaction_id = "{$transaction_id|escape:'htmlall':'UTF-8'}";
-        var mode = "{$mode|escape:'htmlall':'UTF-8'}";
-
-        OpenPayBitcoin.setId(merchant_id);
-
-        if(mode == "0"){
-            OpenPayBitcoin.setSandboxMode(true);
-        }
-
-        OpenPayBitcoin.setupIframe('bitcoin_div', transaction_id, function(status){ if(status == 'completed'){ console.log("Gracias por tu pago"); } });
-  });
-</script>
+<div class="conf confirmation" style="font-size: 16px;">{l s='Your payment is in validation process,  you will receive a confirmation email when the Bitcoin network confirm and validate the payment that you made. The reference number of your order is:' mod='openpayprestashop'} <b>{$openpay_order.reference|escape:'htmlall':'UTF-8'}</b>.</div>

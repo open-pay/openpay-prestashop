@@ -24,7 +24,7 @@
  *  International Registered Trademark & Property of PrestaShop SA
  */
 
-class OpenpayPrestashopSpeiPaymentModuleFrontController extends ModuleFrontController
+class OpenpayPrestashopBitcoinWaitingModuleFrontController extends ModuleFrontController
 {
 
     public $ssl = true;
@@ -47,15 +47,20 @@ class OpenpayPrestashopSpeiPaymentModuleFrontController extends ModuleFrontContr
             $this->context->cookie->__set('openpay_error', null);
         }
 
+        $merchant_id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
+
         $this->context->smarty->assign(array(
             'validation_url' => './index.php?process=validation&fc=module&module=openpayprestashop&controller=default',
             'nbProducts' => $cart->nbProducts(),
-            'total' => $cart->getOrderTotal(true, Cart::BOTH),
-            'module_dir' => $this->module->getPath()
+            'merchant_id' => $merchant_id,
+            'transaction_id' => Tools::getValue('transaction'),
+            'mode' => Configuration::get('OPENPAY_MODE'),
         ));
 
         $this->context->controller->addCSS($this->module->getPath().'views/css/openpay-prestashop.css');
+        $this->context->controller->addJS('https://openpay.s3.amazonaws.com/openpay.v1.min.js');
+        $this->context->controller->addJS('https://openpay.s3.amazonaws.com/openpay-bitcoin.v1.min.js');
 
-        $this->setTemplate('spei_execution.tpl');
+        $this->setTemplate('bitcoin_waiting_execution.tpl');
     }
 }

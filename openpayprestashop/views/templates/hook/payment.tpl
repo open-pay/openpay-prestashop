@@ -26,7 +26,7 @@
 {if $card == 1 && $module_configured}
     <div class="openpay-payment-module mb10">
         <a class="openpay" href="{$link->getModuleLink('openpayprestashop', 'cardpayment')|escape:'htmlall':'UTF-8'}">
-            <i class="icon-credit-card"></i> {l s='Credit-debit card payment' mod='openpayprestashop'}
+            <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/card.png" style="height: 50px;"> {l s='Credit-debit card payment' mod='openpayprestashop'}
         </a>
     </div>
 {/if}
@@ -34,7 +34,7 @@
 {if $store == 1 && $module_configured}
     <div class="openpay-payment-module mb10">
         <a {if $amount >= '10000'} style="pointer-events: none;" {/if} class="openpay" href="{$link->getModuleLink('openpayprestashop', 'storepayment')|escape:'htmlall':'UTF-8'}">
-            <i class="icon-money"></i> {l s='Cash payment' mod='openpayprestashop'} {if $amount >= '10000'} <span> {l s='Payment not permitted for amounts over $10,000' mod='openpayprestashop'} </span> {/if}
+            <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/cash.png" style="height: 50px;"> {l s='Cash payment' mod='openpayprestashop'} {if $amount >= '10000'} <span> {l s='Payment not permitted for amounts over $10,000' mod='openpayprestashop'} </span> {/if}
         </a>
     </div>
 {/if}
@@ -42,7 +42,7 @@
 {if $spei == 1 && $module_configured}
     <div class="openpay-payment-module mb10">
         <a class="openpay" href="{$link->getModuleLink('openpayprestashop', 'speipayment')|escape:'htmlall':'UTF-8'}">
-            <i class="icon-laptop"></i> {l s='Bank payment (SPEI)' mod='openpayprestashop'}
+            <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/laptop.png" style="height: 50px;"> {l s='Bank payment (SPEI)' mod='openpayprestashop'}
         </a>
     </div>
 {/if}
@@ -51,7 +51,7 @@
 {if $bitcoins == 1 && $module_configured}
     <div class="openpay-payment-module mb10">
         <a class="openpay" href="{$link->getModuleLink('openpayprestashop', 'bitcoinpayment')|escape:'htmlall':'UTF-8'}" style="padding: 15px 40px 15px 20px;">
-            <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/bitcoin.png" style="height: 50px;">
+            <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/bitcoins.png" style="height: 50px;"> {l s='Bitcoin payment' mod='openpayprestashop'}
         </a>
     </div>
 {/if}

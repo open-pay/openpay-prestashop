@@ -38,6 +38,10 @@
 {else}
     <div id="store-container" class="payment_module" >
         <div class="openpay-form-container">
+            
+            <div class="openpay-payment-errors">{if isset($openpay_error)}{$openpay_error|escape:'htmlall':'UTF-8'}{/if}</div>
+            <a name="openpay_error" style="display:none"></a>
+            
             <div class="row mb30">
                 <div class="col-md-4 store-image">
                     <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/bitcoin.png">
@@ -71,7 +75,7 @@
     </div>
 
     <form data-ajax="false" action="{$validation_url|escape:'htmlall':'UTF-8'}" method="POST" id="openpay-cash-form">
-        <input type="hidden" name="payment_method" value="bitcoin" id="payment_method">
+        <input type="hidden" name="payment_method" value="bitcoin_transaction" id="payment_method">
         <p class="cart_navigation mt30">
             <a href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'htmlall':'UTF-8'}" class="button-exclusive btn btn-default">
                 <i class="icon-chevron-left"></i> {l s='Other payment methods' mod='openpayprestashop'}
@@ -85,13 +89,4 @@
             </button>
         </p>
     </form>
-
-    <script type="text/javascript">
-        $(document).ready(function() {
-
-
-
-        });
-    </script>
-
 {/if}
