@@ -27,62 +27,50 @@
 include(dirname(__FILE__).'/../../config/config.inc.php');
 include(dirname(__FILE__).'/../../init.php');
 include(dirname(__FILE__).'/openpayprestashop.php');
-include(dirname(__FILE__).'/../../classes/PrestaShopLogger.php');
+
+if (!class_exists('Logger', false)) {
+    include(dirname(__FILE__).'/../../classes/PrestaShopLogger.php');
+}
 
 /* To configure, add webhook in account storename.com/modules/openpayprestahsop/notification.php */
+$objeto = Tools::file_get_contents('php://input');
+$json = Tools::jsonDecode($objeto);
+Logger::addLog('Request type: '.$json->type, 1, null, null, null, true);
 
-$auth_user = Configuration::get('OPENPAY_WEBHOOK_USER');
-$auth_pwd = Configuration::get('OPENPAY_WEBHOOK_PASSWORD');
+if ($json->type == 'charge.succeeded' && ($json->transaction->method == 'bitcoin' || $json->transaction->method == 'store' || $json->transaction->method == 'bank_account')) {
 
-if (!isset($_SERVER['PHP_AUTH_USER'])) {
-    header('HTTP/1.1 401 Unauthorized');
+    Logger::addLog('Cart ID: '.$json->transaction->order_id, 1, null, null, null, true);
+    Logger::addLog('Trans ID: '.$json->transaction->id, 1, null, null, null, true);
+
+    if ($json->transaction->method == 'bitcoin') {
+        $cart_id = (int) $json->transaction->description;
+    } else {
+        $cart_id = (int) $json->transaction->order_id;
+    }
+
+    $order_id = Order::getOrderByCartId($cart_id);
+    Logger::addLog('ORDER ID: '.$order_id, 1, null, null, null, true);
+    if ($order_id) {
+        Logger::addLog('IF ORDER: '.$order_id, 1, null, null, null, true);
+        $order_history = new OrderHistory();
+        $order_history->id_order = (int) $order_id;
+        $order_history->changeIdOrderState(Configuration::get('PS_OS_PAYMENT'), (int) $order_id);
+        $order_history->addWithemail();
+
+        Db::getInstance()->Execute(
+            'UPDATE '._DB_PREFIX_.'openpay_transaction SET status = "paid" WHERE id_transaction = "'.pSQL($json->transaction->id).'"'
+        );
+    } else {
+        Logger::addLog('NO ORDER', 1, null, null, null, true);
+    }
+    header('HTTP/1.1 200 OK');
     exit;
 }
+header('HTTP/1.1 200 OK');
+exit;
 
-if ($_SERVER['PHP_AUTH_USER'] == $auth_user && $_SERVER['PHP_AUTH_PW'] == $auth_pwd) {
-    $objeto = Tools::file_get_contents('php://input');
-    $json = Tools::jsonDecode($objeto);
 
-    if ($json->type == 'verification') {
-        header('HTTP/1.1 200 OK');
-        exit;
-    }
-    
-    if (class_exists('Logger')) {
-        Logger::addLog('Request type: '.$json->type, 1, null, null, null, true);
-    }
 
-    if ($json->type == 'charge.succeeded' && ($json->transaction->method == 'bitcoin' || $json->transaction->method == 'store' || $json->transaction->method == 'bank_account')) {
 
-        Logger::addLog('Cart ID: '.$json->transaction->order_id, 1, null, null, null, true);
-        Logger::addLog('Trans ID: '.$json->transaction->id, 1, null, null, null, true);
-        
-        if ($json->transaction->method == 'bitcoin') {
-            $cart_id = (int) $json->transaction->description;
-        } else {
-            $cart_id = (int) $json->transaction->order_id;
-        }
 
-        $order_id = Order::getOrderByCartId($cart_id);
-        
-        if ($order_id) {
-            Logger::addLog('IF ORDER: '.$order_id, 1, null, null, null, true);
-            $order_history = new OrderHistory();
-            $order_history->id_order = (int) $order_id;
-            $order_history->changeIdOrderState(Configuration::get('PS_OS_PAYMENT'), (int) $order_id);
-            $order_history->addWithemail();
 
-            Db::getInstance()->Execute(
-                'UPDATE '._DB_PREFIX_.'openpay_transaction SET status = "paid" WHERE id_transaction = "'.pSQL($json->transaction->id).'"'
-            );
-        } else {
-            Logger::addLog('NO ORDER', 1, null, null, null, true);
-        }
-        header('HTTP/1.1 200 OK');
-        exit;
-    }
-
-} else {
-    header('HTTP/1.1 401 Unauthorized');
-    exit;
-}
