@@ -34,6 +34,10 @@ class OpenpayCharge extends OpenpayApiResourceBase {
             return parent::_create($resource->resourceName, $params, array('parent' => $this));
         }
     }
+    
+    public function update($params) {
+        return $this->_updateCharge($params);
+    }
 
 }
 

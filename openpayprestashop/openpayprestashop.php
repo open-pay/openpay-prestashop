@@ -534,6 +534,11 @@ class OpenpayPrestashop extends PaymentModule
                     'clabe' => pSQL($clabe)
                 ));
             }
+            
+            // Update order_id from Openpay Charge
+            if($payment_method != 'bitcoin') {
+                $this->updateOpenpayCharge($result_json->id, $new_order->id);
+            }
 
             /** Redirect the user to the order confirmation page history */
             $redirect = __PS_BASE_URI__.'index.php?controller=order-confirmation&id_cart='.(int) $this->context->cart->id.
@@ -910,6 +915,23 @@ class OpenpayPrestashop extends PaymentModule
         }
     }
     
+    public function updateOpenpayCharge($transaction_id, $order_id)
+    {
+        $customer = $this->getOpenpayCustomer($this->context->cookie->id_customer);
+        $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
+        $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
+
+        Openpay::getInstance($id, $pk);
+        Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
+        
+        try {
+            $charge = $customer->charges->get($transaction_id);            
+            $charge->update(array('order_id' => '#'.$order_id, 'description' => 'PrestaShop ORDER #'.$order_id));
+            return true;
+        } catch (Exception $e) {
+            $this->error($e);
+        }
+    }    
     
     public function getOpenpayCharge($customer, $transaction_id)
     {
