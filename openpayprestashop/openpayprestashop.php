@@ -926,7 +926,7 @@ class OpenpayPrestashop extends PaymentModule
         
         try {
             $charge = $customer->charges->get($transaction_id);            
-            $charge->update(array('order_id' => '#'.$order_id, 'description' => 'PrestaShop ORDER #'.$order_id));
+            $charge->update(array('order_id' => $order_id, 'description' => 'PrestaShop ORDER #'.$order_id));
             return true;
         } catch (Exception $e) {
             $this->error($e);
