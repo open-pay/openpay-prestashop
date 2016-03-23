@@ -578,8 +578,7 @@ class OpenpayPrestashop extends PaymentModule
             'source_id' => $token,
             'device_session_id' => $device_session_id,
             'amount' => $cart->getOrderTotal(),
-            'description' => $this->l('PrestaShop Cart ID:').' '.(int) $cart->id,
-            'order_id' => (int) $cart->id
+            'description' => $this->l('PrestaShop Cart ID:').' '.(int) $cart->id            
         );
 
         $result_json = $this->createOpenpayCharge($openpay_customer, $charge_request);
@@ -624,8 +623,7 @@ class OpenpayPrestashop extends PaymentModule
         $charge_request = array(
             'method' => $payment_method,
             'amount' => $cart->getOrderTotal(),
-            'description' => $this->l('PrestaShop Cart ID:').' '.(int) $cart->id,
-            'order_id' => (int) $cart->id,
+            'description' => $this->l('PrestaShop Cart ID:').' '.(int) $cart->id,            
             'due_date' => $due_date
         );
 
