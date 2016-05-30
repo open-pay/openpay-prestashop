@@ -241,6 +241,14 @@
                         </table>
                     </td>
                 </tr>
+                
+                <tr>
+                    <td>
+                        <h3>{l s='Site URL' mod='openpayprestashop'}</h3>
+                        <input type="text" name="openpay_webhook_url" placeholder="{l s='URL' mod='openpayprestashop'}" value="{$openpay_configuration.OPENPAY_WEBHOOK_URL|escape:'htmlall':'UTF-8'}" style="width: 100%;">
+                        <small>{l s="It's important to keep this field updated if you change your domain or subdomain." mod='openpayprestashop'}</small>
+                    </td>
+                </tr>
 
                 <tr>
                     <td colspan="2">

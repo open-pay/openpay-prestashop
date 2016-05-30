@@ -105,6 +105,7 @@ class OpenpayPrestashop extends PaymentModule
                 Configuration::updateValue('OPENPAY_WEBHOOK_PASSWORD', Tools::substr(md5(uniqid(rand(), true)), 0, 10)) &&
                 Configuration::updateValue('OPENPAY_BACKGROUND_COLOR', '#003A5B') &&
                 Configuration::updateValue('OPENPAY_FONT_COLOR', '#ffffff') &&
+                Configuration::updateValue('OPENPAY_WEBHOOK_URL', _PS_BASE_URL_.__PS_BASE_URI__) &&
                 $this->installDb();
 
         /* The hook "displayMobileHeader" has been introduced in v1.5.x - Called separately to fail silently if the hook does not exist */
@@ -229,6 +230,7 @@ class OpenpayPrestashop extends PaymentModule
                 Configuration::deleteByName('OPENPAY_BITCOINS') &&
                 Configuration::deleteByName('OPENPAY_BACKGROUND_COLOR') &&
                 Configuration::deleteByName('OPENPAY_FONT_COLOR') &&
+                Configuration::deleteByName('OPENPAY_WEBHOOOK_URL') &&
                 Db::getInstance()->Execute('DROP TABLE IF EXISTS `'._DB_PREFIX_.'openpay_customer`') &&
                 Db::getInstance()->Execute('DROP TABLE IF EXISTS `'._DB_PREFIX_.'openpay_transaction`');
     }
@@ -711,7 +713,8 @@ class OpenpayPrestashop extends PaymentModule
                 'OPENPAY_SPEI' => Tools::getValue('openpay_spei'),
                 'OPENPAY_BITCOINS' => Tools::getValue('openpay_bitcoins'),
                 'OPENPAY_BACKGROUND_COLOR' => Tools::getValue('openpay_background_color'),
-                'OPENPAY_FONT_COLOR' => Tools::getValue('openpay_font_color')
+                'OPENPAY_FONT_COLOR' => Tools::getValue('openpay_font_color'),
+                'OPENPAY_WEBHOOK_URL' => trim(Tools::getValue('openpay_webhook_url'))
             );
 
             foreach ($configuration_values as $configuration_key => $configuration_value) {
@@ -720,11 +723,10 @@ class OpenpayPrestashop extends PaymentModule
 
             $mode = Configuration::get('OPENPAY_MODE') ? 'LIVE' : 'TEST';
 
-            if (Configuration::get('OPENPAY_WEBHOOK_ID_'.$mode) === null) {
-                $webhook = $this->createWebhook();
-                if ($webhook->error) {
-                    $errors[] = $webhook->msg;
-                }
+            // Creates Webhook
+            $webhook = $this->createWebhook();
+            if ($webhook->error) {
+                $errors[] = $webhook->msg;
             }
 
             if (!$this->getMerchantInfo()) {
@@ -777,7 +779,8 @@ class OpenpayPrestashop extends PaymentModule
                     'OPENPAY_SPEI',
                     'OPENPAY_BITCOINS',
                     'OPENPAY_BACKGROUND_COLOR',
-                    'OPENPAY_FONT_COLOR'
+                    'OPENPAY_FONT_COLOR',
+                    'OPENPAY_WEBHOOK_URL'
                 )
             ),
             'openpay_ssl' => Configuration::get('PS_SSL_ENABLED'),
@@ -796,10 +799,7 @@ class OpenpayPrestashop extends PaymentModule
      */
     public function checkCurrency()
     {
-        if (in_array($this->context->currency->iso_code, $this->limited_currencies)) {
-            return true;
-        }
-        return false;
+        return in_array($this->context->currency->iso_code, $this->limited_currencies);
     }
 
     public function getPath()
@@ -947,11 +947,12 @@ class OpenpayPrestashop extends PaymentModule
         }
     }
 
-    public function createWebhook()
+    public function createWebhook($force_host_ssl = false)
     {
-        $domain = (Configuration::get('PS_SSL_ENABLED') ? 'https' : 'http').'://'.$_SERVER['HTTP_HOST'];
-        $webhook_data = array(
-            'url' => $domain.__PS_BASE_URI__.'modules/openpayprestashop/notification.php',
+        $domain = rtrim(Configuration::get('OPENPAY_WEBHOOK_URL'), "/");        
+        $webhook_data = array(            
+            'url' => $domain.'/modules/openpayprestashop/notification.php',            
+            'force_host_ssl' => $force_host_ssl,
             'event_types' => array(
                 'verification',
                 'charge.succeeded',
@@ -980,7 +981,8 @@ class OpenpayPrestashop extends PaymentModule
             Configuration::updateValue('OPENPAY_WEBHOOK_ID_'.$mode, $webhook->id);
             return $webhook;
         } catch (Exception $e) {
-            return $this->error($e, true);
+            $force_host_ssl = ($force_host_ssl === false) ? true : false; // Si viene con parámtro FALSE, solicito que se force el host SSL
+            return $this->errorWebhook($e, $force_host_ssl);
         }
     }
 
@@ -1039,8 +1041,7 @@ class OpenpayPrestashop extends PaymentModule
     }
 
     public function error($e, $backend = false)
-    {
-        /* 6001 el webhook ya existe */
+    {        
         switch ($e->getErrorCode()) {
             /* ERRORES GENERALES */
             case '1000':
@@ -1089,10 +1090,6 @@ class OpenpayPrestashop extends PaymentModule
                 $msg = $this->l('Ask the bank is required to make this payment authorization.');
                 break;
 
-            case '6003':
-                $msg = $this->l('Webhook can\'t be created.');
-                break;
-
             default: /* Demás errores 400 */
                 $msg = $this->l('The request could not be processed.');
                 break;
@@ -1106,6 +1103,44 @@ class OpenpayPrestashop extends PaymentModule
             throw new Exception($error);
         }
     }
+    
+    public function errorWebhook($e, $force_host_ssl)
+    {        
+        switch ($e->getErrorCode()) {
+            /* ERRORES GENERALES */
+            case '1000':
+            case '1004':
+            case '1005':
+                $msg = $this->l('Service not available.');
+                break;
+            
+            /* ERRORES WEBHOOK */
+            case '6001':
+                $msg = $this->l('Webhook already exists.');;
+                break;          
+            
+            case '6002':
+            case '6003';
+                $msg = $this->l('Webhook can\'t be created.');                
+                if($force_host_ssl == true){
+                    $this->createWebhook(true);
+                }                                                
+                break;
+
+            default: /* Demás errores 400 */
+                $msg = $this->l('The request could not be processed.');
+                break;
+        }
+
+        $error = 'ERROR '.$e->getErrorCode().'. '.$msg;
+        
+        if($e->getErrorCode() != '6001'){
+            return Tools::jsonDecode(Tools::jsonEncode(array('error' => $e->getErrorCode(), 'msg' => $error)), false);
+        }
+
+        return;
+    }
+    
     
     public function isNullOrEmpty($string)
     {

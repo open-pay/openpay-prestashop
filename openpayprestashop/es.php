@@ -33,6 +33,7 @@ $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_7ace3cdcb3af03
 $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_5b1f9155642d713ae1329235d4cf35b9'] = 'Configurar las credenciales de Openpay en este módulo (Merchant ID , llave privada, llave pública)';
 $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_83555b245beeecc66477202c574204e8'] = 'Todos los chequeos fueron exitosos. Ahora puedes configurar el módulo y comenzar a usar Openpay.';
 $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_e7cfcf73bb9a28f668f4e0d87fb9222a'] = 'Hay al menos un problema que te impdide usar Opepay. Favor de reparar el problema y recarga la página.';
+$_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_2617aa5b93617d8658a57b54a27b0d21'] = 'Dirección del cliente';
 $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_86e436045a729e57428a45aa12f0b60f'] = 'No se puede crear el cliente en Openpay';
 $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_ba4058004755dfd070308e293b88ab7c'] = 'Servicio no disponible.';
 $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_77dffa1da8fcdd645163bfa9beeb743f'] = 'La tarjeta fue rechazada.';
@@ -44,8 +45,9 @@ $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_a55607550c02a8
 $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_a5be1a7bebcf22a489f043fb0f9138fb'] = 'El banco ha restringido la tarjeta.';
 $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_c832867db8ebde039ab92681848124fb'] = 'El banco ha solicitado que la tarjeta sea retenida. Contacte al banco.';
 $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_9cb0f42113c4b6e3f78f61c3b4d8e5eb'] = 'Se requiere solicitar al banco autorización para realizar este pago.';
-$_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_91d288545e0068f7ea289fac75b16f8a'] = 'El webhook no puede ser creado';
 $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_e2e8d0a2b79a779bb06656d2a6f39a00'] = 'La petición no pudo ser procesada.';
+$_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_aec17514fa308914b500b0da0916c208'] = 'El Webhook ya existe';
+$_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_91d288545e0068f7ea289fac75b16f8a'] = 'El webhook no puede ser creado';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_b5ecf0c737203d26eba833c963ad6d52'] = 'Comienza a recibir pagos con tarjeta, pagos en efectivo en tiendas y pagos vía SPEI hoy mismo con Openpay.';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_2fdfd506efea08144c0794c32ca8250a'] = 'Crear una cuenta';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_d05bc3eb9adfbe0edaaae58547477d1f'] = 'Panel de administración';
@@ -85,6 +87,9 @@ $_MODULE['<{openpayprestashop}default-bootstrap>configuration_40fed24d2e43a64767
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_f9d299b21a010a3778a2f0f5367ed4a7'] = 'Pago en tiendas';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_57e0b461454d4ddbde47036797a8413f'] = 'Transferencia bancaria';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_1a85e8287e1d5a5bae142fb7287c99e1'] = 'Bitcoins';
+$_MODULE['<{openpayprestashop}default-bootstrap>configuration_1bacb9caa60813ee730288d7dd95e7fc'] = 'URL del sitio';
+$_MODULE['<{openpayprestashop}default-bootstrap>configuration_e6b391a8d2c4d45902a23a8b6585703d'] = 'URL';
+$_MODULE['<{openpayprestashop}default-bootstrap>configuration_026cd93085523cd54a85240d1549b35f'] = 'Es importante mantener este campo actualizado si cambias de dominio o subdominio';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_7fbbb7f5cf79c09e1baf7f8ba102ea5e'] = 'Tiempo límite para pagos';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_cabdc0ab45c5f6043c7f5754d050f59c'] = 'Pago en tiendas de conveniencia (hrs.)';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_6a7e73161603d87b26a8eac49dab0a9c'] = 'Horas';
