@@ -50,7 +50,7 @@
         <div class="col-sm-6 col-md-6 col-lg-6">
             <div class="mt30 pull-right">
                 <span style="font-size: 20px;font-weight: lighter;">{l s='Service to pay' mod='openpayprestashop'}</span>
-                <img class="logo_paynet" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/paynet_logo.png" alt="Logo">
+                <img class="logo_paynet" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/paynet.png" alt="Logo">
             </div>
         </div>
     </div>

@@ -28,7 +28,7 @@
     <a href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'htmlall':'UTF-8'}" title="{l s='Go back to the Checkout' mod='openpayprestashop'}">{l s='Checkout' mod='openpayprestashop'}</a><span class="navigation-pipe">{$navigationPipe|escape:'htmlall':'UTF-8'}</span>{l s='Bank payment (SPEI)' mod='openpayprestashop'}
 {/capture}
 
-<h2>{l s='Order Summary' mod='openpayprestashop'}</h2>
+<h2>{l s='Bank payment (SPEI)' mod='openpayprestashop'}</h2>
 
 {assign var='current_step' value='payment'}
 {include file="$tpl_dir./order-steps.tpl"}
@@ -39,9 +39,7 @@
 
     <div id="spei-container" class="payment_module" >
         <div class="openpay-form-container">
-            <h3 class="openpay_title mt30   ">{l s='Bank payment (SPEI)' mod='openpayprestashop'}</h3>
-
-            <div class="row">
+            <div class="row mt30">
                 <div class="col-md-4 store-image">
                     <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/spei.png">
                 </div>

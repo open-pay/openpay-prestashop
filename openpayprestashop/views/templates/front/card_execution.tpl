@@ -28,7 +28,7 @@
     <a href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'htmlall':'UTF-8'}" title="{l s='Go back to the Checkout' mod='openpayprestashop'}">{l s='Checkout' mod='openpayprestashop'}</a><span class="navigation-pipe">{$navigationPipe|escape:'htmlall':'UTF-8'}</span>{l s='Credit-debit card payment' mod='openpayprestashop'}
 {/capture}
 
-<h2>{l s='Order Summary' mod='openpayprestashop'}</h2>
+<h2>{l s='Pago con tarjeta de cŕedito/débito' mod='openpayprestashop'}</h2>
 
 {assign var='current_step' value='payment'}
 {include file="$tpl_dir./order-steps.tpl"}
@@ -111,7 +111,21 @@
                             <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/cvc_front.png">
                         </a>
                     </div>
-
+                </div>
+                <div class="row {if !$show_months_interest_free } hidden {/if}">
+                    <div class="col-md-4">
+                        <label>{l s='Months interest-free' mod='openpayprestashop'}</label>
+                        <select name="interest_free" id="interest-free" style="width: 100%;">
+                            <option value="1">{l s="Cash payment" mod='openpayprestashop'}</option>
+                            {foreach $months_interest_free as $interest_free}
+                                <option value="{$interest_free}">{$interest_free} meses</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                    <div id="total-monthly-payment" class="col-md-4">        
+                        <label>{l s="You'll be paying monthly" mod='openpayprestashop'}</label>
+                        <p class="openpay-total">$<span id="monthly-payment">{$total}</span> MXN</p>
+                    </div>
                 </div>
 
         </div>
@@ -134,6 +148,36 @@
     <script type="text/javascript">
 
         $(document).ready(function() {
+            
+            var total = {$total};                 
+            var months = parseInt($("#interest-free").val());
+            var monthly_payment = 0;       
+            monthly_payment = total/months;
+            var formatted = monthly_payment.toFixed(2);
+            $("#monthly-payment").text(formatted);
+            
+            if (months > 1) {
+                $("#total-monthly-payment").removeClass('hidden');
+            } else {
+                $("#total-monthly-payment").addClass('hidden');
+            }
+            
+            $("#interest-free").change(function() {      
+                
+                monthly_payment = 0;
+                months = parseInt($(this).val());     
+                
+                if (months > 1) {
+                    $("#total-monthly-payment").removeClass('hidden');
+                } else {
+                    $("#total-monthly-payment").addClass('hidden');
+                }
+                
+                monthly_payment = total/months;
+                monthly_payment = monthly_payment.toFixed(2);
+                
+                $("#monthly-payment").text(monthly_payment);
+            });
 
             var openpay_public_key = "{$pk|escape:'htmlall':'UTF-8'}";
             var openpay_merchant_id = "{$id|escape:'htmlall':'UTF-8'}";
@@ -197,7 +241,7 @@
         var success_callbak = function(response) {
             $('.openpay-payment-errors').hide();
             var token_id = response.data.id;
-            $('#openpay-payment-form').append('<input type="hidden" name="openpayToken" value="' + escape(token_id) + '" />');
+            $('#openpay-payment-form').append('<input type="hidden" name="openpay_token" value="' + escape(token_id) + '" />');
             $('#openpay-payment-form').get(0).submit();
         };
 
@@ -229,7 +273,7 @@
             }
 
             $('.openpay-payment-errors').fadeIn(1000);
-            $('.openpay-payment-errors').text('ERROR ' + response.data.error_code + '. ' + msg).fadeIn(1000);
+            $('.openpay-payment-errors').text('ERROR ' + response.data.error_code + '. ' + response.data.description).fadeIn(1000);
             $('.openpay-submit-button').prop('disabled', false);
             $('#openpay-payment-form').show();
             $('#openpay-ajax-loader').hide();

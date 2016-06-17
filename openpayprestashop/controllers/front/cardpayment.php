@@ -49,6 +49,16 @@ class OpenpayPrestashopCardPaymentModuleFrontController extends ModuleFrontContr
             $this->context->smarty->assign('openpay_error', $this->context->cookie->openpay_error);
             $this->context->cookie->__set('openpay_error', null);
         }
+        
+        $selected_months_interest_free = array();
+        if(Configuration::get('OPENPAY_MONTHS_INTEREST_FREE') != null){
+            $selected_months_interest_free = explode(',', Configuration::get('OPENPAY_MONTHS_INTEREST_FREE'));
+        }
+        
+        $show_months_interest_free = false;
+        if($selected_months_interest_free > 0 && ($cart->getOrderTotal() >= Configuration::get('OPENPAY_MINIMUM_AMOUNT'))){
+            $show_months_interest_free = true;
+        }
 
         $this->context->smarty->assign(array(
             'validation_url' => './index.php?process=validation&fc=module&module=openpayprestashop&controller=default',
@@ -56,8 +66,10 @@ class OpenpayPrestashopCardPaymentModuleFrontController extends ModuleFrontContr
             'id' => $id,
             'mode' => Configuration::get('OPENPAY_MODE'),
             'nbProducts' => $cart->nbProducts(),
-            'total' => $cart->getOrderTotal(true, Cart::BOTH),
-            'module_dir' => $this->module->getPath()
+            'total' => $cart->getOrderTotal(),
+            'module_dir' => $this->module->getPath(),
+            'months_interest_free' => $selected_months_interest_free,
+            'show_months_interest_free' => $show_months_interest_free
         ));
 
         $this->context->controller->addJS('https://openpay.s3.amazonaws.com/openpay.v1.min.js');

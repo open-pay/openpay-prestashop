@@ -52,7 +52,7 @@ class OpenpayPrestashopDefaultModuleFrontController extends ModuleFrontControlle
     {
         $openpay = new OpenpayPrestashop();
         if ($openpay->active) {
-            $openpay->processPayment(Tools::getValue('payment_method'), Tools::getValue('openpayToken'), Tools::getValue('device_session_id'), Tools::getValue('transaction'));
+            $openpay->processPayment(Tools::getValue('payment_method'), Tools::getValue('openpay_token'), Tools::getValue('device_session_id'), Tools::getValue('transaction'), Tools::getValue('interest_free'));
         } else {
             $this->context->cookie->__set('openpay_error', 'There was a problem with your payment');
             $controller = Configuration::get('PS_ORDER_PROCESS_TYPE') ? 'order-opc.php' : 'order.php';

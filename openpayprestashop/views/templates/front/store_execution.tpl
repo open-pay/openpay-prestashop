@@ -28,7 +28,7 @@
     <a href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'htmlall':'UTF-8'}" title="{l s='Go back to the Checkout' mod='openpayprestashop'}">{l s='Checkout' mod='openpayprestashop'}</a><span class="navigation-pipe">{$navigationPipe|escape:'htmlall':'UTF-8'}</span>{l s='Cash payment' mod='openpayprestashop'}
 {/capture}
 
-<h2>{l s='Order Summary' mod='openpayprestashop'}</h2>
+<h2>{l s='Cash payment' mod='openpayprestashop'}</h2>
 
 {assign var='current_step' value='payment'}
 {include file="$tpl_dir./order-steps.tpl"}
@@ -39,17 +39,25 @@
 
     <div id="store-container" class="payment_module" >
         <div class="openpay-form-container">
-            <h3 class="openpay_title mt30">{l s='Cash payment' mod='openpayprestashop'}</h3>
-            <div class="row">
+            <div class="row mt20">                
+                <div class="col-md-4"></div>
+                <div class="col-md-4 store-image">
+                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/paynet.png">
+                </div>
+            </div>    
+                
+            <div class="row">    
+                <div class="col-md-2"></div>
                 <div class="col-md-8 store-image">
                     <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores.png">
                 </div>
-            </div>
-            <div><small><a target="_blank" href="http://www.openpay.mx/tiendas-de-conveniencia.html">{l s='Affiliated stores' mod='openpayprestashop'}</a></small></div>
+                <div class="col-md-2"></div>                
+            </div>            
 
-            <h4 class="subtitle mt30 mb30">{l s='Steps for your cash payment' mod='openpayprestashop'}</h4>
+            <h4 class="subtitle mt30 mb30">{l s='Steps for your cash payment' mod='openpayprestashop'} (<small><a target="_blank" href="http://www.openpay.mx/tiendas-de-conveniencia.html">{l s='Affiliated stores' mod='openpayprestashop'}</a></small>)</h4>
 
             <div class="row mb30">
+                
                 <div class="col-md-4 center">
                     <div><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/step1.png"></div>
                     <p>{l s='Click on the "Generate payment receipt" and your purchase will be waiting for your payment.' mod='openpayprestashop'}</p>

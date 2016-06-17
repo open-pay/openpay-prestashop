@@ -221,6 +221,13 @@
                     </td>
                 </tr>
                 <tr>
+                    <td>
+                        <h3>{l s='Site URL' mod='openpayprestashop'}</h3>
+                        <input type="text" name="openpay_webhook_url" placeholder="{l s='URL' mod='openpayprestashop'}" value="{$openpay_configuration.OPENPAY_WEBHOOK_URL|escape:'htmlall':'UTF-8'}" style="width: 100%;">
+                        <small>{l s="It's important to keep this field updated if you change your domain or subdomain." mod='openpayprestashop'}</small>
+                    </td>
+                </tr>
+                <tr>
                     <td colspan="2">
                         <h3>{l s='Payment methods' mod='openpayprestashop'}</h3>
                         <table cellspacing="0" cellpadding="0" class="innerTable">
@@ -241,15 +248,24 @@
                         </table>
                     </td>
                 </tr>
-                
                 <tr>
-                    <td>
-                        <h3>{l s='Site URL' mod='openpayprestashop'}</h3>
-                        <input type="text" name="openpay_webhook_url" placeholder="{l s='URL' mod='openpayprestashop'}" value="{$openpay_configuration.OPENPAY_WEBHOOK_URL|escape:'htmlall':'UTF-8'}" style="width: 100%;">
-                        <small>{l s="It's important to keep this field updated if you change your domain or subdomain." mod='openpayprestashop'}</small>
+                    <td colspan="2">
+                        <h3>{l s='Months interest-free' mod='openpayprestashop'}</h3>
+                        <label>{l s="If you gonna use months interest-free, please select one or more of the following options." mod='openpayprestashop'}</label>                                      
+                        <table cellspacing="0" cellpadding="0" class="innerTable mb20">
+                            <tr>                                
+                                {foreach $months_interest_free as $key => $interest_free}                                        
+                                    <td align="left" valign="middle">
+                                        <input type="checkbox" name="months_interest_free[]" id="months_interest_free_{$key}" value="{$key}" {if $key|in_array:$selected_months_interest_free } checked="checked" {/if}> {$interest_free}
+                                    </td>    
+                                {/foreach}                                                                                                
+                            </tr>
+                        </table>
+                            
+                        <label>{l s="Minimum amount to accept months interest-free (shipping included)." mod='openpayprestashop'}</label>                                          
+                        <input type="text" name="openpay_minimum_amount_interest_free" placeholder="{l s='Minimum amount' mod='openpayprestashop'}" value="{$openpay_configuration.OPENPAY_MINIMUM_AMOUNT|escape:'htmlall':'UTF-8'}" style="width: 100%; margin: 10px 0;">    
                     </td>
-                </tr>
-
+                </tr>                
                 <tr>
                     <td colspan="2">
                         <h3>{l s='Time limit for payment' mod='openpayprestashop'}</h3>

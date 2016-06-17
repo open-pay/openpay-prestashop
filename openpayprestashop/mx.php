@@ -33,6 +33,7 @@ $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_7ace3cdcb3af03
 $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_5b1f9155642d713ae1329235d4cf35b9'] = 'Configurar las credenciales de Openpay en este módulo (Merchant ID , llave privada, llave pública)';
 $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_83555b245beeecc66477202c574204e8'] = 'Todos los chequeos fueron exitosos. Ahora puedes configurar el módulo y comenzar a usar Openpay.';
 $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_e7cfcf73bb9a28f668f4e0d87fb9222a'] = 'Hay al menos un problema que te impdide usar Opepay. Favor de reparar el problema y recarga la página.';
+$_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_2617aa5b93617d8658a57b54a27b0d21'] = 'Dirección del cliente';
 $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_86e436045a729e57428a45aa12f0b60f'] = 'No se puede crear el cliente en Openpay';
 $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_ba4058004755dfd070308e293b88ab7c'] = 'Servicio no disponible.';
 $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_77dffa1da8fcdd645163bfa9beeb743f'] = 'La tarjeta fue rechazada.';
@@ -44,8 +45,9 @@ $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_a55607550c02a8
 $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_a5be1a7bebcf22a489f043fb0f9138fb'] = 'El banco ha restringido la tarjeta.';
 $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_c832867db8ebde039ab92681848124fb'] = 'El banco ha solicitado que la tarjeta sea retenida. Contacte al banco.';
 $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_9cb0f42113c4b6e3f78f61c3b4d8e5eb'] = 'Se requiere solicitar al banco autorización para realizar este pago.';
-$_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_91d288545e0068f7ea289fac75b16f8a'] = 'El webhook no puede ser creado';
 $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_e2e8d0a2b79a779bb06656d2a6f39a00'] = 'La petición no pudo ser procesada.';
+$_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_aec17514fa308914b500b0da0916c208'] = 'El Webhook ya existe';
+$_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_91d288545e0068f7ea289fac75b16f8a'] = 'El webhook no puede ser creado';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_b5ecf0c737203d26eba833c963ad6d52'] = 'Comienza a recibir pagos con tarjeta, pagos en efectivo en tiendas y pagos vía SPEI hoy mismo con Openpay.';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_2fdfd506efea08144c0794c32ca8250a'] = 'Crear una cuenta';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_d05bc3eb9adfbe0edaaae58547477d1f'] = 'Panel de administración';
@@ -80,11 +82,18 @@ $_MODULE['<{openpayprestashop}default-bootstrap>configuration_cd2b339f9c716a39f9
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_52bf767dd13f98ff9ae89a8679073c90'] = 'Llave privada producción';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_5add70ffebb3fc7302c8534276a08d20'] = 'Llave pública sandbox';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_88792babe629258d539766f0f710eb82'] = 'Llave pública producción';
+$_MODULE['<{openpayprestashop}default-bootstrap>configuration_1bacb9caa60813ee730288d7dd95e7fc'] = 'URL del sitio';
+$_MODULE['<{openpayprestashop}default-bootstrap>configuration_e6b391a8d2c4d45902a23a8b6585703d'] = 'URL';
+$_MODULE['<{openpayprestashop}default-bootstrap>configuration_026cd93085523cd54a85240d1549b35f'] = 'Es importante mantener este campo actualizado si cambias de dominio o subdominio';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_0da8d9a75492046bea7f314521e07cae'] = 'Formas de pago aceptadas';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_40fed24d2e43a64767663257cfd5f4b1'] = 'Tarjeta de crédito/débito';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_f9d299b21a010a3778a2f0f5367ed4a7'] = 'Pago en tiendas';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_57e0b461454d4ddbde47036797a8413f'] = 'Transferencia bancaria';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_1a85e8287e1d5a5bae142fb7287c99e1'] = 'Bitcoins';
+$_MODULE['<{openpayprestashop}default-bootstrap>configuration_a24010ae37280cc18caa55069b6800ed'] = 'Meses sin intereses';
+$_MODULE['<{openpayprestashop}default-bootstrap>configuration_42160631a3479f3ac1101809d80fb600'] = 'Si vas a utilizar meses sin intereses, favor de seleccionar una o más de las siguientes opciones.';
+$_MODULE['<{openpayprestashop}default-bootstrap>configuration_0aefd2da5b3c50021a6c3f25455a7194'] = 'Monto mínimo para aceptar meses sin intereses (envío incluido).';
+$_MODULE['<{openpayprestashop}default-bootstrap>configuration_9f6e99bdd4184b83dc478d0ab1b4cbf7'] = 'Monto mínimo';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_7fbbb7f5cf79c09e1baf7f8ba102ea5e'] = 'Tiempo límite para pagos';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_cabdc0ab45c5f6043c7f5754d050f59c'] = 'Pago en tiendas de conveniencia (hrs.)';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_6a7e73161603d87b26a8eac49dab0a9c'] = 'Horas';
@@ -147,6 +156,9 @@ $_MODULE['<{openpayprestashop}default-bootstrap>card_execution_82331503174acbae0
 $_MODULE['<{openpayprestashop}default-bootstrap>card_execution_120cbd645509ead2f2dd3b45c8c02e2b'] = 'Código de seguridad';
 $_MODULE['<{openpayprestashop}default-bootstrap>card_execution_22967d995991ef0854cd8d67a8d2a66c'] = 'MasterCard y VISA presentan este código código de tres dígitos en el dorso de la tarjeta.';
 $_MODULE['<{openpayprestashop}default-bootstrap>card_execution_6006530407998958555747fa3830c85d'] = 'American Express presenta este código código de tres dígitos en la parte frontal de la tarjeta.';
+$_MODULE['<{openpayprestashop}default-bootstrap>card_execution_a24010ae37280cc18caa55069b6800ed'] = 'Meses sin intereses';
+$_MODULE['<{openpayprestashop}default-bootstrap>card_execution_f9d299b21a010a3778a2f0f5367ed4a7'] = 'Pago de contado';
+$_MODULE['<{openpayprestashop}default-bootstrap>card_execution_76b8de84283c117f8fb6324359613f3f'] = 'Estarás pagando mensualmente';
 $_MODULE['<{openpayprestashop}default-bootstrap>card_execution_569fd05bdafa1712c4f6be5b153b8418'] = 'Otras formas de pago';
 $_MODULE['<{openpayprestashop}default-bootstrap>card_execution_8bd4837a76cf443ab523a51895e23c36'] = 'Realizar pago';
 $_MODULE['<{openpayprestashop}default-bootstrap>card_execution_ba4058004755dfd070308e293b88ab7c'] = 'Servicio no disponible.';
@@ -173,8 +185,8 @@ $_MODULE['<{openpayprestashop}default-bootstrap>store_execution_6ff063fbc860a797
 $_MODULE['<{openpayprestashop}default-bootstrap>store_execution_f9d299b21a010a3778a2f0f5367ed4a7'] = 'Pago en efectivo en tiendas de conveniencia';
 $_MODULE['<{openpayprestashop}default-bootstrap>store_execution_fe052c248fb8c2b8cf08c44f17341c3c'] = 'Resumen del pedido';
 $_MODULE['<{openpayprestashop}default-bootstrap>store_execution_879f6b8877752685a966564d072f498f'] = 'Tu carrito esta vacío.';
-$_MODULE['<{openpayprestashop}default-bootstrap>store_execution_a03dae70e4f6f09c930061646ab880cd'] = 'Consulta las tiendas afiliadas';
 $_MODULE['<{openpayprestashop}default-bootstrap>store_execution_f5edbc1eecbd42078b5fff3b7ea4fa1c'] = 'Pasos para tu pago por tienda';
+$_MODULE['<{openpayprestashop}default-bootstrap>store_execution_a03dae70e4f6f09c930061646ab880cd'] = 'Consulta las tiendas afiliadas';
 $_MODULE['<{openpayprestashop}default-bootstrap>store_execution_3b6c59d1738b922dbebeb0c3f8d3e3b1'] = 'Haz clic en el botón \"Generar ficha de pago\", donde tu compra quedará en espera de que realices tu pago.';
 $_MODULE['<{openpayprestashop}default-bootstrap>store_execution_19e5b16fb69a62939bdfb712e1bafb27'] = 'Imprime tu recibo, llévalo a tu tienda de conveniencia más cercana y realiza el pago.';
 $_MODULE['<{openpayprestashop}default-bootstrap>store_execution_05ff84c01f96a1426716e89c5e77a034'] = 'Inmediatamente después de recibir tu pago te enviaremos un correo electrónico con la confirmación de pago.';

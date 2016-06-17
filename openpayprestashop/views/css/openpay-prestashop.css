@@ -61,10 +61,9 @@ div.payment_module{
 .openpay_title img { float: none; margin-right: 8px; margin-top: -2px; vertical-align: middle; }
 #openpay-payment-form label { display: inline-block; margin-bottom: 4px; text-transform: uppercase; }
 #openpay-payment-form label.lowercase { text-transform: none; }
-#openpay-payment-form input[type="text"], #openpay-payment-form select, #openpay-payment-form input[type="password"]
-{
+#openpay-payment-form input[type="text"], #openpay-payment-form select, #openpay-payment-form input[type="password"]{
     border: #CCCCCC solid 1px; margin-bottom: 15px;
-    padding: 13px 60px 13px 13px;
+    padding: 10px 60px 10px 10px;
     height: 45px;
 }
 
@@ -86,6 +85,14 @@ a#openpay_error { display: none; }
 
 .mt30{
     margin-top: 30px;
+}
+
+.mt10{
+    margin-top: 10px;
+}
+
+.mt20{
+    margin-top: 20px;
 }
 
 .mb30{
@@ -197,4 +204,10 @@ a#openpay_error { display: none; }
 .openpay-payment-module a span {
     color: #777;
     font-weight: bold;
+}
+
+.openpay-total{
+    font-size: 2em;
+    font-weight: bold;
+    margin-top: 10px;
 }
