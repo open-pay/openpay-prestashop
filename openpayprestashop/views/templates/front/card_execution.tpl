@@ -112,22 +112,23 @@
                         </a>
                     </div>
                 </div>
-                <div class="row {if !$show_months_interest_free } hidden {/if}">
-                    <div class="col-md-4">
-                        <label>{l s='Months interest-free' mod='openpayprestashop'}</label>
-                        <select name="interest_free" id="interest-free" style="width: 100%;">
-                            <option value="1">{l s="Cash payment" mod='openpayprestashop'}</option>
-                            {foreach $months_interest_free as $interest_free}
-                                <option value="{$interest_free}">{$interest_free} meses</option>
-                            {/foreach}
-                        </select>
+                {if $show_months_interest_free }        
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label>{l s='Months interest-free' mod='openpayprestashop'}</label>
+                            <select name="interest_free" id="interest-free" style="width: 100%;">
+                                <option value="1">{l s="Cash payment" mod='openpayprestashop'}</option>
+                                {foreach $months_interest_free as $interest_free}
+                                    <option value="{$interest_free}">{$interest_free} meses</option>
+                                {/foreach}
+                            </select>
+                        </div>
+                        <div id="total-monthly-payment" class="col-md-4">        
+                            <label>{l s="You'll be paying monthly" mod='openpayprestashop'}</label>
+                            <p class="openpay-total">$<span id="monthly-payment">{$total}</span> MXN</p>
+                        </div>
                     </div>
-                    <div id="total-monthly-payment" class="col-md-4">        
-                        <label>{l s="You'll be paying monthly" mod='openpayprestashop'}</label>
-                        <p class="openpay-total">$<span id="monthly-payment">{$total}</span> MXN</p>
-                    </div>
-                </div>
-
+                {/if}
         </div>
     </div>
 
