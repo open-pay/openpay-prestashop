@@ -56,7 +56,7 @@ class OpenpayPrestashopCardPaymentModuleFrontController extends ModuleFrontContr
         }
         
         $show_months_interest_free = false;
-        if($selected_months_interest_free > 0 && ($cart->getOrderTotal() >= Configuration::get('OPENPAY_MINIMUM_AMOUNT'))){
+        if(count($selected_months_interest_free) > 0 && ($cart->getOrderTotal() >= Configuration::get('OPENPAY_MINIMUM_AMOUNT'))){
             $show_months_interest_free = true;
         }
 

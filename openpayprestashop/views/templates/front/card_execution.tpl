@@ -40,7 +40,7 @@
     <div id="card-container" class="payment_module">
         <div class="openpay-form-container" >
             <div class="row mt30 mb10">
-                <div class="col-md-3 store-image" style="border-right: 1px solid #ccc;">
+                <div class="col-md-6 store-image" style="border-right: 1px solid #ccc;">
                     <h3 class="openpay_title">{l s='Credit cards' mod='openpayprestashop'}</h3>
                     <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/credit_cards.png">
                 </div>
@@ -58,17 +58,17 @@
                 <a name="openpay_error" style="display:none"></a>
 
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <label>{l s='Card holder' mod='openpayprestashop'}</label><br />
                         <input type="text" autocomplete="off" id="holder_name" data-openpay-card="holder_name" class="form-control" placeholder="{l s='As it appears on the card' mod='openpayprestashop'}" />
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <label>{l s='Number card' mod='openpayprestashop'}</label><br />
                         <input type="text" autocomplete="off" id="card_number" data-openpay-card="card_number" class="form-control" placeholder="•••• •••• •••• ••••" />
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
 
                         <label>{l s='Expiration date' mod='openpayprestashop'}</label><br />
                         <select id="expiration_month" data-openpay-card="expiration_month" class="openpay-card-expiry-month">
@@ -97,12 +97,12 @@
 
                     </div>
 
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <label>{l s='Card security code' mod='openpayprestashop'}</label><br />
                         <input id="cvv2" type="password" size="4" autocomplete="off" data-openpay-card="cvv2" class="form-control" placeholder="CVV" />
                     </div>
 
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <br />
                         <a href="javascript:void(0)" class="" style="border: none;" data-toggle="popover" data-content="{l s='MasterCard and VISA present this three-digit code on the back of the card.' mod='openpayprestashop'}" >
                             <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/cvc_back.png">
@@ -114,7 +114,7 @@
                 </div>
                 {if $show_months_interest_free }        
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label>{l s='Months interest-free' mod='openpayprestashop'}</label>
                             <select name="interest_free" id="interest-free" style="width: 100%;">
                                 <option value="1">{l s="Cash payment" mod='openpayprestashop'}</option>
@@ -123,7 +123,7 @@
                                 {/foreach}
                             </select>
                         </div>
-                        <div id="total-monthly-payment" class="col-md-4">        
+                        <div id="total-monthly-payment" class="col-md-6">        
                             <label>{l s="You'll be paying monthly" mod='openpayprestashop'}</label>
                             <p class="openpay-total">$<span id="monthly-payment">{$total}</span> MXN</p>
                         </div>
