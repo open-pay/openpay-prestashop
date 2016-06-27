@@ -92,7 +92,7 @@ $_MODULE['<{openpayprestashop}default-bootstrap>configuration_57e0b461454d4ddbde
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_1a85e8287e1d5a5bae142fb7287c99e1'] = 'Bitcoins';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_a24010ae37280cc18caa55069b6800ed'] = 'Meses sin intereses';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_42160631a3479f3ac1101809d80fb600'] = 'Si vas a utilizar meses sin intereses, favor de seleccionar una o más de las siguientes opciones.';
-$_MODULE['<{openpayprestashop}default-bootstrap>configuration_0aefd2da5b3c50021a6c3f25455a7194'] = 'Monto mínimo para aceptar meses sin intereses (envío incluido).';
+$_MODULE['<{openpayprestashop}default-bootstrap>configuration_00c275d5b559712c65233b924a43ad57'] = 'Monto mínimo para aceptar meses sin intereses (el monto mínimo deberá ser de al menos $1,800 MXN)';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_9f6e99bdd4184b83dc478d0ab1b4cbf7'] = 'Monto mínimo';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_7fbbb7f5cf79c09e1baf7f8ba102ea5e'] = 'Tiempo límite para pagos';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_cabdc0ab45c5f6043c7f5754d050f59c'] = 'Pago en tiendas de conveniencia (hrs.)';
@@ -132,7 +132,7 @@ $_MODULE['<{openpayprestashop}default-bootstrap>bitcoin_waiting_execution_569fd0
 $_MODULE['<{openpayprestashop}default-bootstrap>card_execution_644818852b4dd8cf9da73543e30f045a'] = 'Volver al pedido';
 $_MODULE['<{openpayprestashop}default-bootstrap>card_execution_6ff063fbc860a79759a7369ac32cee22'] = 'Checkout';
 $_MODULE['<{openpayprestashop}default-bootstrap>card_execution_40fed24d2e43a64767663257cfd5f4b1'] = 'Pago con tarjeta de cŕedito/débito';
-$_MODULE['<{openpayprestashop}default-bootstrap>card_execution_fe052c248fb8c2b8cf08c44f17341c3c'] = 'Resumen del pedido';
+$_MODULE['<{openpayprestashop}default-bootstrap>card_execution_7476a34766fad874c594f58c1fa38990'] = 'Pago con tarjeta de cŕedito/débito';
 $_MODULE['<{openpayprestashop}default-bootstrap>card_execution_879f6b8877752685a966564d072f498f'] = 'Tu carrito esta vacío.';
 $_MODULE['<{openpayprestashop}default-bootstrap>card_execution_4d3df28e3e68ed692ae51475bbe0860d'] = 'Tarjetas de crédito';
 $_MODULE['<{openpayprestashop}default-bootstrap>card_execution_22dfc2f5b165aa665fd5668c234c658d'] = 'Tarjetas de débito';
@@ -169,7 +169,6 @@ $_MODULE['<{openpayprestashop}default-bootstrap>card_execution_e2e8d0a2b79a779bb
 $_MODULE['<{openpayprestashop}default-bootstrap>spei_execution_644818852b4dd8cf9da73543e30f045a'] = 'Volver al pedido';
 $_MODULE['<{openpayprestashop}default-bootstrap>spei_execution_6ff063fbc860a79759a7369ac32cee22'] = 'Checkout';
 $_MODULE['<{openpayprestashop}default-bootstrap>spei_execution_ec2db44e80b6b82f75b5bd7feabd99ad'] = 'Pago con transferencia electrónica (SPEI)';
-$_MODULE['<{openpayprestashop}default-bootstrap>spei_execution_fe052c248fb8c2b8cf08c44f17341c3c'] = 'Resumen';
 $_MODULE['<{openpayprestashop}default-bootstrap>spei_execution_879f6b8877752685a966564d072f498f'] = 'Tu carrito esta vacío.';
 $_MODULE['<{openpayprestashop}default-bootstrap>spei_execution_4d6926656b6692e3be0c06365b01bfa6'] = '¿Qué es SPEI?';
 $_MODULE['<{openpayprestashop}default-bootstrap>spei_execution_733f8de0563cf82a0fea19bef54eb832'] = 'El SPEI es un sistema de pagos para permitir a los clientes de los bancos enviar y recibir transferencias electrónicas de dinero en cuestión de segundos.';
@@ -183,7 +182,6 @@ $_MODULE['<{openpayprestashop}default-bootstrap>spei_execution_820808794fc9aefb8
 $_MODULE['<{openpayprestashop}default-bootstrap>store_execution_644818852b4dd8cf9da73543e30f045a'] = 'Volver al pedido';
 $_MODULE['<{openpayprestashop}default-bootstrap>store_execution_6ff063fbc860a79759a7369ac32cee22'] = 'Checkout';
 $_MODULE['<{openpayprestashop}default-bootstrap>store_execution_f9d299b21a010a3778a2f0f5367ed4a7'] = 'Pago en efectivo en tiendas de conveniencia';
-$_MODULE['<{openpayprestashop}default-bootstrap>store_execution_fe052c248fb8c2b8cf08c44f17341c3c'] = 'Resumen del pedido';
 $_MODULE['<{openpayprestashop}default-bootstrap>store_execution_879f6b8877752685a966564d072f498f'] = 'Tu carrito esta vacío.';
 $_MODULE['<{openpayprestashop}default-bootstrap>store_execution_f5edbc1eecbd42078b5fff3b7ea4fa1c'] = 'Pasos para tu pago por tienda';
 $_MODULE['<{openpayprestashop}default-bootstrap>store_execution_a03dae70e4f6f09c930061646ab880cd'] = 'Consulta las tiendas afiliadas';

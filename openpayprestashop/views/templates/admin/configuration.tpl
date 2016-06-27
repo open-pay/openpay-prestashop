@@ -262,7 +262,7 @@
                             </tr>
                         </table>
                             
-                        <label>{l s="Minimum amount to accept months interest-free (shipping included)." mod='openpayprestashop'}</label>                                          
+                        <label>{l s="Minimum amount to accept months interest-free (minimum amount must be at least $1,800 MXN)." mod='openpayprestashop'}</label>                                          
                         <input type="text" name="openpay_minimum_amount_interest_free" placeholder="{l s='Minimum amount' mod='openpayprestashop'}" value="{$openpay_configuration.OPENPAY_MINIMUM_AMOUNT|escape:'htmlall':'UTF-8'}" style="width: 100%; margin: 10px 0;">    
                     </td>
                 </tr>                
