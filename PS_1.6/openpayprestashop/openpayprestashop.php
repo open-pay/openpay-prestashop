@@ -522,12 +522,6 @@ class OpenpayPrestashop extends PaymentModule
 
             $fee = ($result_json->amount * 0.029) + 2.5;
             
-            if($result_json->due_date){
-                $due_date = $result_json->due_date;
-            }else{
-                $due_date = date('Y-m-d H:i:s');
-            }
-            
             $due_date = date('Y-m-d H:i:s');
             if($result_json->due_date){
                 $due_date = date('Y-m-d H:i:s', strtotime($result_json->due_date));
