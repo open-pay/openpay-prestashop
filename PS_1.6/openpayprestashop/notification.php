@@ -45,9 +45,8 @@ if ($json->type == 'charge.succeeded' && ($json->transaction->method == 'bitcoin
     if ($json->transaction->method == 'bitcoin') {
         $transaction_order_id = (int) $json->transaction->description;
         $order_id = Order::getOrderByCartId($transaction_order_id);
-    } else {
-        $transaction_order_id =  str_replace('#', '', $json->transaction->order_id);
-        $order = new Order((int) $transaction_order_id);
+    } else {        
+        $order = new Order((int) $json->transaction->order_id);
         $order_id = $order->id;
     }
     
@@ -56,7 +55,7 @@ if ($json->type == 'charge.succeeded' && ($json->transaction->method == 'bitcoin
         Logger::addLog('IF ORDER: '.$order_id, 1, null, null, null, true);
         $order_history = new OrderHistory();
         $order_history->id_order = (int) $order_id;
-        $order_history->changeIdOrderState(Configuration::get('PS_OS_PAYMENT'), (int) $order_id);
+        $order_history->changeIdOrderState(Configuration::get('PS_OS_PAYMENT'), (int) $order_id);        
         $order_history->addWithemail();
 
         Db::getInstance()->Execute(
