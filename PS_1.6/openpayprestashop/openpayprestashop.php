@@ -34,6 +34,11 @@ class OpenpayPrestashop extends PaymentModule
     private $error = array();
     private $validation = array();
     private $limited_currencies = array('MXN');
+    private $merchant_id;
+    private $secret_key;
+    private $is_sandbox;
+    private $spei_base_url;
+    private $stores_base_url;
 
     public function __construct() {
         if (!class_exists('Openpay', false)) {
@@ -45,7 +50,7 @@ class OpenpayPrestashop extends PaymentModule
 
         $this->name = 'openpayprestashop';
         $this->tab = 'payments_gateways';
-        $this->version = '2.0.0';
+        $this->version = '2.1.0';
         $this->author = 'Openpay SAPI de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';
 
@@ -56,6 +61,12 @@ class OpenpayPrestashop extends PaymentModule
         $this->confirmUninstall = $this->l($warning);
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
         $this->months_interest_free = array('3' => '3 meses', '6' => '6 meses', '9' => '9 meses', '12' => '12 meses', '18' => '18 meses');
+
+        $this->is_sandbox = Configuration::get('OPENPAY_MODE') ? false : true;
+        $this->spei_base_url = Configuration::get('OPENPAY_MODE') ? 'https://dashboard.openpay.mx/spei-pdf' : 'https://sandbox-dashboard.openpay.mx/spei-pdf';
+        $this->stores_base_url = Configuration::get('OPENPAY_MODE') ? 'https://dashboard.openpay.mx/paynet-pdf' : 'https://sandbox-dashboard.openpay.mx/paynet-pdf';
+        $this->secret_key = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
+        $this->merchant_id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
     }
 
     /**
@@ -315,61 +326,23 @@ class OpenpayPrestashop extends PaymentModule
             $transaction = Db::getInstance()->getRow($query);
         }
 
-        $info_email = Configuration::get('BLOCKCONTACTINFOS_EMAIL');
-        $shop_email = $info_email ? $info_email : Configuration::get('PS_SHOP_EMAIL');
-
         switch ($transaction['type']) {
-            case 'store':
-
-                $customer = new Customer((int) $this->context->cookie->id_customer);
-                $date = Tools::displayDate($transaction['date_add'], (int) $this->context->language->id, true);
-                $due_date = Tools::displayDate($transaction['due_date'], (int) $this->context->language->id, true);
-
-                $data = array(
-                    'order' => $reference,
-                    'barcode' => $transaction['reference'],
-                    'barcode_url' => $transaction['barcode'],
-                    'amount' => number_format($transaction['amount'], 2),
-                    'currency' => $transaction['currency'],
-                    'email' => $customer->email,
-                    'date' => $date,
-                    'due_date' => $due_date,
-                    'logo' => '/img/'.Configuration::get('PS_LOGO'),
-                    'shop_email' => $shop_email,
-                    'phone' => Configuration::get('BLOCKCONTACTINFOS_PHONE'),
-                    'shop_name' => Configuration::get('PS_SHOP_NAME'),
-                    'bg_color' => Configuration::get('OPENPAY_BACKGROUND_COLOR'),
-                    'font_color' => Configuration::get('OPENPAY_FONT_COLOR'));
+            case 'store':                
+                $data = array(                    
+                    'pdf' => $this->stores_base_url.'/'.$this->merchant_id.'/'.$transaction['reference']
+                );
 
                 $this->smarty->assign('openpay_order', $data);
-
-                $this->context->controller->addCSS($this->_path.'views/css/receipt.css');
-                $this->context->controller->addCSS($this->_path.'views/css/print.css', 'print');
-
                 $template = './views/templates/hook/store_order_confirmation.tpl';
 
                 break;
 
-            case 'bank_account':
-                $due_date = Tools::displayDate($transaction['due_date'], (int) $this->context->language->id, true);
-                $data = array(
-                    'clabe' => $transaction['clabe'],
-                    'reference' => $transaction['reference'],
-                    'amount' => number_format($transaction['amount'], 2),
-                    'currency' => $transaction['currency'],
-                    'shop_name' => Configuration::get('PS_SHOP_NAME'),
-                    'logo' => '/img/'.Configuration::get('PS_LOGO'),
-                    'due_date' => $due_date,
-                    'email' => $shop_email,
-                    'phone' => Configuration::get('BLOCKCONTACTINFOS_PHONE'),
-                    'bg_color' => Configuration::get('OPENPAY_BACKGROUND_COLOR'),
-                    'font_color' => Configuration::get('OPENPAY_FONT_COLOR'));
+            case 'bank_account':                
+                $data = array(                    
+                    'pdf' => $this->spei_base_url.'/'.$this->merchant_id.'/'.$transaction['id_transaction']
+                );
 
                 $this->smarty->assign('openpay_order', $data);
-
-                $this->context->controller->addCSS($this->_path.'views/css/receipt.css');
-                $this->context->controller->addCSS($this->_path.'views/css/print.css', 'print');
-
                 $template = './views/templates/hook/spei_order_confirmation.tpl';
 
                 break;
@@ -502,6 +475,12 @@ class OpenpayPrestashop extends PaymentModule
             }
 
             $fee = ($result_json->amount * 0.029) + 2.5;
+
+            if ($result_json->due_date) {
+                $due_date = $result_json->due_date;
+            } else {
+                $due_date = date('Y-m-d H:i:s');
+            }
 
             $due_date = date('Y-m-d H:i:s');
             if ($result_json->due_date) {
@@ -869,22 +848,16 @@ class OpenpayPrestashop extends PaymentModule
     }
 
     public function getCustomer($customer_id) {
-        $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
-        $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
-
-        $openpay = Openpay::getInstance($id, $pk);
-        Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
+        $openpay = Openpay::getInstance($this->merchant_id, $this->secret_key);
+        Openpay::setSandboxMode($this->is_sandbox);
 
         $customer = $openpay->customers->get($customer_id);
         return $customer;
     }
 
     public function createOpenpayCustomer($customer_data) {
-        $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
-        $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
-
-        $openpay = Openpay::getInstance($id, $pk);
-        Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
+        $openpay = Openpay::getInstance($this->merchant_id, $this->secret_key);
+        Openpay::setSandboxMode($this->is_sandbox);
 
         try {
             $customer = $openpay->customers->add($customer_data);
@@ -895,11 +868,9 @@ class OpenpayPrestashop extends PaymentModule
     }
 
     public function createOpenpayCharge($customer, $charge_request) {
-        $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
-        $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
-
-        Openpay::getInstance($id, $pk);
-        Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
+        Openpay::getInstance($this->merchant_id, $this->secret_key);
+        Openpay::setSandboxMode($this->is_sandbox);
+        //Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
 
         try {
             $charge = $customer->charges->create($charge_request);
@@ -911,11 +882,8 @@ class OpenpayPrestashop extends PaymentModule
 
     public function updateOpenpayCharge($transaction_id, $order_id, $reference) {
         $customer = $this->getOpenpayCustomer($this->context->cookie->id_customer);
-        $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
-        $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
-
-        Openpay::getInstance($id, $pk);
-        Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
+        Openpay::getInstance($this->merchant_id, $this->secret_key);
+        Openpay::setSandboxMode($this->is_sandbox);
 
         try {
             $charge = $customer->charges->get($transaction_id);
@@ -927,11 +895,8 @@ class OpenpayPrestashop extends PaymentModule
     }
 
     public function getOpenpayCharge($customer, $transaction_id) {
-        $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
-        $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
-
-        Openpay::getInstance($id, $pk);
-        Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
+        Openpay::getInstance($this->merchant_id, $this->secret_key);
+        Openpay::setSandboxMode($this->is_sandbox);
 
         try {
             $charge = $customer->charges->get($transaction_id);
@@ -964,11 +929,9 @@ class OpenpayPrestashop extends PaymentModule
         );
 
         $mode = Configuration::get('OPENPAY_MODE') ? 'LIVE' : 'TEST';
-        $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
-        $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
 
-        $openpay = Openpay::getInstance($id, $pk);
-        Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
+        $openpay = Openpay::getInstance($this->merchant_id, $this->secret_key);
+        Openpay::setSandboxMode($this->is_sandbox);
 
         try {
             $webhook = $openpay->webhooks->add($webhook_data);
@@ -981,11 +944,8 @@ class OpenpayPrestashop extends PaymentModule
     }
 
     public function deleteWebhook($webhook_id, $mode) {
-        $pk = $mode ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
-        $id = $mode ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
-
-        $openpay = Openpay::getInstance($id, $pk);
-        Openpay::setProductionMode($mode);
+        $openpay = Openpay::getInstance($this->merchant_id, $this->secret_key);
+        Openpay::setSandboxMode($this->is_sandbox);
 
         try {
             $webhook = $openpay->webhooks->get($webhook_id);
@@ -997,11 +957,11 @@ class OpenpayPrestashop extends PaymentModule
     }
 
     public function getMerchantInfo() {
+        
         $sk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
         $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
 
         $url = (Configuration::get('OPENPAY_MODE') ? $this->url : $this->sandbox_url).'/'.$id;
-
         $username = $sk;
         $password = '';
 
