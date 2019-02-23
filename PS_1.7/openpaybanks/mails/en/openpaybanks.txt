@@ -1,0 +1,24 @@
+[{shop_url}]
+
+Hi {firstname} {lastname},
+
+We thank you for shopping in {shop_name}!
+
+Your order with reference {order_name} was performed with
+success and will be sent as soon as we receive your payment.
+
+Payment detail.
+
+Amount: {total_paid}
+
+Detail: {detail}
+
+You can review your order and download your invoice from
+"Order History" [{history_url}] in your client account.
+
+If you have a guest account, you can continue your order
+through the "Tracking Guest"
+[{guest_tracking_url}] section of our store.
+
+{shop_name} [{shop_url}] created by
+PrestaShop(tm) [http://www.prestashop.com/]
