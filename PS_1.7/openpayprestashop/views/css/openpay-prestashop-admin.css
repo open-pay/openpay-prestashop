@@ -1,0 +1,371 @@
+.nobootstrap{
+    min-width: 930px;
+}
+
+.nobootstrap label{
+    width: 275px;
+}
+
+.openpay-module-wrapper { clear: both; margin: 0px auto; min-width: 930px; overflow: hidden; }
+.openpay-module-header { clear: both; margin-bottom: 40px; padding-top: 15px; overflow: hidden; }
+.openpay-module-header img.openpay-logo { float: left; margin: 10px 50px 0px 0px; width: 200px; }
+.openpay-module-header span.openpay-module-intro { border-left: #C3D9EF solid 1px; color: #008CDD; display: block; float: left; font-size: 18px; height: auto; line-height: 24px; margin: 0px 35px 0px 0px; padding: 0px 0px 0px 20px; width: 310px; }
+.openpay-module-header a.openpay-module-create-btn { background: url(../img/bg_btn-blue.png) left top no-repeat; color: #FFF; display: inline-block; font-size: 16px; font-weight: bold; height: 35px; line-height: 33px; margin: 16px 0px 0px 0px; padding: 0px 0px 0px 20px; text-shadow: 0px -1px 0px #03609E; }
+.openpay-module-header a.openpay-module-create-btn span { background: url(../img/bg_btn-blue.png) right bottom no-repeat; display: block; height: 35px; margin: 0px -20px 0px 0px; padding: 0px 20px 0px 0px; }
+
+.openpay-module-wrap { background-color: #F7FBFF; border: #C3D9EF solid 1px; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; clear: both; margin: 0px 0px 15px 0px; overflow: hidden; padding: 15px; }
+.openpay-module-col1 { float: right; margin: 0px; overflow: hidden; width: 320px; }
+.openpay-module-col2 { margin: 0px 335px 0px 0px; overflow: hidden; min-width: 563px; }
+.openpay-module-col1inner { float: left; margin: 0px; overflow: hidden; width: 48%; }
+.openpay-module-col2inner { clear: both; margin: 0px; padding-top: 20px; }
+/*.openpay-module-wrap .openpay-module-col2inner h3 { border-top: #C3D9EF solid 1px; padding-top: 20px; }*/
+.openpay-module-wrap h3 { color: #008CDD; font-size: 18px; font-weight: normal; line-height: 22px; margin: 0px 0px 15px 0px; padding: 0px; text-shadow: 0px -1px 0px #DAF2FF; }
+.openpay-module-wrap p, .openpay-module-wrap ul li { color: #535353; font-size: 14px; line-height: 22px; margin: 0px; padding: 0px; text-shadow: 0px 1px 0px #FFFFFF; }
+.openpay-module-wrap a.openpay-module-btn { background: url(../img/openpay-btn-arrow.png) left center no-repeat; color: #008CDD; display: inline-block; margin: 7px 0px; padding-left: 8px; text-decoration: none; text-shadow: 0px 1px 0px #FFFFFF; }
+.openpay-module-wrap a.openpay-module-btn:hover { text-decoration: underline; }
+.openpay-module-wrap ul { list-style: none; margin: 0px; padding: 0px; }
+.openpay-module-wrap ul li { background: url(../img/checkmark-blue.png) left 5px no-repeat; margin: 0px; padding: 0px 0px 0px 15px; }
+img.openpay-cc { margin: 0px 40px 0px 0px; vertical-align: middle; }
+
+.floatRight { float: right; }
+.openpay-module-wrap-video { background-color: #FFFFFF; border: #C3D9EF solid 1px; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; padding: 6px; overflow: hidden; }
+img.openpay-dashboard { margin: 0px; max-width: 100%; }
+a.openpay-module-video-btn { display: inline-block; margin: 15px 0px 0px 0px; position: relative; }
+img.openpay-video-btn { position: absolute; left: 119px; top: 80px; }
+
+table.openpay-technical td { padding: 4px 0px; }
+
+fieldset.openpay-settings { width: 700px; float: left; margin-right: 20px; }
+table.openpay-settings label { float: none; padding-right: 0px; text-align: right; width: auto; }
+table.openpay-settings { margin: 0px; }
+table.openpay-settings td { border-bottom: #CCCED7 solid 1px; padding: 8px; }
+table.openpay-settings td.td-right { color: #7F7F7F; font-size: 0.9em; }
+table.openpay-settings td.td-noborder { border-bottom: none; }
+table.openpay-settings td.save { text-align: center; padding-top: 15px; }
+table.openpay-settings table.innerTable td { border: none; padding: 6px; }
+table.openpay-settings table.innerTable td.vertBorder { border-left: #CCCED7 solid 1px; }
+input.button:hover { cursor: pointer; }
+
+fieldset.openpay-cc-numbers { width: 277px; float: left; }
+table.openpay-cc-numbers { border: #CCCED7 solid 1px; background-color: #FFFFFF; }
+table.openpay-cc-numbers th { background-color: #F7FBFF; border-bottom: #CCCED7 solid 1px; padding: 5px 25px 5px 8px; text-align: left; }
+table.openpay-cc-numbers td { border-bottom: #CCCED7 solid 1px; padding: 5px 25px 5px 8px; }
+table.openpay-cc-numbers td.last { border-bottom: none; }
+table.openpay-cc-numbers td.number code { font-family: Courier; }
+
+.openpay-module-wrapper table { color: #585A69; font-size: 12px; text-shadow: 0 1px 0 #FFFFFF;}
+
+
+.mt30{
+    margin-top: 30px !important;
+}
+
+.mb30{
+    margin-bottom: 30px !important;
+}
+
+.mb20{
+    margin-bottom: 20px !important;
+}
+
+.mb10{
+    margin-bottom: 10px !important;
+}
+
+.row {
+    margin-left: -15px;
+    margin-right: -15px; }
+.row:before, .row:after {
+    content: " ";
+    /* 1 */
+    display: table;
+    /* 2 */ }
+.row:after {
+    clear: both; }
+
+.col-xs-1,
+.col-xs-2,
+.col-xs-3,
+.col-xs-4,
+.col-xs-5,
+.col-xs-6,
+.col-xs-7,
+.col-xs-8,
+.col-xs-9,
+.col-xs-10,
+.col-xs-11,
+.col-xs-12,
+.col-sm-1,
+.col-sm-2,
+.col-sm-3,
+.col-sm-4,
+header .row #header_logo,
+.col-sm-5,
+.col-sm-6,
+.col-sm-7,
+.col-sm-8,
+.col-sm-9,
+.col-sm-10,
+.col-sm-11,
+.col-sm-12,
+.col-md-1,
+.col-md-2,
+.col-md-3,
+.col-md-4,
+.col-md-5,
+.col-md-6,
+.col-md-7,
+.col-md-8,
+.col-md-9,
+.col-md-10,
+.col-md-11,
+.col-md-12,
+.col-lg-1,
+.col-lg-2,
+.col-lg-3,
+.col-lg-4,
+.col-lg-5,
+.col-lg-6,
+.col-lg-7,
+.col-lg-8,
+.col-lg-9,
+.col-lg-10,
+.col-lg-11,
+.col-lg-12 {
+    position: relative;
+    min-height: 1px;
+    padding-left: 15px;
+/*    padding-right: 15px; */
+}
+
+.col-xs-1,
+.col-xs-2,
+.col-xs-3,
+.col-xs-4,
+.col-xs-5,
+.col-xs-6,
+.col-xs-7,
+.col-xs-8,
+.col-xs-9,
+.col-xs-10,
+.col-xs-11 {
+    float: left; }
+
+.col-xs-1 {
+    width: 8.33333%; }
+
+.col-xs-2 {
+    width: 16.66667%; }
+
+.col-xs-3 {
+    width: 25%; }
+
+.col-xs-4 {
+    width: 33.33333%; }
+
+.col-xs-5 {
+    width: 41.66667%; }
+
+.col-xs-6 {
+    width: 50%; }
+
+.col-xs-7 {
+    width: 58.33333%; }
+
+.col-xs-8 {
+    width: 66.66667%; }
+
+.col-xs-9 {
+    width: 75%; }
+
+.col-xs-10 {
+    width: 83.33333%; }
+
+.col-xs-11 {
+    width: 91.66667%; }
+
+.col-xs-12 {
+    width: 100%; }
+
+@media (min-width: 768px) {
+    .container {
+        max-width: 750px; }
+
+    .col-sm-1,
+    .col-sm-2,
+    .col-sm-3,
+    .col-sm-4,
+    header .row #header_logo,
+    .col-sm-5,
+    .col-sm-6,
+    .col-sm-7,
+    .col-sm-8,
+    .col-sm-9,
+    .col-sm-10,
+    .col-sm-11 {
+        float: left; }
+
+    .col-sm-1 {
+        width: 8.33333%; }
+
+    .col-sm-2 {
+        width: 16.66667%; }
+
+    .col-sm-3 {
+        width: 25%; }
+
+    .col-sm-4, header .row #header_logo {
+        width: 33.33333%; }
+
+    .col-sm-5 {
+        width: 41.66667%; }
+
+    .col-sm-6 {
+        width: 50%; }
+
+    .col-sm-7 {
+        width: 58.33333%; }
+
+    .col-sm-8 {
+        width: 66.66667%; }
+
+    .col-sm-9 {
+        width: 75%; }
+
+    .col-sm-10 {
+        width: 83.33333%; }
+
+    .col-sm-11 {
+        width: 91.66667%; }
+
+    .col-sm-12 {
+        width: 100%; }
+}
+
+@media (min-width: 992px) {
+    .container {
+        max-width: 970px; }
+
+    .col-md-1,
+    .col-md-2,
+    .col-md-3,
+    .col-md-4,
+    .col-md-5,
+    .col-md-6,
+    .col-md-7,
+    .col-md-8,
+    .col-md-9,
+    .col-md-10,
+    .col-md-11 {
+        float: left; }
+
+    .col-md-1 {
+        width: 8.33333%; }
+
+    .col-md-2 {
+        width: 16.66667%; }
+
+    .col-md-3 {
+        width: 25%; }
+
+    .col-md-4 {
+        width: 33.33333%; }
+
+    .col-md-5 {
+        width: 41.66667%; }
+
+    .col-md-6 {
+        width: 50%; }
+
+    .col-md-7 {
+        width: 58.33333%; }
+
+    .col-md-8 {
+        width: 66.66667%; }
+
+    .col-md-9 {
+        width: 75%; }
+
+    .col-md-10 {
+        width: 83.33333%; }
+
+    .col-md-11 {
+        width: 91.66667%; }
+
+    .col-md-12 {
+        width: 100%; }
+}
+
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1170px; }
+
+    .col-lg-1,
+    .col-lg-2,
+    .col-lg-3,
+    .col-lg-4,
+    .col-lg-5,
+    .col-lg-6,
+    .col-lg-7,
+    .col-lg-8,
+    .col-lg-9,
+    .col-lg-10,
+    .col-lg-11 {
+        float: left; }
+
+    .col-lg-1 {
+        width: 8.33333%; }
+
+    .col-lg-2 {
+        width: 16.66667%; }
+
+    .col-lg-3 {
+        width: 25%; }
+
+    .col-lg-4 {
+        width: 33.33333%; }
+
+    .col-lg-5 {
+        width: 41.66667%; }
+
+    .col-lg-6 {
+        width: 50%; }
+
+    .col-lg-7 {
+        width: 58.33333%; }
+
+    .col-lg-8 {
+        width: 66.66667%; }
+
+    .col-lg-9 {
+        width: 75%; }
+
+    .col-lg-10 {
+        width: 83.33333%; }
+
+    .col-lg-11 {
+        width: 91.66667%; }
+
+    .col-lg-12 {
+        width: 100%; }
+}
+
+hr{
+    border-top: 1px solid #c3d9ef;
+    margin-top: 20px;
+}
+
+.comision{
+    font-size: 2.5em !important;
+    color: #525252 !important;
+    font-weight: 600 !important;
+}
+
+.store-image img{
+    max-width: 100%;
+}
+
+.openpay-prestashop-partner img{ margin: 0px; max-width: 70%;  }
+.openpay-prestashop-partner{
+    text-align: center;
+}
