@@ -48,7 +48,7 @@ class OpenpayPrestashop extends PaymentModule
 
         $this->name = 'openpayprestashop';
         $this->tab = 'payments_gateways';
-        $this->version = '3.0.0';
+        $this->version = '3.0.1';
         $this->author = 'Openpay SAPI de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';               
 
@@ -765,9 +765,12 @@ class OpenpayPrestashop extends PaymentModule
 
                 $customer_openpay = $this->createOpenpayCustomer($customer_data);                                
 
-                Db::getInstance()->Execute('
-                        INSERT INTO '._DB_PREFIX_.'openpay_customer (id_openpay_customer, openpay_customer_id, id_customer, date_add, mode)
-                        VALUES (null, \''.pSQL($customer_openpay->id).'\', '.(int) $this->context->cookie->id_customer.', NOW()), '.$mode);
+                Db::getInstance()->insert('openpay_customer', array(
+                    'openpay_customer_id' => pSQL($customer_openpay->id),
+                    'id_customer' => (int) $this->context->cookie->id_customer,
+                    'date_add' => date('Y-m-d H:i:s'),
+                    'mode' => pSQL($mode)
+                ));
 
                 return $customer_openpay;
             } catch (Exception $e) {
