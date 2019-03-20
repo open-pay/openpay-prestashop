@@ -46,7 +46,7 @@ class OpenpayStores extends PaymentModule
 
         $this->name = 'openpaystores';
         $this->tab = 'payments_gateways';
-        $this->version = '3.0.1';
+        $this->version = '3.0.2';
         $this->author = 'Openpay SAPI de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';
 
@@ -528,7 +528,7 @@ class OpenpayStores extends PaymentModule
 
         $charge_request = array(
             'method' => $payment_method,
-            'amount' => $cart->getOrderTotal(),
+            'amount' => round($cart->getOrderTotal(), 2),
             'description' => $this->l('PrestaShop Cart ID:').' '.(int) $cart->id,            
             'due_date' => $due_date
         );
