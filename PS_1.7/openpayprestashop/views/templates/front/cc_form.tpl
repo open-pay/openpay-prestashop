@@ -100,7 +100,7 @@
 
                     <div class="col-md-6">
                         <label>{l s='Codigo de seguridad' mod='openpayprestashop'}</label>
-                        <input id="cvv2" type="password" size="4" autocomplete="off" data-openpay-card="cvv2" class="form-control" placeholder="CVV" />
+                        <input id="cvv2" type="password" maxlength="4" autocomplete="off" data-openpay-card="cvv2" class="form-control" placeholder="CVV" />
                     </div>
 
                     <div class="col-md-6">
@@ -149,7 +149,25 @@
     var useCardPoints = "{$use_card_points}";    
     console.log('useCardPoints', useCardPoints);
     
-    $(document).ready(function() {                   
+    $(document).ready(function() {          
+        
+        $('#holder_name').on("cut copy paste",function(e) {
+            e.preventDefault();
+        });
+        
+        $("#holder_name").keypress(function(e){
+            var keyCode = e.which;
+            /*             
+                65-90 - (A-Z)
+                97-122 - (a-z)
+                8 - (backspace)
+                32 - (space)
+            */
+            // Not allow special 
+            if (!((keyCode >= 65 && keyCode <= 90) || (keyCode >= 97 && keyCode <= 122)) && keyCode !== 8 && keyCode !== 32) {
+              e.preventDefault();
+            }
+        });
         
         $('[data-toggle="popover"]').popover({
             trigger: 'hover',
