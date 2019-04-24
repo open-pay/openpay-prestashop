@@ -48,7 +48,7 @@ class OpenpayPrestashop extends PaymentModule
 
         $this->name = 'openpayprestashop';
         $this->tab = 'payments_gateways';
-        $this->version = '3.0.3';
+        $this->version = '3.0.4';
         $this->author = 'Openpay SAPI de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';               
 
@@ -619,7 +619,7 @@ class OpenpayPrestashop extends PaymentModule
         /** Update Configuration Values when settings are updated */
         if (Tools::isSubmit('SubmitOpenpay')) {
 
-            $months = is_array(Tools::getValue('months_interest_free')) ? implode(',', Tools::getValue('months_interest_free')) : array();
+            $months = is_array(Tools::getValue('months_interest_free')) ? implode(',', Tools::getValue('months_interest_free')) : '';
             
             $configuration_values = array(
                 'OPENPAY_MODE' => Tools::getValue('openpay_mode'),
