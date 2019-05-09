@@ -81,7 +81,7 @@
                             <option value="06">{l s='Junio' mod='openpayprestashop'}</option>
                             <option value="07">{l s='Julio' mod='openpayprestashop'}</option>
                             <option value="08">{l s='Agosto' mod='openpayprestashop'}</option>
-                            <option value="09">{l s='Septeembre' mod='openpayprestashop'}</option>
+                            <option value="09">{l s='Septiembre' mod='openpayprestashop'}</option>
                             <option value="10">{l s='Octubre' mod='openpayprestashop'}</option>
                             <option value="11">{l s='Noviembre' mod='openpayprestashop'}</option>
                             <option value="12">{l s='Diciembre' mod='openpayprestashop'}</option>
