@@ -44,7 +44,8 @@ class OpenpayPrestashopConfirmModuleFrontController extends ModuleFrontControlle
         }
                 
         if (!in_array($charge_type, array('auth', '3d'))) {                  
-            Tools::redirect('index.php');
+            $this->setTemplate('module:openpayprestashop/views/templates/front/3d_secure_disabled.tpl');               
+            return;
         }
         
         $openpay_prestashop = new OpenpayPrestashop();            
@@ -53,8 +54,8 @@ class OpenpayPrestashopConfirmModuleFrontController extends ModuleFrontControlle
 
         // Ocurrió un error
         if ($charge->status !== 'completed') {           
-            $this->context->cookie->__set('openpay_error', 'No fue posible concretar la operación.');
-            Tools::redirect('index.php?controller=order&step=1');
+            $this->setTemplate('module:openpayprestashop/views/templates/front/3d_secure_confirm_error.tpl');
+            return;
         }
 
         //$order_status = (int) Configuration::get('pending_payment');
