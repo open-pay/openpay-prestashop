@@ -46,7 +46,7 @@ class OpenpayBanks extends PaymentModule
 
         $this->name = 'openpaybanks';
         $this->tab = 'payments_gateways';
-        $this->version = '3.0.2';
+        $this->version = '3.0.3';
         $this->author = 'Openpay SAPI de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';
 
@@ -516,10 +516,11 @@ class OpenpayBanks extends PaymentModule
         }
 
         $due_date = date('Y-m-d\TH:i:s', strtotime('+ '.$deadline.' hours'));
+        $amount = number_format(floatval($cart->getOrderTotal()), 2, '.', '');
 
         $charge_request = array(
             'method' => $payment_method,
-            'amount' => round($cart->getOrderTotal(), 2),
+            'amount' => $amount,
             'description' => $this->l('PrestaShop Cart ID:').' '.(int) $cart->id,            
             'due_date' => $due_date
         );
@@ -735,7 +736,7 @@ class OpenpayBanks extends PaymentModule
                 }
 
                 $customer_openpay = $this->createOpenpayCustomer($customer_data);
-
+                
                 Db::getInstance()->insert('openpay_customer', array(
                     'openpay_customer_id' => pSQL($customer_openpay->id),
                     'id_customer' => (int) $this->context->cookie->id_customer,

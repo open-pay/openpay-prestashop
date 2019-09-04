@@ -48,7 +48,7 @@ class OpenpayPrestashop extends PaymentModule
 
         $this->name = 'openpayprestashop';
         $this->tab = 'payments_gateways';
-        $this->version = '3.0.6';
+        $this->version = '3.0.7';
         $this->author = 'Openpay SAPI de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';               
 
@@ -240,9 +240,11 @@ class OpenpayPrestashop extends PaymentModule
         try {
             $openpay = $this->getOpenpayInstance();
             
+            $formatted_amount = number_format(floatval($amount), 2, '.', '');
+            
             $customer = $openpay->customers->get($customer_id);
             $charge = $customer->charges->get($transaction_id);
-            $charge->capture(array('amount' => floatval($amount)));
+            $charge->capture(array('amount' => $formatted_amount));
             
             return $charge;
         } catch (Exception $e) {
@@ -421,13 +423,15 @@ class OpenpayPrestashop extends PaymentModule
         try {   
             Logger::addLog('$save_cc => '. json_encode($save_cc), 1, null, null, null, true);
             $openpay_customer = $this->getOpenpayCustomer($this->context->cookie->id_customer);
+            
+            $amount = number_format(floatval($cart->getOrderTotal()), 2, '.', '');
                         
             $charge_request = array(
                 'method' => 'card',
                 'currency' => $this->context->currency->iso_code,
                 'source_id' => $token,
                 'device_session_id' => $device_session_id,
-                'amount' => round($cart->getOrderTotal(), 2),
+                'amount' => $amount,
                 'description' => $this->l('PrestaShop Cart ID:').' '.(int) $cart->id,
                 'use_card_points' => $use_card_points,
                 'capture' => $capture
