@@ -7,8 +7,6 @@ $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_d3988a372a9421
 $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_ebb8d514f56157d7bd513eefdd9adb63'] = 'En espera de pago';
 $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_ad714e2411c2dab284b7a7af067df14e'] = 'Openpay pago con tarjeta';
 $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_1100ee030335d019d5b7e7ae775d1a8e'] = 'Número de tarjeta:';
-$_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_35a7fad5166f249c76a30d50bb57eca1'] = 'Openpay pago con bitcoin';
-$_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_aea7f422238bdf0bf333a55e7b8be91d'] = 'Monto en bitcoins';
 $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_c6fe2fd307f583c9af80171c10aa84fc'] = 'Dirección de pago';
 $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_2ad91ac9b5ce587dfe3c6a4b4cffb944'] = 'Openpay pago en efectivo';
 $_MODULE['<{openpayprestashop}default-bootstrap>openpayprestashop_3dd42bfc8345e82c43b4a40a3426ec49'] = 'Referencia:';
@@ -62,7 +60,7 @@ $_MODULE['<{openpayprestashop}default-bootstrap>configuration_53ec60f35cc6540782
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_151cc725606e5b25a7819ee4ae0d34f2'] = 'Acepta pagos con tarjetas de crédito';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_3af067d2854baf5fc115d4aaf214f1ee'] = 'Acepta pagos con tarjetas de débito';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_5d13fd12fe5ce8f9966cc14aab851f5e'] = 'Consulta las tarjetas soportadas';
-$_MODULE['<{openpayprestashop}default-bootstrap>configuration_614312ed5cbb0e8437c36cd40788570c'] = 'Comisión por cargo exitoso: Visa y MasterCard';
+$_MODULE['<{openpayprestashop}default-bootstrap>configuration_614312ed5cbb0e8437c36cd40788570c'] = 'Comisión por cargo exitoso';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_612a531dd63e9b678aa9de2301f7ff64'] = '2.9% + $2.5 MXN';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_463ea67c3392dff58057327807f4257a'] = 'Comisión por cargo exitoso: American Express';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_8e4e595e987a55f267effc93b95138e1'] = '4.5% + $2.5 MXN';
@@ -89,7 +87,6 @@ $_MODULE['<{openpayprestashop}default-bootstrap>configuration_0da8d9a75492046bea
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_40fed24d2e43a64767663257cfd5f4b1'] = 'Tarjeta de crédito/débito';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_f9d299b21a010a3778a2f0f5367ed4a7'] = 'Pago en tiendas';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_57e0b461454d4ddbde47036797a8413f'] = 'Transferencia bancaria';
-$_MODULE['<{openpayprestashop}default-bootstrap>configuration_1a85e8287e1d5a5bae142fb7287c99e1'] = 'Bitcoins';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_a24010ae37280cc18caa55069b6800ed'] = 'Meses sin intereses';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_42160631a3479f3ac1101809d80fb600'] = 'Si vas a utilizar meses sin intereses, favor de seleccionar una o más de las siguientes opciones.';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_00c275d5b559712c65233b924a43ad57'] = 'Monto mínimo para aceptar meses sin intereses (el monto mínimo deberá ser de al menos $1,800 MXN)';
@@ -110,25 +107,6 @@ $_MODULE['<{openpayprestashop}default-bootstrap>configuration_5735196b42849ae4fe
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_37543087b1faeaa35c926284e3aec008'] = 'La tarjeta fue rechazada';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_5c0ede6ae8246a5c3b43b70b5c79bbda'] = 'La tarjeta ha expirado';
 $_MODULE['<{openpayprestashop}default-bootstrap>configuration_8ad453b4d52d4cbedf10cfc8287986ea'] = 'La tarjeta no tiene fondos suficientes';
-$_MODULE['<{openpayprestashop}default-bootstrap>bitcoin_execution_644818852b4dd8cf9da73543e30f045a'] = 'Volver al pedido';
-$_MODULE['<{openpayprestashop}default-bootstrap>bitcoin_execution_6ff063fbc860a79759a7369ac32cee22'] = 'Checkout';
-$_MODULE['<{openpayprestashop}default-bootstrap>bitcoin_execution_261a1140d97b4fe17aabc2433d7c0234'] = 'Pago con Bitcoins';
-$_MODULE['<{openpayprestashop}default-bootstrap>bitcoin_execution_fe052c248fb8c2b8cf08c44f17341c3c'] = 'Resumen del pedido';
-$_MODULE['<{openpayprestashop}default-bootstrap>bitcoin_execution_879f6b8877752685a966564d072f498f'] = 'Tu carrito esta vacío.';
-$_MODULE['<{openpayprestashop}default-bootstrap>bitcoin_execution_1f8bc47749a986674f060548573e2222'] = '¿Qué es Bitcoin?';
-$_MODULE['<{openpayprestashop}default-bootstrap>bitcoin_execution_f0d4ae4cdae1702a3767a967de33ad81'] = 'Bitcoin es una innovadora red de pagos y una nueva clase de dinero que usa tecnología peer-to-peer o entre pares para operar sin una autoridad central o bancos. Visita https://bitcoin.org para conocer más.';
-$_MODULE['<{openpayprestashop}default-bootstrap>bitcoin_execution_7911589f09fa52d2e02a000bd5e20b5d'] = 'Pasos para tu pago con Bitcoin';
-$_MODULE['<{openpayprestashop}default-bootstrap>bitcoin_execution_9d648b3e426d4f4e11d03ae66d5f7bfb'] = 'Haz clic en el botón \"Generar dirección de pago\" al final de la página.';
-$_MODULE['<{openpayprestashop}default-bootstrap>bitcoin_execution_72183a47902d6e1701acc683cca4dec7'] = 'Realiza el pago escaneando el código QR o copiando la dirección y el monto a pagar.';
-$_MODULE['<{openpayprestashop}default-bootstrap>bitcoin_execution_7ea07df7bd19ff1522bca62752da07ca'] = 'Inmediatamente después de verificar tu pago te enviaremos un correo electrónico de confirmación y tu pedido será procesado.';
-$_MODULE['<{openpayprestashop}default-bootstrap>bitcoin_execution_569fd05bdafa1712c4f6be5b153b8418'] = 'Otros métodos de pago';
-$_MODULE['<{openpayprestashop}default-bootstrap>bitcoin_execution_9ba1d7701f52d4bfb03aa66efcd54cb0'] = 'Generar dirección de pago';
-$_MODULE['<{openpayprestashop}default-bootstrap>bitcoin_waiting_execution_644818852b4dd8cf9da73543e30f045a'] = 'Volver al pedido';
-$_MODULE['<{openpayprestashop}default-bootstrap>bitcoin_waiting_execution_6ff063fbc860a79759a7369ac32cee22'] = 'Checkout';
-$_MODULE['<{openpayprestashop}default-bootstrap>bitcoin_waiting_execution_261a1140d97b4fe17aabc2433d7c0234'] = 'Pago con Bitcoin';
-$_MODULE['<{openpayprestashop}default-bootstrap>bitcoin_waiting_execution_fe052c248fb8c2b8cf08c44f17341c3c'] = 'Resumen del pedido';
-$_MODULE['<{openpayprestashop}default-bootstrap>bitcoin_waiting_execution_879f6b8877752685a966564d072f498f'] = 'Tu carrito de compras esta vacío.';
-$_MODULE['<{openpayprestashop}default-bootstrap>bitcoin_waiting_execution_569fd05bdafa1712c4f6be5b153b8418'] = 'Otras formas de pago';
 $_MODULE['<{openpayprestashop}default-bootstrap>card_execution_644818852b4dd8cf9da73543e30f045a'] = 'Volver al pedido';
 $_MODULE['<{openpayprestashop}default-bootstrap>card_execution_6ff063fbc860a79759a7369ac32cee22'] = 'Checkout';
 $_MODULE['<{openpayprestashop}default-bootstrap>card_execution_40fed24d2e43a64767663257cfd5f4b1'] = 'Pago con tarjeta de cŕedito/débito';
@@ -190,7 +168,6 @@ $_MODULE['<{openpayprestashop}default-bootstrap>store_execution_19e5b16fb69a6293
 $_MODULE['<{openpayprestashop}default-bootstrap>store_execution_05ff84c01f96a1426716e89c5e77a034'] = 'Inmediatamente después de recibir tu pago te enviaremos un correo electrónico con la confirmación de pago.';
 $_MODULE['<{openpayprestashop}default-bootstrap>store_execution_569fd05bdafa1712c4f6be5b153b8418'] = 'Otras formas de pago';
 $_MODULE['<{openpayprestashop}default-bootstrap>store_execution_e518c9c1ff02cc78a6e4fd21038a3585'] = 'Generar recibo de pago';
-$_MODULE['<{openpayprestashop}default-bootstrap>bitcoin_order_confirmation_71459d15dd3e76b787ac44440dca0d7d'] = 'Tu pago esta en proceso de validación, recibirás un correo de confirmación cuando la red de Bitcoin confirme y valide el pago realizado.';
 $_MODULE['<{openpayprestashop}default-bootstrap>card_order_confirmation_4e3e0524d1b71ee75e23b1988f1bbb33'] = 'Felicitaciones , su pago ha sido aprobado, el número de referencia de su pedido es:';
 $_MODULE['<{openpayprestashop}default-bootstrap>card_order_confirmation_fcc0006f4018b8db6cf42091b6ef2c52'] = 'Lamentablemente hemos detectado un problema al procesar tu pedido y necesita ser revisado.';
 $_MODULE['<{openpayprestashop}default-bootstrap>card_order_confirmation_14e7bb4453ff8cac0fc4419a76fed7b2'] = 'No trate de registrar su pedido de nuevo, ya se han recibido los fondos. Vamos a revisar su orden y le proporcionaremos un estatus dentro de poco.';
@@ -201,7 +178,6 @@ $_MODULE['<{openpayprestashop}default-bootstrap>payment_40fed24d2e43a64767663257
 $_MODULE['<{openpayprestashop}default-bootstrap>payment_f9d299b21a010a3778a2f0f5367ed4a7'] = 'Pago en efectivo en tiendas de conveniencia';
 $_MODULE['<{openpayprestashop}default-bootstrap>payment_163debc82f49ccfa53705a60f5b8eae9'] = 'Forma de pago no permitida para montos superiores a $10,000';
 $_MODULE['<{openpayprestashop}default-bootstrap>payment_ec2db44e80b6b82f75b5bd7feabd99ad'] = 'Pago con transferencia electrónica (SPEI)';
-$_MODULE['<{openpayprestashop}default-bootstrap>payment_261a1140d97b4fe17aabc2433d7c0234'] = 'Pago con Bitcoins';
 $_MODULE['<{openpayprestashop}default-bootstrap>spei_order_confirmation_20fd2a4330b68a7173fef1c1f797a0a8'] = 'Esperamos tu pago';
 $_MODULE['<{openpayprestashop}default-bootstrap>spei_order_confirmation_96b0141273eabab320119c467cdcaf17'] = 'Total a pagar';
 $_MODULE['<{openpayprestashop}default-bootstrap>spei_order_confirmation_2e79cbc13bbc903d989eab943a2e394f'] = 'Fecha límite de pago';
