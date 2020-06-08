@@ -85,11 +85,8 @@
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <h3>{l s='Comisión por transacción exitosa: Visa y MasterCard' mod='openpayprestashop'}</h3>
+                        <h3>{l s='Comisión por transacción exitosa' mod='openpayprestashop'}</h3>
                         <p class="comision">{l s='2.9% + $2.5 MXN' mod='openpayprestashop'}</p>
-                        <br><br>
-                        <h3>{l s='Comisión por transacción exitosa: American Express' mod='openpayprestashop'}</h3>
-                        <p class="comision">{l s='4.5% + $2.5 MXN' mod='openpayprestashop'}</p>
                     </div>
                 </div>
             </div>            
