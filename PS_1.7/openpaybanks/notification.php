@@ -39,6 +39,12 @@ if (!class_exists('Openpay', false)) {
 /* To configure, add webhook in account storename.com/modules/openpaybanks/notification.php */
 $objeto = Tools::file_get_contents('php://input');
 $json = Tools::jsonDecode($objeto);
+
+if(empty($json->type)){
+    header('HTTP/1.1 200 OK');
+    exit;
+}
+
 Logger::addLog('Request type: '.$json->type, 1, null, null, null, true);
 
 $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');

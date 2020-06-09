@@ -50,7 +50,7 @@ class OpenpayPrestashop extends PaymentModule
 
         $this->name = 'openpayprestashop';
         $this->tab = 'payments_gateways';
-        $this->version = '2.1.0';
+        $this->version = '2.2.0';
         $this->author = 'Openpay SAPI de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';
 
@@ -108,7 +108,6 @@ class OpenpayPrestashop extends PaymentModule
                 Configuration::updateValue('OPENPAY_CARDS', 1) &&
                 Configuration::updateValue('OPENPAY_STORES', 1) &&
                 Configuration::updateValue('OPENPAY_SPEI', 1) &&
-                Configuration::updateValue('OPENPAY_BITCOINS', 1) &&
                 Configuration::updateValue('OPENPAY_WEBHOOK_ID_TEST', null) &&
                 Configuration::updateValue('OPENPAY_WEBHOOK_ID_LIVE', null) &&
                 Configuration::updateValue('OPENPAY_WEBHOOK_USER', Tools::substr(md5(uniqid(rand(), true)), 0, 10)) &&
@@ -184,7 +183,7 @@ class OpenpayPrestashop extends PaymentModule
         $return &= Db::getInstance()->Execute('
             CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'openpay_transaction` (
                 `id_openpay_transaction` int(11) NOT NULL AUTO_INCREMENT,
-                `type` enum(\'card\',\'store\',\'bank_account\', \'bitcoin\') NOT NULL,
+                `type` enum(\'card\',\'store\',\'bank_account\') NOT NULL,
                 `id_cart` int(10) unsigned NOT NULL,
                 `id_order` int(10) unsigned NOT NULL,
                 `id_transaction` varchar(32) NOT NULL,
@@ -236,7 +235,6 @@ class OpenpayPrestashop extends PaymentModule
                 Configuration::deleteByName('OPENPAY_CARDS') &&
                 Configuration::deleteByName('OPENPAY_STORES') &&
                 Configuration::deleteByName('OPENPAY_SPEI') &&
-                Configuration::deleteByName('OPENPAY_BITCOINS') &&
                 Configuration::deleteByName('OPENPAY_BACKGROUND_COLOR') &&
                 Configuration::deleteByName('OPENPAY_FONT_COLOR') &&
                 Configuration::deleteByName('OPENPAY_WEBHOOOK_URL') &&
@@ -296,7 +294,6 @@ class OpenpayPrestashop extends PaymentModule
         $this->smarty->assign('card', Configuration::get('OPENPAY_CARDS'));
         $this->smarty->assign('store', Configuration::get('OPENPAY_STORES'));
         $this->smarty->assign('spei', Configuration::get('OPENPAY_SPEI'));
-        $this->smarty->assign('bitcoins', Configuration::get('OPENPAY_BITCOINS'));
         $this->smarty->assign('module_dir', $this->_path);
         $this->smarty->assign('openpay_ps_version', _PS_VERSION_);
 
@@ -350,10 +347,6 @@ class OpenpayPrestashop extends PaymentModule
             case 'card':
                 $template = './views/templates/hook/card_order_confirmation.tpl';
                 break;
-
-            case 'bitcoin':
-                $template = './views/templates/hook/bitcoin_order_confirmation.tpl';
-                break;
         }
 
         return $this->display(__FILE__, $template);
@@ -386,30 +379,6 @@ class OpenpayPrestashop extends PaymentModule
                     $message_aux = $this->l(Tools::ucfirst($result_json->card->type).' card:').' '.
                             Tools::ucfirst($result_json->card->brand).' (Exp: '.$result_json->card->expiration_month.'/'.$result_json->card->expiration_year.')'."\n".
                             $this->l('Card number:').' '.$result_json->card->card_number."\n";
-
-                    break;
-
-                case 'bitcoin_transaction':
-
-                    $result_json = $this->bitcoinPayment();
-                    $redirect = $this->context->link->getModuleLink('openpayprestashop', 'bitcoinwaiting', array('transaction' => $result_json->id));
-                    Tools::redirect($redirect);
-
-                    break;
-
-                case 'bitcoin':
-
-                    $openpay_customer = $this->getOpenpayCustomer($this->context->cookie->id_customer);
-                    $result_json = $this->getOpenpayCharge($openpay_customer, $transaction);
-                    $display_name = $this->l('Openpay Bitcoin payment');
-                    $order_status = (int) Configuration::get('waiting_cash_payment');
-
-                    $mail_detail = '<br/><strong>Estamos confirmando tu pago</strong><br/>'.
-                            '<span style="color:#333"><strong>Dirección de pago:</strong></span> '.$result_json->payment_method->payment_address.'<br />
-                            <span style="color:#333"><strong>Monto Bitcoin:</strong></span> '.$result_json->payment_method->amount_bitcoins.' BTC';
-
-                    $message_aux = $this->l('Amount Bitcoin:').' '.$result_json->payment_method->amount_bitcoins."\n".
-                            $this->l('Payment address:').' '.$result_json->payment_method->payment_address."\n";
 
                     break;
 
@@ -564,21 +533,6 @@ class OpenpayPrestashop extends PaymentModule
         return $result_json;
     }
 
-    public function bitcoinPayment() {
-        $cart = $this->context->cart;
-        $openpay_customer = $this->getOpenpayCustomer($this->context->cookie->id_customer);
-
-        $charge_request = array(
-            'method' => 'bitcoin',
-            'amount' => $cart->getOrderTotal(),
-            'description' => $cart->id
-        );
-
-        $result_json = $this->createOpenpayCharge($openpay_customer, $charge_request);
-
-        return $result_json;
-    }
-
     public function othersPayment($payment_method) {
         $openpay_customer = $this->getOpenpayCustomer($this->context->cookie->id_customer);
         $cart = $this->context->cart;
@@ -682,7 +636,6 @@ class OpenpayPrestashop extends PaymentModule
                 'OPENPAY_CARDS' => Tools::getValue('openpay_cards'),
                 'OPENPAY_STORES' => Tools::getValue('openpay_stores'),
                 'OPENPAY_SPEI' => Tools::getValue('openpay_spei'),
-                'OPENPAY_BITCOINS' => Tools::getValue('openpay_bitcoins'),
                 'OPENPAY_BACKGROUND_COLOR' => Tools::getValue('openpay_background_color'),
                 'OPENPAY_FONT_COLOR' => Tools::getValue('openpay_font_color'),
                 'OPENPAY_WEBHOOK_URL' => trim(Tools::getValue('openpay_webhook_url')),
@@ -755,7 +708,6 @@ class OpenpayPrestashop extends PaymentModule
                         'OPENPAY_CARDS',
                         'OPENPAY_STORES',
                         'OPENPAY_SPEI',
-                        'OPENPAY_BITCOINS',
                         'OPENPAY_BACKGROUND_COLOR',
                         'OPENPAY_FONT_COLOR',
                         'OPENPAY_WEBHOOK_URL',
