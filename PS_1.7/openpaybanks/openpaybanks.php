@@ -46,7 +46,7 @@ class OpenpayBanks extends PaymentModule
 
         $this->name = 'openpaybanks';
         $this->tab = 'payments_gateways';
-        $this->version = '3.0.4';
+        $this->version = '3.1.0';
         $this->author = 'Openpay SAPI de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';
 
@@ -775,6 +775,9 @@ class OpenpayBanks extends PaymentModule
         $openpay = Openpay::getInstance($id, $pk);
         Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
 
+        $userAgent = "Openpay-PS17MX/v2";
+        Openpay::setUserAgent($userAgent);
+
         try {
             $customer = $openpay->customers->add($customer_data);
             return $customer;
@@ -790,6 +793,9 @@ class OpenpayBanks extends PaymentModule
 
         Openpay::getInstance($id, $pk);
         Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
+
+        $userAgent = "Openpay-PS17MX/v2";
+        Openpay::setUserAgent($userAgent);
 
         try {
             $charge = $customer->charges->create($charge_request);
@@ -807,6 +813,9 @@ class OpenpayBanks extends PaymentModule
 
         Openpay::getInstance($id, $pk);
         Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
+
+        $userAgent = "Openpay-PS17MX/v2";
+        Openpay::setUserAgent($userAgent);
         
         try {
             $charge = $customer->charges->get($transaction_id);            
@@ -843,7 +852,6 @@ class OpenpayBanks extends PaymentModule
             'event_types' => array(
                 'verification',
                 'charge.succeeded',
-                'charge.created',
                 'charge.cancelled',
                 'charge.failed',
                 'payout.created',
@@ -852,7 +860,8 @@ class OpenpayBanks extends PaymentModule
                 'spei.received',
                 'chargeback.created',
                 'chargeback.rejected',
-                'chargeback.accepted'
+                'chargeback.accepted',
+                'transaction.expired'
             )
         );
 
@@ -862,6 +871,9 @@ class OpenpayBanks extends PaymentModule
 
         $openpay = Openpay::getInstance($id, $pk);
         Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
+
+        $userAgent = "Openpay-PS17MX/v2";
+        Openpay::setUserAgent($userAgent);
 
         try {
             $webhook = $openpay->webhooks->add($webhook_data);

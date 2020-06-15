@@ -47,39 +47,39 @@ if(empty($json->type)){
 
 Logger::addLog('Request type: '.$json->type, 1, null, null, null, true);
 
-$pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
-$id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
+if($json->transaction->method == 'store'){
 
-$openpay = Openpay::getInstance($id, $pk);
-Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
+    $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
+    $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
 
-$charge = $openpay->charges->get($json->transaction->id);
+    $openpay = Openpay::getInstance($id, $pk);
+    Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
 
-if ($json->type == 'charge.succeeded' && $json->transaction->method == 'store' && $charge->status == 'completed') {    
-    Logger::addLog('#Webhook Order ID: '.$charge->order_id, 1, null, null, null, true);
-    Logger::addLog('#Webhook Trans ID: '.$charge->id, 1, null, null, null, true);
-        
-    $order = new Order((int) $charge->order_id);            
-    if ($order) {        
-        $order_history = new OrderHistory();
-        $order_history->id_order = (int) $order->id;
-        $order_history->changeIdOrderState(Configuration::get('PS_OS_PAYMENT'), (int) $order->id);
-        $order_history->addWithemail();
+    $charge = $openpay->charges->get($json->transaction->id);
+    $order = new Order((int) $charge->order_id);
+                     
+    if ($order) {
+        Logger::addLog('#Webhook Order ID: '.$charge->order_id, 1, null, null, null, true);
+        Logger::addLog('#Webhook Trans ID: '.$charge->id, 1, null, null, null, true);
+        if ($json->type == 'charge.succeeded' && $charge->status == 'completed') {    
+            $order_history = new OrderHistory();
+            $order_history->id_order = (int) $order->id;
+            $order_history->changeIdOrderState(Configuration::get('PS_OS_PAYMENT'), (int) $order->id);
+            $order_history->addWithemail();
 
-        Db::getInstance()->Execute(
-            'UPDATE '._DB_PREFIX_.'openpay_transaction SET status = "paid" WHERE id_transaction = "'.pSQL($charge->id).'"'
-        );
+            Db::getInstance()->Execute(
+                'UPDATE '._DB_PREFIX_.'openpay_transaction SET status = "paid" WHERE id_transaction = "'.pSQL($charge->id).'"'
+            );
+        }else if($json->type == 'transaction.expired'){
+
+            $order_history = new OrderHistory();
+            $order_history->id_order = (int) $order->id;
+            $order_history->changeIdOrderState(Configuration::get('PS_OS_CANCELED'), (int) $order->id);
+            $order_history->addWithemail();
+        }
     } else {
         Logger::addLog('#Webhook NO ORDER', 1, null, null, null, true);
     }
-    header('HTTP/1.1 200 OK');
-    exit;
 }
 header('HTTP/1.1 200 OK');
 exit;
-
-
-
-
-
-

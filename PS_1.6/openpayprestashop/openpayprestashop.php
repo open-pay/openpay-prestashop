@@ -50,7 +50,7 @@ class OpenpayPrestashop extends PaymentModule
 
         $this->name = 'openpayprestashop';
         $this->tab = 'payments_gateways';
-        $this->version = '2.2.0';
+        $this->version = '2.3.0';
         $this->author = 'Openpay SAPI de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';
 
@@ -811,6 +811,9 @@ class OpenpayPrestashop extends PaymentModule
         $openpay = Openpay::getInstance($this->merchant_id, $this->secret_key);
         Openpay::setSandboxMode($this->is_sandbox);
 
+        $userAgent = "Openpay-PS16MX/v2";
+        Openpay::setUserAgent($userAgent);
+
         try {
             $customer = $openpay->customers->add($customer_data);
             return $customer;
@@ -822,7 +825,9 @@ class OpenpayPrestashop extends PaymentModule
     public function createOpenpayCharge($customer, $charge_request) {
         Openpay::getInstance($this->merchant_id, $this->secret_key);
         Openpay::setSandboxMode($this->is_sandbox);
-        //Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
+        
+        $userAgent = "Openpay-PS16MX/v2";
+        Openpay::setUserAgent($userAgent);
 
         try {
             $charge = $customer->charges->create($charge_request);
@@ -836,6 +841,9 @@ class OpenpayPrestashop extends PaymentModule
         $customer = $this->getOpenpayCustomer($this->context->cookie->id_customer);
         Openpay::getInstance($this->merchant_id, $this->secret_key);
         Openpay::setSandboxMode($this->is_sandbox);
+
+        $userAgent = "Openpay-PS16MX/v2";
+        Openpay::setUserAgent($userAgent);
 
         try {
             $charge = $customer->charges->get($transaction_id);
@@ -867,7 +875,6 @@ class OpenpayPrestashop extends PaymentModule
             'event_types' => array(
                 'verification',
                 'charge.succeeded',
-                'charge.created',
                 'charge.cancelled',
                 'charge.failed',
                 'payout.created',
@@ -876,7 +883,8 @@ class OpenpayPrestashop extends PaymentModule
                 'spei.received',
                 'chargeback.created',
                 'chargeback.rejected',
-                'chargeback.accepted'
+                'chargeback.accepted',
+                'transaction.expired'
             )
         );
 
@@ -884,6 +892,9 @@ class OpenpayPrestashop extends PaymentModule
 
         $openpay = Openpay::getInstance($this->merchant_id, $this->secret_key);
         Openpay::setSandboxMode($this->is_sandbox);
+
+        $userAgent = "Openpay-PS16MX/v2";
+        Openpay::setUserAgent($userAgent);
 
         try {
             $webhook = $openpay->webhooks->add($webhook_data);
