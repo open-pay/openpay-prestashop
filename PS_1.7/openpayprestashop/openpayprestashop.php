@@ -48,7 +48,7 @@ class OpenpayPrestashop extends PaymentModule
 
         $this->name = 'openpayprestashop';
         $this->tab = 'payments_gateways';
-        $this->version = '3.0.8';
+        $this->version = '3.1.0';
         $this->author = 'Openpay SAPI de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';               
 
@@ -419,6 +419,9 @@ class OpenpayPrestashop extends PaymentModule
 
         Openpay::getInstance($id, $pk);
         Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
+
+        $userAgent = "Openpay-PS17MX/v2";
+        Openpay::setUserAgent($userAgent);
         
         try {   
             Logger::addLog('$save_cc => '. json_encode($save_cc), 1, null, null, null, true);
@@ -805,6 +808,9 @@ class OpenpayPrestashop extends PaymentModule
         $openpay = Openpay::getInstance($id, $pk);
         Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
 
+        $userAgent = "Openpay-PS17MX/v2";
+        Openpay::setUserAgent($userAgent);
+
         try {
             $customer = $openpay->customers->add($customer_data);
             return $customer;
@@ -839,6 +845,9 @@ class OpenpayPrestashop extends PaymentModule
 
         Openpay::getInstance($id, $pk);
         Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
+
+        $userAgent = "Openpay-PS17MX/v2";
+        Openpay::setUserAgent($userAgent);
 
         try {
             $charge = $customer->charges->get($transaction_id);
