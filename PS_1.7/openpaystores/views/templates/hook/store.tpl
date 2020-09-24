@@ -3,19 +3,27 @@
         <div class="row mt20">                
             <div class="col-md-4"></div>
             <div class="col-md-4 store-image">
-                <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/paynet.png">
+                {if $country == 'MX' }
+                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/paynet.png">
+                {else}
+                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/punto_red.png">
+                {/if}
             </div>
         </div>    
 
         <div class="row">    
             <div class="col-md-2"></div>
             <div class="col-md-8 store-image">
-                <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores.png">
+                {if $country == 'MX' }
+                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores_mx.png">
+                {else}
+                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores_co.png">
+                {/if}
             </div>
             <div class="col-md-2"></div>                
         </div>            
 
-        <h4 class="subtitle mt30 mb30">{l s='Pasos para tu pago por tienda' mod='openpaystores'} (<small><a target="_blank" href="http://www.openpay.mx/tiendas-de-conveniencia.html">{l s='Tienda afiliadas' mod='openpaystores'}</a></small>)</h4>
+        <h4 class="subtitle mt30 mb30">{l s='Pasos para tu pago por tienda' mod='openpaystores'} (<small><a target="_blank" href="{if $country == 'MX' }http://www.openpay.mx/tiendas-de-conveniencia.html {else} https://www.openpay.co/tiendas/ {/if}">{l s='Tienda afiliadas' mod='openpaystores'}</a></small>)</h4>
 
         <div class="row mb30">
 

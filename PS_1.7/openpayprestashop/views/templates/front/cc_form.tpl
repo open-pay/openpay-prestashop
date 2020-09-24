@@ -28,8 +28,12 @@
         <div class="row mt30 mb10">
             <div class="col-md-12 store-image">
                 <h3 class="openpay_title">{l s='Tarjetas aceptadas' mod='openpayprestashop'}</h3>
-                <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/credit_cards.png">
-                <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/debit_cards.png">
+                {if $country == 'MX'}
+                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/credit_cards.png">
+                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/debit_cards.png">
+                {else}
+                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/cards_co.png">
+                {/if}
             </div>                
         </div>
 
@@ -40,6 +44,7 @@
         <br>
         <form action="{$action}" id="openpay-payment-form" method="post" class="openpay-payment-form">              
             <input type="hidden" name="use_card_points" id="use_card_points" value="false" />
+            <input type="hidden" name="country" id="country" value="{$country}"/>
             
             <h3 class="openpay_title">{l s='Información de pago' mod='openpayprestashop'}</h3>
             
@@ -121,7 +126,7 @@
                     {/if}       
                 </div>
             </div>    
-                    
+           
             {if $show_months_interest_free }        
                 <div class="row">
                     <div class="col-md-6">
@@ -130,6 +135,24 @@
                             <option value="1">{l s="Pago de contado" mod='openpayprestashop'}</option>
                             {foreach $months_interest_free as $interest_free}
                                 <option value="{$interest_free}">{$interest_free} meses</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                    <div id="total-monthly-payment" class="col-md-6 hidden">        
+                        <label>{l s="Pago mensual" mod='openpayprestashop'}</label>
+                        <p class="openpay-total">$<span id="monthly-payment">{$total}</span> MXN</p>
+                    </div>
+                </div>
+            {/if}
+
+            {if $show_installments }        
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>{l s='Cuotas' mod='openpayprestashop'}</label>
+                        <select name="installment" id="installment" style="width: 100%;">
+                            <option value="1">{l s="Pago de contado" mod='openpayprestashop'}</option>
+                            {foreach $installments as $installment}
+                                <option value="{$installment}">{$installment} cuotas</option>
                             {/foreach}
                         </select>
                     </div>
@@ -335,4 +358,4 @@
         $('#openpay-ajax-loader').hide();        
     };
 
-</script>    
+</script>

@@ -29,7 +29,11 @@
     {if ($openpay_order.show_map)}
         <div class="mt20 mb20">
             <h2>Mapa de tiendas</h2>
-            <iframe src="https://www.paynet.com.mx/mapa-tiendas/index.html?locationNotAllowed=true&postalCode={$openpay_order.postal_code}" style="border: 1px solid #000; width:70%; height:300px;" frameborder="0"></iframe>                
+            {if $openpay_order.country == MX}
+                <iframe src="https://www.paynet.com.mx/mapa-tiendas/index.html?locationNotAllowed=true&postalCode={$openpay_order.postal_code}" style="border: 1px solid #000; width:70%; height:300px;" frameborder="0"></iframe>                
+            {else}
+                <iframe src="https://docs.openpay.co/docs/mapa-de-tiendas.html?locationNotAllowed=true&address={$openpay_order.address}" style="border: 1px solid #000; width:70%; height:300px;" frameborder="0"></iframe>
+            {/if}
         </div>    
     {/if}    
-</div>    
+</div>
