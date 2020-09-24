@@ -42,6 +42,7 @@ class OpenpayPrestashopCardPaymentModuleFrontController extends ModuleFrontContr
             Tools::redirect('index.php?controller=order');
         }
 
+        $country = Configuration::get('OPENPAY_COUNTRY');
         $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PUBLIC_KEY_LIVE') : Configuration::get('OPENPAY_PUBLIC_KEY_TEST');
         $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
 
@@ -54,26 +55,44 @@ class OpenpayPrestashopCardPaymentModuleFrontController extends ModuleFrontContr
         if(Configuration::get('OPENPAY_MONTHS_INTEREST_FREE') != null){
             $selected_months_interest_free = explode(',', Configuration::get('OPENPAY_MONTHS_INTEREST_FREE'));
         }
+
+        $selected_installments = array();
+        if (Configuration::get('OPENPAY_INSTALLMENTS') != null) {
+            $selected_installments = explode(',', Configuration::get('OPENPAY_INSTALLMENTS'));
+        }
         
         $show_months_interest_free = false;
-        if(count($selected_months_interest_free) > 0){
+        if(count($selected_months_interest_free) > 0 && $country == 'MX'){
             $show_months_interest_free = true;
+        }
+
+        $show_installments = false;
+        if (count($selected_installments) > 0 && $country == 'CO') {
+            //$show_installments = true;
         }
 
         $this->context->smarty->assign(array(
             'validation_url' => './index.php?process=validation&fc=module&module=openpayprestashop&controller=default',
             'pk' => $pk,
             'id' => $id,
+            'country' => $country,
             'mode' => Configuration::get('OPENPAY_MODE'),
             'nbProducts' => $cart->nbProducts(),
             'total' => $cart->getOrderTotal(),
             'module_dir' => $this->module->getPath(),
             'months_interest_free' => $selected_months_interest_free,
-            'show_months_interest_free' => $show_months_interest_free
+            'show_months_interest_free' => $show_months_interest_free,
+            'installments' => $selected_installments,
+            'show_installments' => $show_installments
         ));
-
-        $this->context->controller->addJS('https://openpay.s3.amazonaws.com/openpay.v1.min.js');
-        $this->context->controller->addJS('https://openpay.s3.amazonaws.com/openpay-data.v1.min.js');
+        if($country == 'MX'){
+            $this->context->controller->addJS('https://openpay.s3.amazonaws.com/openpay.v1.min.js');
+            $this->context->controller->addJS('https://openpay.s3.amazonaws.com/openpay-data.v1.min.js');
+        }if($country == 'CO'){
+            $this->context->controller->addJS('https://resources.openpay.co/openpay.v1.min.js');
+            $this->context->controller->addJS('https://resources.openpay.co/openpay-data.v1.min.js');
+        }
+        
 
         $this->context->controller->addCSS($this->module->getPath().'views/css/openpay-prestashop.css');
 

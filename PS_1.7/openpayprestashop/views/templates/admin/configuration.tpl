@@ -26,16 +26,16 @@
 <div class="openpay-module-wrapper">
 
     <div class="openpay-module-header">
-        <a href="http://www.openpay.mx" target="_blank" rel="external"><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/openpay-logo.png" alt="Openpay logo" class="openpay-logo" /></a>
+        <a href="{if $openpay_configuration.OPENPAY_COUNTRY == 'MX' } http://www.openpay.mx {else} http://www.openpay.co {/if}" target="_blank" rel="external"><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/openpay-logo.png" alt="Openpay logo" class="openpay-logo" /></a>
         <span class="openpay-module-intro">{l s='Comienza ha aceptar pagos con tarjetas de crédito-débito hoy mismo con Openpay.' mod='openpayprestashop'}</span>
-        <a href="https://sandbox-dashboard.openpay.mx/merchant/production" rel="external" target="_blank" class="openpay-module-create-btn"><span>{l s='Crea una cuenta' mod='openpayprestashop'}</span></a>
+        <a href="{if $openpay_configuration.OPENPAY_COUNTRY == 'MX' } https://sandbox-dashboard.openpay.mx/login/register {else} https://sandbox-dashboard.openpay.co/login/register {/if}  " rel="external" target="_blank" class="openpay-module-create-btn"><span>{l s='Crea una cuenta' mod='openpayprestashop'}</span></a>
     </div>
     <div class="openpay-module-wrap">
         <div class="openpay-module-col1 floatRight">
             <div class="openpay-module-wrap-video">
                 <h3>{l s='Panel de administración' mod='openpayprestashop'}</h3>
                 <p>{l s='Contamos con un panel donde podrás visualizar todas tus transacciones.' mod='openpayprestashop'}</p>
-                <a target="_blank" href="http://www.openpay.mx"><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/openpay-dashboard.png" alt="openpay dashboard" class="openpay-dashboard" /></a>
+                <a target="_blank" href="{$dashboard_openpay}"><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/openpay-dashboard.png" alt="openpay dashboard" class="openpay-dashboard" /></a>
                 <hr>
                 <div class="openpay-prestashop-partner mt30">
                     <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/prestashop_partner.png" alt="" />
@@ -65,28 +65,52 @@
                     <div class="col-md-7">
                         <h3>{l s='Acepta pagos con tarjetas de crédito' mod='openpayprestashop'}</h3>
                         <div class="row">
+                        {if $openpay_configuration.OPENPAY_COUNTRY == 'MX' }
                             {for $i=1 to 4}
                                 <div class="col-xs-2 store-image">
-                                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/credit_cards/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
+                                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/credit_cards_mx/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
                                 </div>
                             {/for}
+                        {else}
+                            {for $i=1 to 3}
+                                <div class="col-xs-2 store-image">
+                                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/credit_cards_co/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
+                                </div>
+                            {/for}
+                        {/if}
                         </div>
                         <br><br>
                         <h3>{l s='Acepta pagos con tarjetas de débito' mod='openpayprestashop'}</h3>
                         <div class="row">
+                        {if $openpay_configuration.OPENPAY_COUNTRY == 'MX' }
                             {for $i=1 to 4}
                                 <div class="col-xs-2 store-image">
-                                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/debit_cards/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
+                                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/debit_cards_mx/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
                                 </div>
                             {/for}
+                        {else}
+                            {for $i=1 to 2}
+                                <div class="col-xs-2 store-image">
+                                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/debit_cards_co/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
+                                </div>
+                            {/for}
+                        {/if}
                         </div>
                         <div>
-                            <strong><a href="http://www.openpay.mx/tarjetas.html" target="_blank" class="openpay-module-btn">{l s='Tarjetas soportadas' mod='openpayprestashop'}</a></strong>
+                            <strong><a href="{if $openpay_configuration.OPENPAY_COUNTRY == 'MX' } http://www.openpay.mx/tarjetas.html {else} https://www.openpay.co/tdc-tdd {/if}" target="_blank" class="openpay-module-btn">{l s='Tarjetas soportadas' mod='openpayprestashop'}</a></strong>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <h3>{l s='Comisión por transacción exitosa' mod='openpayprestashop'}</h3>
-                        <p class="comision">{l s='2.9% + $2.5 MXN' mod='openpayprestashop'}</p>
+                        {if $openpay_configuration.OPENPAY_COUNTRY == 'MX' }
+                            <h3>{l s='Comisión por transacción exitosa' mod='openpayprestashop'}</h3>
+                            <p class="comision">{l s='2.9% + $2.5 MXN' mod='openpayprestashop'}</p>
+                        {else}
+                            <h3>{l s='Costos para clientes con cuentas de otros bancos' mod='openpayprestashop'}</h3>
+                            <p class="comision">{l s='2.90% + $900 COP' mod='openpayprestashop'}</p>
+                            <br><br>
+                            <h3>{l s='Costos para clientes BBVA' mod='openpayprestashop'}</h3>
+                            <p class="comision">{l s='2.70% + $900 COP' mod='openpayprestashop'}</p>
+                        {/if}
                     </div>
                 </div>
             </div>            
@@ -166,7 +190,17 @@
                             </tr>
                         </table>
                     </td>
-                </tr>                        
+                </tr>
+                <tr>
+                    <td colspan="2">                        
+                        <label style="">{l s="País" mod='openpayprestashop'}</label>                                          
+                        <select name="openpay_country" id="country" style="width: 100%; margin: 10px 0 0 0;">
+                            <option value="MX" {if $openpay_configuration.OPENPAY_COUNTRY == 'MX'} selected="selected"{/if}>México</option>
+                            <option value="CO" {if $openpay_configuration.OPENPAY_COUNTRY == 'CO'} selected="selected"{/if}>Colombia</option>
+                        </select>
+                        <div><small>* Seleccionar el país </small></div>
+                    </td>
+                </tr>                         
                 <tr>
                     <td colspan="2">                        
                         <label style="">{l s="¿Cómo procesar el cargo?" mod='openpayprestashop'}</label>                                          
@@ -214,17 +248,33 @@
                     <td colspan="2">
                         <h3>{l s='Meses sin intereses' mod='openpayprestashop'}</h3>
                         <label>{l s="Si vas a utilizar MSI deberás de seleccionar al menos una de las siguiente opciones." mod='openpayprestashop'}</label>                                      
-                        <table cellspacing="0" cellpadding="0" class="innerTable mb20">
-                            <tr>                                
-                                {foreach $months_interest_free as $key => $interest_free}                                        
-                                    <td align="left" valign="middle">
-                                        <input type="checkbox" name="months_interest_free[]" id="months_interest_free_{$key}" value="{$key}" {if $key|in_array:$selected_months_interest_free } checked="checked" {/if}> {$interest_free}
-                                    </td>    
-                                {/foreach}                                                                                                
-                            </tr>
-                        </table>                                                    
+                        <select name="months_interest_free[]" id="months_interest_free" style="width: 100%; margin: 10px 0 0 0;" multiple>
+                             {foreach $months_interest_free as $key => $interest_free}
+                                <option value="{$key}" {if $key|in_array:$selected_months_interest_free } selected="selected"{/if}>{$interest_free}</option>
+                            {/foreach}
+                        </select>
+                        <div><smal>* Presione ctrl y clic para seleccionar más de una opción.</smal></div>                                                  
+                    </td>
+                </tr>
+                <tr>
+                    <td>                        
+                        <label style="">{l s="IVA" mod='openpayprestashop'}</label>                                          
+                        <input type="text" autocomplete="off" type="text" name="openpay_iva" id="openpay_iva" value="{if $openpay_configuration.OPENPAY_IVA}{$openpay_configuration.OPENPAY_IVA|escape:'htmlall':'UTF-8'}{/if}" style="width: 100%; margin: 5px 0 0 0;">
+                        <div><small>* Debe contener el valor de IVA, es campo solo informativo, no tiene ningún efecto sobre el campo amount.</small></div>
                     </td>
                 </tr>   
+                <tr>
+                    <td colspan="2">
+                        <h3>{l s='Cuotas' mod='openpayprestashop'}</h3>
+                        <label>{l s="Si vas a utilizar Cuotas deberás de seleccionar al menos una de las siguiente opciones." mod='openpayprestashop'}</label>                                      
+                        <select name="installments[]" id="installments" style="width: 100%; margin: 10px 0 0 0;" multiple>
+                             {foreach $installments as $key => $installment}
+                                <option value="{$key}" {if $key|in_array:$selected_installments } selected="selected"{/if}>{$installment}</option>
+                            {/foreach}
+                        </select>
+                        <div><smal>* Presione ctrl y clic para seleccionar más de una opción.</smal></div>                                                 
+                    </td>
+                </tr>     
                 <tr>
                     <td colspan="2" class="td-noborder save"><input type="submit" class="button" name="SubmitOpenpay" value="{l s='Guardar configuración' mod='openpayprestashop'}" /></td>
                 </tr>
@@ -259,15 +309,45 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
+    var country = jQuery('#country').val();
+    showOrHideElements(country);
+
     $('input:radio[name=openpay_mode]').click(function() {
         updateOpenpaySettings();
     });
-    
+
+    jQuery('#country').change(function () {
+        var country = jQuery(this).val();
+        console.log('openpay_cards_country', country);        
+
+        showOrHideElements(country)
+    });
+
     function updateOpenpaySettings() {
         if ($('input:radio[name=openpay_mode]:checked').val() === 1) {
             $('fieldset.openpay-cc-numbers').hide(1000);
         } else {
             $('fieldset.openpay-cc-numbers').show(1000);
+        }
+    }
+
+    function showOrHideElements(country){
+        if (country === 'CO') {            
+            jQuery("#openpay_iva").closest("tr").show();
+            jQuery("#installments").closest("tr").show();
+            
+            jQuery("#openpay_charge_type").closest("tr").hide();
+            jQuery("#capture").closest("tr").hide();
+            jQuery("#use_card_points").closest("tr").hide();
+            jQuery("#months_interest_free").closest("tr").hide();         
+        } else if (country === 'MX') {            
+            jQuery("#openpay_iva").closest("tr").hide();  
+            jQuery("#installments").closest("tr").hide();
+                          
+            jQuery("#openpay_charge_type").closest("tr").show();
+            jQuery("#capture").closest("tr").show();
+            jQuery("#use_card_points").closest("tr").show();
+            jQuery("#months_interest_free").closest("tr").show();                                
         }
     }
 });

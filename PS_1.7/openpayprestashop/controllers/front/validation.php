@@ -54,10 +54,10 @@ class OpenpayPrestashopValidationModuleFrontController extends ModuleFrontContro
             Tools::redirect('index.php?controller=order&step=1');
         }                    
         
+        $country = Tools::getValue('country'); 
         $save_cc = Tools::getValue('save_cc') ? true : false;
-        
+        $installments = ($country === 'MX') ? Tools::getValue('interest_free') : Tools::getValue('installment');
         $openpay = new OpenpayPrestashop();        
-        $openpay->processPayment(Tools::getValue('openpay_token'), Tools::getValue('device_session_id'), Tools::getValue('interest_free'), Tools::getValue('use_card_points'), Tools::getValue('openpay_cc'), $save_cc);        
+        $openpay->processPayment(Tools::getValue('openpay_token'), Tools::getValue('device_session_id'), $installments , Tools::getValue('use_card_points'), Tools::getValue('openpay_cc'), $save_cc);        
     }
-
 }

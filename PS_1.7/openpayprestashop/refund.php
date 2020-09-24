@@ -16,8 +16,8 @@ try {
         );
         echo json_encode($message);
         exit;
-    }    
-    
+    }
+
     $transaction_id = pSQL(Tools::getValue('transaction_id'));
     $amount = pSQL(Tools::getValue('amount'));
     $reason = pSQL(Tools::getValue('reason'));
@@ -40,11 +40,22 @@ try {
         FROM '._DB_PREFIX_.'openpay_customer
         WHERE id_customer = '.(int) $order->id_customer.' AND (mode = "'.$mode.'" OR mode IS NULL)'
     );
-            
+
+    $country = Configuration::get('OPENPAY_COUNTRY');
+
+    if($country != 'MX'){
+        $message = array(
+            'msg' => 'fail',
+            'response' => 'Openpay plugin does not support refunds.'
+        );
+        echo json_encode($message);
+        exit;
+    }
+    
     $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
     $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
            
-    $openpay = Openpay::getInstance($id, $pk);
+    $openpay = Openpay::getInstance($id, $pk, $country);
     Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
     
     $customer = $openpay->customers->get($openpay_customer['openpay_customer_id']);

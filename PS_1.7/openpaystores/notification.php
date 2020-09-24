@@ -48,11 +48,11 @@ if(empty($json->type)){
 Logger::addLog('Request type: '.$json->type, 1, null, null, null, true);
 
 if($json->transaction->method == 'store'){
-
+    $country = Configuration::get('OPENPAY_COUNTRY');
     $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
     $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
 
-    $openpay = Openpay::getInstance($id, $pk);
+    $openpay = Openpay::getInstance($id, $pk, $country);
     Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
 
     $charge = $openpay->charges->get($json->transaction->id);
