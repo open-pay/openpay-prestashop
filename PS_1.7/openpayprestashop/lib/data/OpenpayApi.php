@@ -18,6 +18,7 @@ class Openpay
     private static $apiEndpoint = '';
     private static $apiSandboxEndpoint = '';
     private static $sandboxMode = true;
+    private static $classification = '';
 
     public function __construct() {
         
@@ -47,6 +48,17 @@ class Openpay
     public static function getUserAgent(){
         $userAgent = self::$userAgent; 
         return $userAgent;
+    }
+
+    public static function setClassificationMerchant($classification){
+        if ($classification != '') {
+            self::$classification = $classification;
+        }
+    }
+
+    public static function getClassificationMerchant(){
+        $classification = self::$classification; 
+        return $classification;
     }
 
     public static function setApiKey($key = '') {
@@ -114,8 +126,13 @@ class Openpay
 
     public static function setEndpointUrl($country){
         if($country == 'MX'){
-            self::$apiEndpoint = 'https://api.openpay.mx/v1';
-            self::$apiSandboxEndpoint = 'https://sandbox-api.openpay.mx/v1';
+            if(self::getClassificationMerchant() != 'eglobal'){
+                self::$apiEndpoint = 'https://api.openpay.mx/v1';
+                self::$apiSandboxEndpoint = 'https://sandbox-api.openpay.mx/v1';
+            }else{
+                self::$apiEndpoint = 'https://api.ecommercebbva.com/v1';
+                self::$apiSandboxEndpoint = 'https://sand-api.ecommercebbva.com/v1';
+            }
         }elseif($country == 'CO'){
             self::$apiEndpoint = 'https://api.openpay.co/v1';
             self::$apiSandboxEndpoint = 'https://sandbox-api.openpay.co/v1';

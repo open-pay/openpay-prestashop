@@ -26,16 +26,27 @@
 <div class="openpay-module-wrapper">
 
     <div class="openpay-module-header">
-        <a href="{if $openpay_configuration.OPENPAY_COUNTRY == 'MX' } http://www.openpay.mx {else} http://www.openpay.co {/if}" target="_blank" rel="external"><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/openpay-logo.png" alt="Openpay logo" class="openpay-logo" /></a>
-        <span class="openpay-module-intro">{l s='Comienza ha aceptar pagos con tarjetas de crédito-débito hoy mismo con Openpay.' mod='openpayprestashop'}</span>
-        <a href="{if $openpay_configuration.OPENPAY_COUNTRY == 'MX' } https://sandbox-dashboard.openpay.mx/login/register {else} https://sandbox-dashboard.openpay.co/login/register {/if}  " rel="external" target="_blank" class="openpay-module-create-btn"><span>{l s='Crea una cuenta' mod='openpayprestashop'}</span></a>
+        {if $openpay_configuration.OPENPAY_CLASSIFICATION != 'eglobal' }
+            <a href="{if $openpay_configuration.OPENPAY_COUNTRY == 'MX' } http://www.openpay.mx {else} http://www.openpay.co {/if}" target="_blank" rel="external"><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/openpay-logo.png" alt="Openpay logo" class="openpay-logo" /></a>
+            <span class="openpay-module-intro">{l s='Comienza ha aceptar pagos con tarjetas de crédito-débito hoy mismo con Openpay.' mod='openpayprestashop'}</span>
+            <a href="{if $openpay_configuration.OPENPAY_COUNTRY == 'MX' } https://sandbox-dashboard.openpay.mx/login/register {else} https://sandbox-dashboard.openpay.co/login/register {/if}  " rel="external" target="_blank" class="openpay-module-create-btn"><span>{l s='Crea una cuenta' mod='openpayprestashop'}</span></a>
+        {else}
+            <a href="https://docs.ecommercebbva.com/index.html#cargos" target="_blank" rel="external"><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/bbva-logo.png" alt="Openpay logo" class="openpay-logo" /></a>
+            <span class="openpay-module-intro">{l s='Comienza ha aceptar pagos con tarjetas de crédito-débito hoy mismo con BBVA.' mod='openpayprestashop'}</span>
+            <a href="https://sand-portal.ecommercebbva.com/login/register/bbva" rel="external" target="_blank" class="openpay-module-create-btn"><span>{l s='Crea una cuenta' mod='openpayprestashop'}</span></a>
+        {/if}
     </div>
     <div class="openpay-module-wrap">
         <div class="openpay-module-col1 floatRight">
             <div class="openpay-module-wrap-video">
                 <h3>{l s='Panel de administración' mod='openpayprestashop'}</h3>
                 <p>{l s='Contamos con un panel donde podrás visualizar todas tus transacciones.' mod='openpayprestashop'}</p>
-                <a target="_blank" href="{$dashboard_openpay}"><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/openpay-dashboard.png" alt="openpay dashboard" class="openpay-dashboard" /></a>
+                <a target="_blank" href="{$dashboard_openpay}">
+                    {if $openpay_configuration.OPENPAY_CLASSIFICATION != 'eglobal' }
+                        <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/openpay_dashboard.png" alt="openpay dashboard" class="openpay-dashboard" /></a>
+                    {else}
+                        <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/bbva-dashboard.png" alt="BBVA dashboard" class="openpay-dashboard" /></a>
+                    {/if}
                 <hr>
                 <div class="openpay-prestashop-partner mt30">
                     <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/prestashop_partner.png" alt="" />
@@ -66,13 +77,21 @@
                         <h3>{l s='Acepta pagos con tarjetas de crédito' mod='openpayprestashop'}</h3>
                         <div class="row">
                         {if $openpay_configuration.OPENPAY_COUNTRY == 'MX' }
-                            {for $i=1 to 4}
-                                <div class="col-xs-2 store-image">
-                                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/credit_cards_mx/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
-                                </div>
-                            {/for}
+                            {if $openpay_configuration.OPENPAY_CLASSIFICATION != 'eglobal' }
+                                {for $i=1 to 4}
+                                    <div class="col-xs-2 store-image">
+                                        <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/credit_cards_mx/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
+                                    </div>
+                                {/for}
+                            {else}
+                                {for $i=1 to 3}
+                                    <div class="col-xs-2 store-image">
+                                        <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/credit_cards_bbva/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
+                                    </div>
+                                {/for}
+                            {/if}
                         {else}
-                            {for $i=1 to 3}
+                            {for $i=1 to 2}
                                 <div class="col-xs-2 store-image">
                                     <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/credit_cards_co/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
                                 </div>
@@ -96,10 +115,13 @@
                             {/for}
                         {/if}
                         </div>
+                        {if $openpay_configuration.OPENPAY_CLASSIFICATION != 'eglobal' }
                         <div>
                             <strong><a href="{if $openpay_configuration.OPENPAY_COUNTRY == 'MX' } http://www.openpay.mx/tarjetas.html {else} https://www.openpay.co/tdc-tdd {/if}" target="_blank" class="openpay-module-btn">{l s='Tarjetas soportadas' mod='openpayprestashop'}</a></strong>
                         </div>
+                        {/if}
                     </div>
+                    {if $openpay_configuration.OPENPAY_CLASSIFICATION != 'eglobal' }
                     <div class="col-md-4">
                         {if $openpay_configuration.OPENPAY_COUNTRY == 'MX' }
                             <h3>{l s='Comisión por transacción exitosa' mod='openpayprestashop'}</h3>
@@ -112,6 +134,7 @@
                             <p class="comision">{l s='2.70% + $900 COP' mod='openpayprestashop'}</p>
                         {/if}
                     </div>
+                    {/if}
                 </div>
             </div>            
         </div>
@@ -192,6 +215,11 @@
                     </td>
                 </tr>
                 <tr>
+                    <td>                                                     
+                        <input type="text" autocomplete="off" type="text" name="openpay_classification" id="openpay_classification" value="{if $openpay_configuration.OPENPAY_CLASSIFICATION}{$openpay_configuration.OPENPAY_CLASSIFICATION|escape:'htmlall':'UTF-8'}{/if}" style="width: 100%; margin: 5px 0 0 0;">
+                    </td>
+                </tr>
+                <tr>
                     <td colspan="2">                        
                         <label style="">{l s="País" mod='openpayprestashop'}</label>                                          
                         <select name="openpay_country" id="country" style="width: 100%; margin: 10px 0 0 0;">
@@ -199,6 +227,13 @@
                             <option value="CO" {if $openpay_configuration.OPENPAY_COUNTRY == 'CO'} selected="selected"{/if}>Colombia</option>
                         </select>
                         <div><small>* Seleccionar el país </small></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>                        
+                        <label style="">{l s="Número de afiliación" mod='openpayprestashop'}</label>                                          
+                        <input type="text" autocomplete="off" type="text" name="openpay_affiliation_bbva" id="openpay_affiliation_bbva" value="{if $openpay_configuration.OPENPAY_AFFILIATION}{$openpay_configuration.OPENPAY_AFFILIATION|escape:'htmlall':'UTF-8'}{/if}" style="width: 100%; margin: 5px 0 0 0;">
+                        <div><small>* Número de afiliación BBVA.</small></div>
                     </td>
                 </tr>                         
                 <tr>
@@ -310,7 +345,8 @@
 <script type="text/javascript">
 $(document).ready(function() {
     var country = jQuery('#country').val();
-    showOrHideElements(country);
+    var merchantClassification = jQuery('#openpay_classification').val();
+    showOrHideElements(country, merchantClassification);
 
     $('input:radio[name=openpay_mode]').click(function() {
         updateOpenpaySettings();
@@ -331,23 +367,34 @@ $(document).ready(function() {
         }
     }
 
-    function showOrHideElements(country){
+    function showOrHideElements(country, merchantClassification){
+        jQuery("#openpay_classification").closest("tr").hide();
         if (country === 'CO') {            
             jQuery("#openpay_iva").closest("tr").show();
             jQuery("#installments").closest("tr").show();
             
-            jQuery("#openpay_charge_type").closest("tr").hide();
-            jQuery("#capture").closest("tr").hide();
             jQuery("#use_card_points").closest("tr").hide();
             jQuery("#months_interest_free").closest("tr").hide();         
         } else if (country === 'MX') {            
             jQuery("#openpay_iva").closest("tr").hide();  
             jQuery("#installments").closest("tr").hide();
-                          
-            jQuery("#openpay_charge_type").closest("tr").show();
-            jQuery("#capture").closest("tr").show();
+    
             jQuery("#use_card_points").closest("tr").show();
             jQuery("#months_interest_free").closest("tr").show();                                
+        }
+
+        if(merchantClassification === 'eglobal'){
+            jQuery("#openpay_affiliation_bbva").closest("tr").show();
+
+            jQuery("#openpay_charge_type").closest("tr").hide();
+            jQuery("#capture").closest("tr").hide();
+            jQuery("#country").closest("tr").hide();
+        }else{
+            jQuery("#openpay_affiliation_bbva").closest("tr").hide();
+
+            jQuery("#openpay_charge_type").closest("tr").show();
+            jQuery("#capture").closest("tr").show();
+            jQuery("#country").closest("tr").show();
         }
     }
 });
