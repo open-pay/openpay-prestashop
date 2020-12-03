@@ -27,9 +27,14 @@
     <div class="openpay-form-container" >
         <div class="row mt30 mb10">
             <div class="col-md-12 store-image">
-                <h3 class="openpay_title">{l s='Tarjetas aceptadas' mod='openpayprestashop'}</h3>
+                <h3 class="openpay_title">{l s='Tarjetas aceptadas' mod='openpayprestashop'}{$merchant_classification }</h3>
                 {if $country == 'MX'}
-                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/credit_cards.png">
+                    {if $merchant_classification === 'eglobal'}
+                        <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/credit_cards_bbva.png" style="max-width: 120px;
+    margin-bottom: 5px;">
+                    {else}
+                         <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/credit_cards.png">
+                    {/if}
                     <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/debit_cards.png">
                 {else}
                     <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/cards_co.png">
@@ -44,7 +49,7 @@
         <br>
         <form action="{$action}" id="openpay-payment-form" method="post" class="openpay-payment-form">              
             <input type="hidden" name="use_card_points" id="use_card_points" value="false" />
-            <input type="hidden" name="country" id="country" value="{$country}"/>
+            <input type="hidden" name="country" id="country" value="false" value="{$country}"/>
             
             <h3 class="openpay_title">{l s='Información de pago' mod='openpayprestashop'}</h3>
             
