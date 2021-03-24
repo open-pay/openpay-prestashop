@@ -2,9 +2,9 @@
 <module>
     <name>openpaybanks</name>
     <displayName><![CDATA[Openpay]]></displayName>
-    <version><![CDATA[3.0.3]]></version>
+    <version><![CDATA[3.1.1]]></version>
     <description><![CDATA[Acepta transferencias bancarias con Openpay]]></description>
-    <author><![CDATA[Openpay SAPI de CV]]></author>
+    <author><![CDATA[Openpay SA de CV]]></author>
     <tab><![CDATA[payments_gateways]]></tab>
     <confirmUninstall><![CDATA[Are you sure you want uninstall this module?]]></confirmUninstall>
     <is_configurable>1</is_configurable>

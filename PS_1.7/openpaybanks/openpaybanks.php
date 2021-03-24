@@ -46,8 +46,8 @@ class OpenpayBanks extends PaymentModule
 
         $this->name = 'openpaybanks';
         $this->tab = 'payments_gateways';
-        $this->version = '3.1.0';
-        $this->author = 'Openpay SAPI de CV';
+        $this->version = '3.1.1';
+        $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';
 
         parent::__construct();
@@ -439,7 +439,7 @@ class OpenpayBanks extends PaymentModule
                 }
             }            
 
-            $fee = ($result_json->amount * 0.029) + 2.5;
+            $fee = ($result_json->amount * 0.029) + 2.5;  /* DUDAS*/
             
             if($result_json->due_date){
                 $due_date = $result_json->due_date;

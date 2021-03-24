@@ -51,8 +51,8 @@ class OpenpayPrestashop extends PaymentModule
 
         $this->name = 'openpayprestashop';
         $this->tab = 'payments_gateways';
-        $this->version = '4.0.0';
-        $this->author = 'Openpay SAPI de CV';
+        $this->version = '4.1.1';
+        $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';               
 
         parent::__construct();
@@ -395,11 +395,13 @@ class OpenpayPrestashop extends PaymentModule
         $selected_months_interest_free = array();
         if (Configuration::get('OPENPAY_MONTHS_INTEREST_FREE') != null) {
             $selected_months_interest_free = explode(',', Configuration::get('OPENPAY_MONTHS_INTEREST_FREE'));
+            $selected_months_interest_free = array_diff($selected_months_interest_free, array(1));
         }
 
         $select_installments = array();
         if (Configuration::get('OPENPAY_INSTALLMENTS') != null) {
             $select_installments = explode(',', Configuration::get('OPENPAY_INSTALLMENTS'));
+            $select_installments = array_diff($select_installments, array(1));
         }
 
 

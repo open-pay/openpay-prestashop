@@ -49,7 +49,7 @@
         <br>
         <form action="{$action}" id="openpay-payment-form" method="post" class="openpay-payment-form">              
             <input type="hidden" name="use_card_points" id="use_card_points" value="false" />
-            <input type="hidden" name="country" id="country" value="false" value="{$country}"/>
+            <input type="hidden" name="country" id="country" value="{$country}"/>
             
             <h3 class="openpay_title">{l s='Información de pago' mod='openpayprestashop'}</h3>
             

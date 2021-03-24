@@ -46,8 +46,8 @@ class OpenpayPse extends PaymentModule
 
         $this->name = 'openpaypse';
         $this->tab = 'payments_gateways';
-        $this->version = '1.0.1';
-        $this->author = 'Openpay SAPI de CV';
+        $this->version = '1.0.2';
+        $this->author = 'Openpay SA de CV';
 
         parent::__construct();
         $warning = 'Are you sure you want uninstall this module?';
