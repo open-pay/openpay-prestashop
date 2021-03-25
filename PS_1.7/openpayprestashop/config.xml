@@ -2,9 +2,9 @@
 <module>
     <name>openpayprestashop</name>
     <displayName><![CDATA[Openpay]]></displayName>
-    <version><![CDATA[4.1.0]]></version>
+    <version><![CDATA[4.1.1]]></version>
     <description><![CDATA[Acepta pagos con tarjeta de crédito con Openpay.]]></description>
-    <author><![CDATA[Openpay SAPI de CV]]></author>
+    <author><![CDATA[Openpay SA de CV]]></author>
     <tab><![CDATA[payments_gateways]]></tab>
     <confirmUninstall><![CDATA[All the Openpay transaction details saved in your database will be deleted. Are you sure you want uninstall this module?]]></confirmUninstall>
     <is_configurable>1</is_configurable>

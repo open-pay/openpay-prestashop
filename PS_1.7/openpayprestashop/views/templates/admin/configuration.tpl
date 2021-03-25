@@ -344,16 +344,18 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-    var country = jQuery('#country').val();
-    var merchantClassification = jQuery('#openpay_classification').val();
+    $("#openpay_classification").closest("tr").hide();
+
+    var country = $('#country').val();
+    var merchantClassification = $('#openpay_classification').val();
     showOrHideElements(country, merchantClassification);
 
     $('input:radio[name=openpay_mode]').click(function() {
         updateOpenpaySettings();
     });
 
-    jQuery('#country').change(function () {
-        var country = jQuery(this).val();
+    $('#country').change(function () {
+        var country = $(this).val();
         console.log('openpay_cards_country', country);        
 
         showOrHideElements(country)
@@ -368,33 +370,34 @@ $(document).ready(function() {
     }
 
     function showOrHideElements(country, merchantClassification){
-        jQuery("#openpay_classification").closest("tr").hide();
         if (country === 'CO') {            
-            jQuery("#openpay_iva").closest("tr").show();
-            jQuery("#installments").closest("tr").show();
+            $("#openpay_iva").closest("tr").show();
+            $("#installments").closest("tr").show();
             
-            jQuery("#use_card_points").closest("tr").hide();
-            jQuery("#months_interest_free").closest("tr").hide();         
-        } else if (country === 'MX') {            
-            jQuery("#openpay_iva").closest("tr").hide();  
-            jQuery("#installments").closest("tr").hide();
-    
-            jQuery("#use_card_points").closest("tr").show();
-            jQuery("#months_interest_free").closest("tr").show();                                
-        }
+            $("#use_card_points").closest("tr").hide();
+            $("#months_interest_free").closest("tr").hide(); 
+            $("#openpay_charge_type").closest("tr").hide();
+            $("#capture").closest("tr").hide();        
+        } else if (country === 'MX') {
+            $("#openpay_iva").closest("tr").hide();  
+            $("#installments").closest("tr").hide();
 
-        if(merchantClassification === 'eglobal'){
-            jQuery("#openpay_affiliation_bbva").closest("tr").show();
+            $("#use_card_points").closest("tr").show();
+            $("#months_interest_free").closest("tr").show();      
 
-            jQuery("#openpay_charge_type").closest("tr").hide();
-            jQuery("#capture").closest("tr").hide();
-            jQuery("#country").closest("tr").hide();
-        }else{
-            jQuery("#openpay_affiliation_bbva").closest("tr").hide();
+            if(merchantClassification === 'eglobal'){
+                $("#openpay_affiliation_bbva").closest("tr").show();
 
-            jQuery("#openpay_charge_type").closest("tr").show();
-            jQuery("#capture").closest("tr").show();
-            jQuery("#country").closest("tr").show();
+                $("#openpay_charge_type").closest("tr").hide();
+                $("#capture").closest("tr").hide();
+                $("#country").closest("tr").hide();
+            }else{
+                $("#openpay_affiliation_bbva").closest("tr").hide();
+
+                $("#openpay_charge_type").closest("tr").show();
+                $("#capture").closest("tr").show();
+                $("#country").closest("tr").show();
+            }                          
         }
     }
 });
