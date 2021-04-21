@@ -38,7 +38,6 @@ $(document).ready(function() {
 
     if($('#openpay-payment-form').length) {
         console.log($('#openpay-payment-form'));
-        $('#openpay-payment-form').addClass('FEDERICO');
     }
 
     $('#openpay-payment-form').submit(function(event) {

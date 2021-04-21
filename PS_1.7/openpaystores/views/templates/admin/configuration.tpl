@@ -67,7 +67,15 @@
                         {if $openpay_configuration.OPENPAY_COUNTRY == 'MX' }
                             <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores_mx.png" class="img-responsive">
                         {else}
-                            <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores_co.png" class="img-responsive">
+                            <div class="store-logos">
+                                <div class="store-logos__puntored">
+                                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores/puntored_logo.jpeg" class="img-responsive">
+                                </div>
+                                <div class="store-logos__via">
+                                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores/baloto_logo.png">
+                                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores/via_logo.png">
+                                </div>
+                            </div>
                         {/if}
                         <div>
                             <strong>

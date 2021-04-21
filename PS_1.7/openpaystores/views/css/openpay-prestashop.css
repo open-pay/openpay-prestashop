@@ -212,3 +212,20 @@ a#openpay_error { display: none; }
     font-weight: bold;
     margin-top: 10px;
 }
+
+.store-logos {
+    align-items: center;
+    display: grid;
+    justify-content: space-between;
+    grid-template-columns: 25% 70%;
+}
+.store-logos .store-logos__via {
+    text-align: center;
+    display: flex;
+}
+.store-logos .store-logos__via > img:first-child {
+    max-width: 180px;
+}
+.store-logos .store-logos__via > img:last-child {
+    max-width: 90px;
+}
