@@ -12,15 +12,25 @@
         </div>    
 
         <div class="row">    
-            <div class="col-md-2"></div>
-            <div class="col-md-8 store-image">
-                {if $country == 'MX' }
-                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores_mx.png">
-                {else}
-                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores_co.png">
-                {/if}
-            </div>
-            <div class="col-md-2"></div>                
+            {if $country == 'MX' }
+                <div class="col-md-2"></div>
+                    <div class="col-md-8 store-image">
+                        <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores_mx.png">
+                    </div>
+                <div class="col-md-2"></div>   
+            {else}
+                <div class="col-md-12 store-image">
+                    <div class="store-logos">
+                        <div class="store-logos__puntored">
+                            <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores/puntored_logo.jpeg">
+                        </div>
+                        <div class="store-logos__via">
+                            <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores/baloto_logo.png">
+                            <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores/via_logo.png">
+                        </div>
+                    </div>
+                </div>
+            {/if}      
         </div>            
 
         <h4 class="subtitle mt30 mb30">{l s='Pasos para tu pago por tienda' mod='openpaystores'} (<small><a target="_blank" href="{if $country == 'MX' }http://www.openpay.mx/tiendas-de-conveniencia.html {else} https://www.openpay.co/tiendas/ {/if}">{l s='Tienda afiliadas' mod='openpaystores'}</a></small>)</h4>

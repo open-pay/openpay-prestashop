@@ -374,6 +374,7 @@ $(document).ready(function() {
             $("#openpay_iva").closest("tr").show();
             $("#installments").closest("tr").show();
             
+            $("#openpay_affiliation_bbva").closest("tr").hide();
             $("#use_card_points").closest("tr").hide();
             $("#months_interest_free").closest("tr").hide(); 
             $("#openpay_charge_type").closest("tr").hide();
