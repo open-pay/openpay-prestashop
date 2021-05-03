@@ -1,0 +1,56 @@
+.codi {
+    padding: 15px 0;
+}
+.codi__header {
+    text-align: center;
+}
+.codi__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.codi__icon > img {
+    width: 40px;
+    height: 40px;
+}
+.codi__subtitle {
+    font-size: 14px;
+    color: #333;
+    text-align: center;
+}
+.codi__image {
+    margin: 0;
+    text-align: center;
+}
+.codi__image > img {
+    margin: 0 auto;
+    min-height: 100px;
+    height: 35%;
+    max-height: 210px;
+}
+.codi__information {
+    display: flex;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+}
+.codi__text.codi__text--small {
+    color: #C9C9C9;
+    padding-left: 5px;
+}
+.codi__text.codi__text--timer {
+    text-align: center;
+    color: #434343;
+    font-weight: bold;
+}
+.codi__expiration {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+}
+.codi__timer {
+    text-align: center;
+    color: #FF6F04;
+    font-weight: bolder;
+}
