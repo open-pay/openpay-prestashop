@@ -266,7 +266,7 @@
             if (myPaymentMethodSelected){
                 event.preventDefault();
                 
-                //antifraudes
+                /* antifraudes */
                 OpenPay.deviceData.setup("openpay-payment-form", "device_session_id");
                 
                 $(this).prop('disabled', true); /* Disable the submit button to prevent repeated clicks */
@@ -349,7 +349,7 @@
                 msg = "{l s='The CVV2 security code is required.' mod='openpayprestashop'}";
                 break;
 
-            default: //Demás errores 400
+            default: /* Demás errores 400 */
                 msg = "{l s='The request could not be processed.' mod='openpayprestashop'}";
                 break;
         }
