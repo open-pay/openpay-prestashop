@@ -46,14 +46,14 @@ class OpenpayCodi extends PaymentModule
 
         $this->name = 'openpaycodi';
         $this->tab = 'payments_gateways';
-        $this->version = '1.0.0';
-        $this->author = 'Openpay SAPI de CV';
+        $this->version = '1.0.1';
+        $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';
 
         parent::__construct();
         $warning = 'Are you sure you want uninstall this module?';
         $this->displayName = $this->l('Openpay CoDi®');
-        $this->description = $this->l('Módulo de pruebas CoDi®');
+        $this->description = $this->l('Acepta pagos através de CoDi® con Openpay');
         $this->confirmUninstall = $this->l($warning);
         $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);        
     }
@@ -95,8 +95,7 @@ class OpenpayCodi extends PaymentModule
                 $this->registerHook('displayHeader') &&
                 $this->registerHook('displayPaymentTop') &&                
                 $this->registerHook('displayOrderConfirmation') &&
-                $this->registerHook('displayMobileHeader') &&
-                $this->registerHook('actionEmailSendBefore') &&  
+                $this->registerHook('displayMobileHeader') && 
                 Configuration::updateValue('OPENPAY_MODE', 0) &&                
                 Configuration::updateValue('OPENPAY_CODI_WEBHOOK_ID_TEST', null) &&
                 Configuration::updateValue('OPENPAY_CODI_WEBHOOK_ID_LIVE', null) &&
@@ -212,38 +211,6 @@ class OpenpayCodi extends PaymentModule
             Configuration::deleteByName('OPENPAY_CODI_WEBHOOK_USER') &&
             Configuration::deleteByName('OPENPAY_CODI_WEBHOOK_PASSWORD') &&                                
             Configuration::deleteByName('OPENPAY_CODI_WEBHOOOK_URL');                
-    }
-    
-    public function hookActionEmailSendBefore($params) {        
-        if ($params['template'] == 'openpaycodi') {
-            Logger::addLog('#hookActionEmailSendBefore INPUT => '.json_encode($params), 1, null, null, null, true);            
-            
-            $order_id = $params['templateVars']['{id_order}'];
-            $pdf_url = $params['templateVars']['pdf_url'];                        
-            
-            Logger::addLog('#hookActionEmailSendBefore id_order => '.$order_id, 1, null, null, null, true);              
-            Logger::addLog('#hookActionEmailSendBefore $reference => '.$pdf_url, 1, null, null, null, true);  
-                                                
-            $pdf_file = $this->handlePdfAttachment($pdf_url, $order_id);            
-            $params['fileAttachment'] = $pdf_file;                                  
-            $params['subject'] = 'Pendiente de pago';
-            
-            Logger::addLog('#hookActionEmailSendBefore OUTPUT => '.json_encode($params), 1, null, null, null, true);    
-        }
-        
-        return $params;
-    }
-    
-    private function handlePdfAttachment($url, $order_id) {          
-        $pdf_content = file_get_contents($url);
-        $pdf_file_name = "payment_instructions_".$order_id.".pdf";        
-        
-        $attachment = array();        
-        $attachment['content'] = $pdf_content;
-        $attachment['name'] = $pdf_file_name;
-        $attachment['mime'] = 'application/pdf'; 
-        
-        return $attachment;
     }
     
     /**

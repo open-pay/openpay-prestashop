@@ -47,7 +47,7 @@ if(empty($json->type)){
 
 Logger::addLog('Request type: '.$json->type, 1, null, null, null, true);
 
-if($json->transaction->method == 'bank_account'){
+if($json->transaction->method == 'codi'){
 
     $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
     $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
