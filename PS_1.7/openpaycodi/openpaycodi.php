@@ -46,7 +46,7 @@ class OpenpayCodi extends PaymentModule
 
         $this->name = 'openpaycodi';
         $this->tab = 'payments_gateways';
-        $this->version = '1.0.1';
+        $this->version = '1.0.2';
         $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';
 

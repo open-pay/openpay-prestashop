@@ -2,7 +2,7 @@
 <module>
     <name>openpaycodi</name>
     <displayName><![CDATA[Openpay CoDi&reg;]]></displayName>
-    <version><![CDATA[1.0.1]]></version>
+    <version><![CDATA[1.0.2]]></version>
     <description><![CDATA[Acepta pagos através de CoDi® con Openpay]]></description>
     <author><![CDATA[Openpay SA de CV]]></author>
     <tab><![CDATA[payments_gateways]]></tab>
