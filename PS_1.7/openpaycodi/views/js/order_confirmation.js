@@ -1,7 +1,6 @@
 $(document).ready(function(){
     var due_date = $( "#due_date" ).val();
     var id_order = $( "#id_order" ).val();
-    var module_dir = $( "#module_dir" ).val();
 
     var countDownDate = new Date(due_date).getTime();
     fetchStatus();
@@ -10,7 +9,7 @@ $(document).ready(function(){
         
         $.ajax({
             type: 'POST',
-            url: '__PS_BASE_URI__/index.php?fc=module&module=openpaycodi&controller=fetchstatus' ,
+            url: '/index.php?fc=module&module=openpaycodi&controller=fetchstatus' ,
             headers: { "cache-control": "no-cache" },
             dataType: 'json',
             data: 	{
@@ -39,9 +38,8 @@ $(document).ready(function(){
                         break;
                     }
                 }else{
-
+                    console.log("Status response", response.status_code);
                 }
-              console.log("SUCCESS22",response);
         },
         error: function(response) {
           console.log("ERROR",response);
@@ -85,6 +83,8 @@ $(document).ready(function(){
         // If the count down is finished, write some text
         if (distance < 0) {
             clearInterval(x);
+            $("#CodiTimerTxt").html("Su pago ha &nbsp;");
+            $("#CoDiTimer").html("expirado");
         }
     }, 1000);
 });
