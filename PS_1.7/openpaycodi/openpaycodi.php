@@ -46,7 +46,7 @@ class OpenpayCodi extends PaymentModule
 
         $this->name = 'openpaycodi';
         $this->tab = 'payments_gateways';
-        $this->version = '1.0.2';
+        $this->version = '1.0.3';
         $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';
 
@@ -484,7 +484,7 @@ class OpenpayCodi extends PaymentModule
             'method' => $payment_method,
             'amount' => $amount,
             "currency" => $this->context->currency->iso_code,
-            'description' => $this->l('PrestaShop Cart ID:').' '.(int) $cart->id,
+            'description' => $this->l('PrestaShop Cart ID ').' '.(int) $cart->id,
             "codi_options" => $codi_options
         );
 
