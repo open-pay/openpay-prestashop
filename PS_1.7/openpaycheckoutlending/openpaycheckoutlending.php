@@ -40,7 +40,7 @@ class OpenpayCheckoutLending extends PaymentModule {
         /* Module configuration data  */
         $this->name = 'openpaycheckoutlending';
         $this->displayName = $this->l('Openpay Checkout Lending');
-        $this->version = '1.0.0';
+        $this->version = '1.0.1';
         $this->author = 'Openpay SA de CV';
         $this->tab = 'payments_gateways';
         $this->description = $this->l('Compra ahora, paga después');
@@ -68,6 +68,7 @@ class OpenpayCheckoutLending extends PaymentModule {
             $this->createPendingState() &&
             $this->registerHook('paymentOptions') &&
             $this->registerHook('paymentReturn') &&
+            $this->registerHook('ActionEmailSendBefore') &&
             $this->registerHook('header') &&
             $this->registerHook('displayHeader') &&
             Configuration::updateValue('OPENPAY_MODE', 0) &&
@@ -244,7 +245,7 @@ class OpenpayCheckoutLending extends PaymentModule {
 
         $state->name = $names;
         $state->color = '#4169E1';  // '#62a2c4';
-        $state->send_email = true;
+        $state->send_email = false;
         $state->module_name = 'openpaycheckoutlending';
         $templ = array();
 
@@ -624,6 +625,14 @@ class OpenpayCheckoutLending extends PaymentModule {
 
     }
 
+    public function hookActionEmailSendBefore($params){
+        //Logger::addLog("EMAIL SEND TEMPLATE" . $params['template'] . " --- " . json_encode($params), 1, null, null, null, true);
+        if($params['template'] === 'order_conf'){
+            return false;
+        }
+        return true;
+    }
+
     public function getOpenpayCharge($transaction_id)
     {
         $country = Configuration::get('OPENPAY_COUNTRY');
@@ -742,7 +751,7 @@ class OpenpayCheckoutLending extends PaymentModule {
     /**
      * retorna la respuesta de la creación del cargo
      */
-    public function offlinePayment($payment_method)
+    public function offlinePayment($payment_method,$order_id)
     {
         $openpay_customer = $this->getOpenpayCustomer($this->context->cookie->id_customer);
         $shipping_address = new Address($this->context->cart->id_address_delivery);
@@ -761,14 +770,14 @@ class OpenpayCheckoutLending extends PaymentModule {
             "currency" => $this->context->currency->iso_code,
             "amount" => $amount,
             "description" => $this->l('PrestaShop Cart ID:').' '.(int) $cart->id,
-            "order_id" => $this->context->cart->id+$this->test_order_id,
+            "order_id" => $order_id+$this->test_order_id,
             "lending_data" => Array(
                 "is_privacy_terms_accepted" => (bool)Configuration::get('PS_CONDITIONS') ,   //$this->is_privacy_terms_accepted,
                 "callbacks" => Array(
                     "on_success" =>  $on_success_callback,  //_PS_BASE_URL_.__PS_BASE_URI__.'index.php?controller=order-confirmation&id_cart='.(int) $this->context->cart->id.'&id_module='.(int) $this->id.'&id_order='.(int) $this->currentOrder.'&key='.$this->context->customer->secure_key,       //html_entity_decode( $this->order->get_checkout_order_received_url()),
-                    "on_reject" =>   _PS_BASE_URL_."/module/openpaycheckoutlending/canceled?id=".$this->context->cart->id,  //_PS_BASE_URL_.__PS_BASE_URI__.'index.php?controller=order-confirmation&id_cart='.(int) $this->context->cart->id,
-                    "on_canceled" => _PS_BASE_URL_."/module/openpaycheckoutlending/canceled?id=".$this->context->cart->id,  //_PS_BASE_URL_.__PS_BASE_URI__.'index.php?controller=order-confirmation&id_cart='.(int) $this->context->cart->id,
-                    "on_failed" =>   _PS_BASE_URL_."/module/openpaycheckoutlending/canceled?id=".$this->context->cart->id, //_PS_BASE_URL_.__PS_BASE_URI__.'index.php?controller=order-confirmation&id_cart='.(int) $this->context->cart->id,
+                    "on_reject" =>   _PS_BASE_URL_."/module/openpaycheckoutlending/canceled?id=".$order_id.'&key='.$this->context->customer->secure_key,  //_PS_BASE_URL_.__PS_BASE_URI__.'index.php?controller=order-confirmation&id_cart='.(int) $this->context->cart->id,
+                    "on_canceled" => _PS_BASE_URL_."/module/openpaycheckoutlending/canceled?id=".$order_id.'&key='.$this->context->customer->secure_key,  //_PS_BASE_URL_.__PS_BASE_URI__.'index.php?controller=order-confirmation&id_cart='.(int) $this->context->cart->id,
+                    "on_failed" =>   _PS_BASE_URL_."/module/openpaycheckoutlending/canceled?id=".$order_id.'&key='.$this->context->customer->secure_key, //_PS_BASE_URL_.__PS_BASE_URI__.'index.php?controller=order-confirmation&id_cart='.(int) $this->context->cart->id,
                 ),
                 "shipping" => Array(
                     "name" =>          $shipping_address->firstname,
@@ -802,7 +811,7 @@ class OpenpayCheckoutLending extends PaymentModule {
         return $result_json;
     }
 
-    public function error($e, $backend = false, $cart_id = false)
+    public function error($e, $backend = false, $order_id = false, $key=false)
     {
         switch ($e->getCode()) {
             /* ERRORES GENERALES */
@@ -828,10 +837,11 @@ class OpenpayCheckoutLending extends PaymentModule {
 
             if (class_exists('Logger')) {
                 Logger::addLog($this->l('#Openpay - Payment transaction failed').' '.$error, 1, null, 'Cart', (int) $this->context->cart->id, true);
+                Logger::addLog(_PS_BASE_URL_."/module/openpaycheckoutlending/canceled?id=".$order_id."&key=".$key."&error_msg=".$error, 1, null, 'Cart', (int) $this->context->cart->id, true);
             }
 
-            if($cart_id){
-                Tools::redirect(_PS_BASE_URL_."/module/openpaycheckoutlending/canceled?id=".$cart_id."&error_msg=".$error);
+            if($order_id){
+                Tools::redirect(_PS_BASE_URL_."/module/openpaycheckoutlending/canceled?id=".$order_id."&key=".$key."&error_msg=".$error);
             }else{
                 Tools::redirect('index.php?controller=order&step=1&error_msg='.$error);
             }
@@ -919,33 +929,25 @@ class OpenpayCheckoutLending extends PaymentModule {
 
         try {
 
-            $result_json = $this->offlinePayment($payment_method);
-
-            if ($result_json->status == 'failed' ){
-                throw new Exception('Error: ' . $result_json->error_message);
-
-            }else if($result_json->error_code){
-                throw new Exception('Error: ' . $result_json->description);
-            }
-
             $display_name = $this->l('Openpay checkout lending payment');
             $order_status = (int) Configuration::get('PS_OS_WAITING_PAYMENT');
 
-            $message = $this->l('Openpay Transaction Details:')."\n\n".
+            /*$message = $this->l('Openpay Transaction Details:')."\n\n".
                 $this->l('Transaction ID:').' '.$result_json->id."\n".
                 $this->l('Payment method:').' '.Tools::ucfirst($payment_method)."\n".
                 $this->l('Amount:').' $'.number_format($result_json->amount, 2).' '.Tools::strtoupper($result_json->currency)."\n".
                 $this->l('Status:').' '.($result_json->status == 'completed' ? $this->l('Paid') : $this->l('Unpaid'))."\n".
                 $this->l('Processed on:').' '.date('Y-m-d H:i:s')."\n".
-                $this->l('Mode:').' '.(Configuration::get('OPENPAY_MODE') ? $this->l('Live') : $this->l('Test'))."\n";
+                $this->l('Mode:').' '.(Configuration::get('OPENPAY_MODE') ? $this->l('Live') : $this->l('Test'))."\n";*/
 
+            $message = "";
             $detail = array('{detail}' => '');
 
             try {
                 $this->validateOrder(
                     (int)$this->context->cart->id,
                     (int)$order_status,
-                    $result_json->amount,
+                    number_format(floatval($this->context->cart->getOrderTotal()), 2, '.', ''),
                     $display_name,
                     $message,
                     $detail,
@@ -958,6 +960,10 @@ class OpenpayCheckoutLending extends PaymentModule {
             }
 
             $new_order = new Order((int) $this->currentOrder);
+
+            $result_json = $this->offlinePayment($payment_method,$this->currentOrder);
+            Logger::addLog("DESPUES DE LA TRX", 1, null, null, null, true);
+
 
             if (Validate::isLoadedObject($new_order)) {
                 $payment = $new_order->getOrderPaymentCollection();
@@ -1003,13 +1009,13 @@ class OpenpayCheckoutLending extends PaymentModule {
                 }
             }
 
+            if ($result_json->status == 'failed' ){
+                throw new Exception('Error: ' . $result_json->error_message);
 
-            // Update order_id from Openpay Charge
-            if ($this->context->cart->id >= $this->currentOrder){
-            $this->updateOpenpayCharge($result_json->id, $this->currentOrder+$this->test_order_id, $new_order->reference, $this->context->cart->id+$this->test_order_id);
-            }else if($this->currentOrder > $this->context->cart->id){
-                $this->error(new Exception("El Cart Id asignado no se puede procesar"),null,$this->context->cart->id);
+            }else if($result_json->error_code){
+                throw new Exception('Error: ' . $result_json->description);
             }
+
             $redirect = $result_json->payment_method->callbackUrl;
 
             Logger::addLog($redirect, 1, null, null, null, true);
@@ -1026,7 +1032,7 @@ class OpenpayCheckoutLending extends PaymentModule {
                 Logger::addLog($this->l('Openpay - Payment transaction failed').' '.$message, 1, null, 'Cart', (int) $this->context->cart->id, true);
                 Logger::addLog($this->l('Openpay - Payment transaction failed').' '.$e->getTraceAsString(), 4, null, 'Cart', (int) $this->context->cart->id, true);
             }
-            $this->error($e);
+            $this->error($e,false,$this->currentOrder,$this->context->customer->secure_key);
         }
     }
 
