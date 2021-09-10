@@ -48,7 +48,7 @@ class OpenpayStores extends PaymentModule
 
         $this->name = 'openpaystores';
         $this->tab = 'payments_gateways';
-        $this->version = '4.0.3';
+        $this->version = '4.0.4';
         $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';
 
@@ -122,7 +122,7 @@ class OpenpayStores extends PaymentModule
         $names = array();
 
         foreach ($languages as $lang) {
-            $names[$lang['id_lang']] = $this->l('Awaiting payment');
+            $names[$lang['id_lang']] = $this->l('Awaiting Store payment');
         }
 
         $state->name = $names;
@@ -139,7 +139,7 @@ class OpenpayStores extends PaymentModule
 
         if ($state->save()) {
             try {
-                Configuration::updateValue('waiting_cash_payment', $state->id);
+                Configuration::updateValue('PS_OS_WAITING_CASH_PAYMENT', $state->id);
                 $this->copyMailTemplate();
             } catch (Exception $e) {
                 if (class_exists('Logger')) {
@@ -212,13 +212,18 @@ class OpenpayStores extends PaymentModule
             $this->deleteWebhook(Configuration::get('OPENPAY_WEBHOOK_ID_LIVE'), true);
         }
 
+        $order_status = (int) Configuration::get('PS_OS_WAITING_CASH_PAYMENT');
+        $orderState = new OrderState($order_status);
+        $orderState->delete();
+
         return parent::uninstall() &&                
             Configuration::deleteByName('OPENPAY_DEADLINE_STORES') &&                
             Configuration::deleteByName('OPENPAY_WEBHOOK_ID_TEST') &&
             Configuration::deleteByName('OPENPAY_WEBHOOK_ID_LIVE') &&
             Configuration::deleteByName('OPENPAY_WEBHOOK_USER') &&
             Configuration::deleteByName('OPENPAY_WEBHOOK_PASSWORD') &&                
-            Configuration::deleteByName('OPENPAY_WEBHOOOK_URL');
+            Configuration::deleteByName('OPENPAY_WEBHOOOK_URL') &&
+            Configuration::deleteByName('PS_OS_WAITING_CASH_PAYMENT');
     }
     
     public function hookActionEmailSendBefore($params) {        
@@ -429,7 +434,7 @@ class OpenpayStores extends PaymentModule
         try {
             $display_name = $this->l('Openpay cash payment');            
             $result_json = $this->offlinePayment($payment_method);
-            $order_status = (int) Configuration::get('waiting_cash_payment');
+            $order_status = (int) Configuration::get('PS_OS_WAITING_CASH_PAYMENT');
 
             $barcode_url = $result_json->payment_method->barcode_url;
             $reference = $result_json->payment_method->reference;

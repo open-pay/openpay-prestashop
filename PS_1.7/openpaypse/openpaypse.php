@@ -46,7 +46,7 @@ class OpenpayPse extends PaymentModule
 
         $this->name = 'openpaypse';
         $this->tab = 'payments_gateways';
-        $this->version = '1.0.2';
+        $this->version = '1.0.3';
         $this->author = 'Openpay SA de CV';
 
         parent::__construct();
@@ -115,7 +115,7 @@ class OpenpayPse extends PaymentModule
         $names = array();
 
         foreach ($languages as $lang) {
-            $names[$lang['id_lang']] = $this->l('Awaiting payment');
+            $names[$lang['id_lang']] = $this->l('Awaiting PSE payment');
         }
 
         $state->name = $names;
@@ -132,7 +132,7 @@ class OpenpayPse extends PaymentModule
 
         if ($state->save()) {
             try {
-                Configuration::updateValue('waiting_cash_payment', $state->id);
+                Configuration::updateValue('PS_OS_WAITING_PSE_PAYMENT', $state->id);
                 $this->copyMailTemplate();
             } catch (Exception $e) {
                 if (class_exists('Logger')) {
@@ -205,12 +205,17 @@ class OpenpayPse extends PaymentModule
             $this->deleteWebhook(Configuration::get('OPENPAY_PSE_WEBHOOK_ID_LIVE'), true);
         }
 
+        $order_status = (int) Configuration::get('PS_OS_WAITING_PSE_PAYMENT');
+        $orderState = new OrderState($order_status);
+        $orderState->delete();
+
         return parent::uninstall() &&
             Configuration::deleteByName('OPENPAY_PSE_WEBHOOK_ID_TEST') &&
             Configuration::deleteByName('OPENPAY_PSE_WEBHOOK_ID_LIVE') &&
             Configuration::deleteByName('OPENPAY_PSE_WEBHOOK_USER') &&
             Configuration::deleteByName('OPENPAY_PSE_WEBHOOK_PASSWORD') &&                                
-            Configuration::deleteByName('OPENPAY_PSE_WEBHOOOK_URL');                
+            Configuration::deleteByName('OPENPAY_PSE_WEBHOOOK_URL') &&
+            Configuration::deleteByName('PS_OS_WAITING_PSE_PAYMENT');                
     }
     
     /**
@@ -308,7 +313,7 @@ class OpenpayPse extends PaymentModule
             $payment_method = 'bank_account';
             $display_name = $this->l('Openpay PSE');            
             $result_json = $this->offlinePayment($payment_method);
-            $order_status = (int) Configuration::get('waiting_cash_payment');
+            $order_status = (int) Configuration::get('PS_OS_WAITING_PSE_PAYMENT');
             
             if ($result_json->payment_method && $result_json->payment_method->type == 'redirect') {
                 Logger::addLog($result_json->payment_method->url, 1, null, null, null, true);
