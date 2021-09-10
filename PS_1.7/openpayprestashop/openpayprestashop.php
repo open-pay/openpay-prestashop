@@ -51,7 +51,7 @@ class OpenpayPrestashop extends PaymentModule
 
         $this->name = 'openpayprestashop';
         $this->tab = 'payments_gateways';
-        $this->version = '4.1.1';
+        $this->version = '4.1.2';
         $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';               
 
@@ -1136,56 +1136,31 @@ class OpenpayPrestashop extends PaymentModule
                 break;
 
             /* ERRORES TARJETA */
-            case '3001':                
-                $msg = $this->l('La tarjeta fue declinada.');
-                break;
-            
+            case '3001':
             case '3004':
-                $msg = $this->l('La tarjeta ha sido identificada como una tarjeta robada.');
-                break;
-            
             case '3005':
-                $msg = $this->l('La tarjeta ha sido rechazada por el sistema antifraudes.');
+            case '3009':
+            case '3010':
+            case '3011':                    
+                $msg = $this->l('La tarjeta fue rechazada.');
                 break;
-            
-            case '3007':
-                $msg = $this->l('La tarjeta fue declinada.');
-                break;
-
             case '3002':
                 $msg = $this->l('La tarjeta ha expirado.');
                 break;
-
             case '3003':
                 $msg = $this->l('La tarjeta no tiene fondos suficientes.');
                 break;
-
             case '3006':
                 $msg = $this->l('La operación no esta permitida para este cliente o esta transacción.');
                 break;
-
             case '3008':
                 $msg = $this->l('La tarjeta no es soportada en transacciones en línea..');
                 break;
-
-            case '3009':
-                $msg = $this->l('La tarjeta fue reportada como perdida.');
-                break;
-
-            case '3010':
-                $msg = $this->l('El banco ha restringido la tarjeta.');
-                break;
-
-            case '3011':
-                $msg = $this->l('El banco ha solicitado que la tarjeta sea retenida. Contacte al banco.');
-                break;
-
             case '3012':
                 $msg = $this->l('Se requiere solicitar al banco autorización para realizar este pago.');
                 break;
-
             default: /* Demás errores 400 */
-                $msg = $e->getMessage();
+                $msg = $this->l('La petición no pudo ser procesada');
                 break;
         }
 

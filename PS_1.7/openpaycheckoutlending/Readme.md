@@ -10,3 +10,9 @@
 
 3. Agregar las llaves, ir al panel de administración de Openpay (https://sandbox-dashboard.openpay.mx/login), copiar y pegar las llaves, dentro de las configuraciones del módulo en el panel de administración de PrestaShop (backoffice).
 
+## Changelog
+
+**1.0.1**
+- Modificación del flujo de pago y creación de orden.
+- Adición de capa de seguridad al flujo de compra.
+- Envio de correo al cliente al ejecutar cambio de status a "En espera de aprobación" desactivado por defecto.
