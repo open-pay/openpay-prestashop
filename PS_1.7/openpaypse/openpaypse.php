@@ -121,6 +121,7 @@ class OpenpayPse extends PaymentModule
         $state->name = $names;
         $state->color = '#4169E1';
         $state->send_email = true;
+        $state->logable = true;
         $state->module_name = 'openpaypse';
         $templ = array();
 

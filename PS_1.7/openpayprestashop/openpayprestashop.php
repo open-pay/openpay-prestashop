@@ -51,7 +51,7 @@ class OpenpayPrestashop extends PaymentModule
 
         $this->name = 'openpayprestashop';
         $this->tab = 'payments_gateways';
-        $this->version = '4.1.2';
+        $this->version = '4.1.3';
         $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';               
 
@@ -117,6 +117,7 @@ class OpenpayPrestashop extends PaymentModule
         $state->name = $names;
         $state->color = '#ECB033';
         $state->send_email = false;
+        $state->logable = true;
         $state->module_name = 'openpayprestashop';
         $templ = array();
 
@@ -190,8 +191,14 @@ class OpenpayPrestashop extends PaymentModule
      * @return boolean Uninstall result
      */
     public function uninstall() {
+
+        $order_status = (int) Configuration::get('OPENPAY_OS_HOLD');
+        $orderState = new OrderState($order_status);
+        $orderState->delete();
+
         return parent::uninstall() &&                
-            Configuration::deleteByName('OPENPAY_MONTHS_INTEREST_FREE');
+            Configuration::deleteByName('OPENPAY_MONTHS_INTEREST_FREE') &&
+            Configuration::deleteByName('OPENPAY_OS_HOLD');
     }
     
     /**
