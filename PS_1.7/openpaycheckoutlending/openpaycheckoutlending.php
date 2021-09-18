@@ -246,6 +246,7 @@ class OpenpayCheckoutLending extends PaymentModule {
         $state->name = $names;
         $state->color = '#4169E1';  // '#62a2c4';
         $state->send_email = false;
+        $state->logable = true;
         $state->module_name = 'openpaycheckoutlending';
         $templ = array();
 
