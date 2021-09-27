@@ -46,7 +46,7 @@ class OpenpayBanks extends PaymentModule
 
         $this->name = 'openpaybanks';
         $this->tab = 'payments_gateways';
-        $this->version = '3.1.2';
+        $this->version = '3.1.3';
         $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';
 
@@ -850,10 +850,25 @@ class OpenpayBanks extends PaymentModule
 
     public function createWebhook($force_host_ssl = false)
     {
+        $mode = Configuration::get('OPENPAY_MODE') ? 'LIVE' : 'TEST';
+        $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
+        $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
+
+        $openpay = Openpay::getInstance($id, $pk);
+        Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
+
+        $userAgent = "Openpay-PS17MX/v2";
+        Openpay::setUserAgent($userAgent);
+
+        $url = Tools::getHttpHost(true).__PS_BASE_URI__.'modules/openpaybanks/notification.php';
+        $webhooks = $openpay->webhooks->getList([]);
+        $webhookCreated = $this->isWebHookCreated($webhooks, $url);
+        if ($webhookCreated) { 
+            return $webhookCreated;
+        }
         
-        $domain = rtrim(Configuration::get('OPENPAY_SPEI_WEBHOOK_URL'), "/");        
         $webhook_data = array(            
-            'url' => $domain.'/modules/openpaybanks/notification.php',            
+            'url' => $url,            
             'force_host_ssl' => $force_host_ssl,
             'event_types' => array(
                 'verification',
@@ -870,16 +885,6 @@ class OpenpayBanks extends PaymentModule
                 'transaction.expired'
             )
         );
-
-        $mode = Configuration::get('OPENPAY_MODE') ? 'LIVE' : 'TEST';
-        $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
-        $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
-
-        $openpay = Openpay::getInstance($id, $pk);
-        Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
-
-        $userAgent = "Openpay-PS17MX/v2";
-        Openpay::setUserAgent($userAgent);
 
         try {
             $webhook = $openpay->webhooks->add($webhook_data);
@@ -1046,5 +1051,14 @@ class OpenpayBanks extends PaymentModule
             }
             closedir($dhvalue);
         }
+    }
+
+    private function isWebHookCreated($webhooks, $url) {
+        foreach ($webhooks as $webhook) {
+            if ($webhook->url === $url) {
+                return $webhook;
+            }
+        }
+        return null;
     }
 }
