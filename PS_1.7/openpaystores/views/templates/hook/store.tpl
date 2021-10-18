@@ -34,7 +34,7 @@
         <h4 class="subtitle mt30 mb30">{l s='Pasos para tu pago por tienda' mod='openpaystores'}
             (<small>
             {if $country == 'MX' }
-                <a target="_blank" href="http://www.openpay.mx/tiendas-de-conveniencia.html">{l s='Tienda afiliadas' mod='openpaystores'}</a>
+                <a target="_blank" href="http://www.openpay.mx/tiendas-de-conveniencia.html">{l s='Tiendas afiliadas' mod='openpaystores'}</a>
             {else}
                 <a target="_blank" href="https://www.openpay.co/tiendas/">{l s='Puntos de recaudo' mod='openpaystores'}</a>
             {/if}

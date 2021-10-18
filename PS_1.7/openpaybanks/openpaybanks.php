@@ -323,7 +323,8 @@ class OpenpayBanks extends PaymentModule
 
         $externalOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
         $externalOption->setCallToActionText($this->l('Transferencia Interbancaria'))            
-            ->setModuleName($this->name)            
+            ->setModuleName($this->name)
+            ->setLogo(_MODULE_DIR_.'openpaybanks/views/img/openpay-logo.svg')            
             ->setAction($this->context->link->getModuleLink($this->name, 'validation', array(), Tools::usingSecureMode()))                       
             ->setAdditionalInformation($this->context->smarty->fetch('module:openpaybanks/views/templates/hook/spei.tpl'));            
 
