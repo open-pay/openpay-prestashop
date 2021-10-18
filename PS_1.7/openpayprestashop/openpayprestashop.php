@@ -51,7 +51,7 @@ class OpenpayPrestashop extends PaymentModule
 
         $this->name = 'openpayprestashop';
         $this->tab = 'payments_gateways';
-        $this->version = '4.1.3';
+        $this->version = '4.1.4';
         $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';               
 
@@ -388,6 +388,7 @@ class OpenpayPrestashop extends PaymentModule
         $externalOption->setCallToActionText($this->l('Tarjeta de crédito-débito'))                    
                 ->setForm($this->generateForm($cart))
                 ->setModuleName($this->name)
+                ->setLogo(_MODULE_DIR_.'openpayprestashop/views/img/openpay-logo.svg')
                 ->setAdditionalInformation($this->context->smarty->fetch('module:openpayprestashop/views/templates/front/payment_infos.tpl'));
 
         return array($externalOption);

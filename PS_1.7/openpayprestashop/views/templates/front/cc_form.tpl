@@ -27,7 +27,7 @@
     <div class="openpay-form-container" >
         <div class="row mt30 mb10">
             <div class="col-md-12 store-image">
-                <h3 class="openpay_title">{l s='Tarjetas aceptadas' mod='openpayprestashop'}{$merchant_classification }</h3>
+                <h3 class="openpay_title">{l s='Tarjetas aceptadas' mod='openpayprestashop'}</h3>
                 {if $country == 'MX'}
                     {if $merchant_classification === 'eglobal'}
                         <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/credit_cards_bbva.png" style="max-width: 120px;

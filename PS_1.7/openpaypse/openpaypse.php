@@ -46,7 +46,7 @@ class OpenpayPse extends PaymentModule
 
         $this->name = 'openpaypse';
         $this->tab = 'payments_gateways';
-        $this->version = '1.0.3';
+        $this->version = '1.0.4';
         $this->author = 'Openpay SA de CV';
 
         parent::__construct();
@@ -291,7 +291,7 @@ class OpenpayPse extends PaymentModule
         $externalOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
         $externalOption->setCallToActionText($this->l('Transferencia Interbancaria'))            
             ->setModuleName($this->name)
-            ->setLogo(_MODULE_DIR_.'openpaypse/views/img/openpay.png')            
+            ->setLogo(_MODULE_DIR_.'openpaypse/views/img/openpay-logo.svg')         
             ->setAction($this->context->link->getModuleLink($this->name, 'validation', array(), Tools::usingSecureMode()))                       
             ->setAdditionalInformation($this->context->smarty->fetch('module:openpaypse/views/templates/hook/pse.tpl'));            
 

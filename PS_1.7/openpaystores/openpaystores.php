@@ -48,7 +48,7 @@ class OpenpayStores extends PaymentModule
 
         $this->name = 'openpaystores';
         $this->tab = 'payments_gateways';
-        $this->version = '4.0.4';
+        $this->version = '4.0.5';
         $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';
 
@@ -340,7 +340,8 @@ class OpenpayStores extends PaymentModule
 
         $externalOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
         $externalOption->setCallToActionText($this->l('Pago en efectivo'))   
-            ->setModuleName($this->name)            
+            ->setModuleName($this->name)
+            ->setLogo(_MODULE_DIR_.'openpaystores/views/img/openpay-logo.svg')
             ->setAction($this->context->link->getModuleLink($this->name, 'validation', array(), Tools::usingSecureMode()))           
             ->setAdditionalInformation($this->context->smarty->fetch('module:openpaystores/views/templates/hook/store.tpl'));
 

@@ -40,7 +40,7 @@ class OpenpayCheckoutLending extends PaymentModule {
         /* Module configuration data  */
         $this->name = 'openpaycheckoutlending';
         $this->displayName = $this->l('Openpay Checkout Lending');
-        $this->version = '1.0.1';
+        $this->version = '1.0.2';
         $this->author = 'Openpay SA de CV';
         $this->tab = 'payments_gateways';
         $this->description = $this->l('Compra ahora, paga después');
@@ -601,6 +601,7 @@ class OpenpayCheckoutLending extends PaymentModule {
         $externalOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
         $externalOption->setCallToActionText($this->l('Compra ahora, paga después'))
             ->setModuleName($this->name)
+            ->setLogo(_MODULE_DIR_.'openpaycheckoutlending/views/img/openpay-logo.svg')
             ->setAction($this->context->link->getModuleLink($this->name, 'validation', array(), Tools::usingSecureMode()))
             ->setAdditionalInformation($this->context->smarty->fetch('module:openpaycheckoutlending/views/templates/hook/lending.tpl'));
 
