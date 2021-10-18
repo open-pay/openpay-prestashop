@@ -692,10 +692,25 @@ class OpenpayPse extends PaymentModule
 
     public function createWebhook($force_host_ssl = false)
     {
-        
-        $domain = rtrim(Configuration::get('OPENPAY_PSE_WEBHOOK_URL'), "/");        
+        $mode = Configuration::get('OPENPAY_PSE_MODE') ? 'LIVE' : 'TEST';
+        $pk = Configuration::get('OPENPAY_PSE_MODE') ? Configuration::get('OPENPAY_PSE_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PSE_PRIVATE_KEY_TEST');
+        $id = Configuration::get('OPENPAY_PSE_MODE') ? Configuration::get('OPENPAY_PSE_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_PSE_MERCHANT_ID_TEST');
+
+        $openpay = Openpay::getInstance($id, $pk, 'CO');
+        Openpay::setProductionMode(Configuration::get('OPENPAY_PSE_MODE'));
+
+        $userAgent = "Openpay-PS17CO/v2";
+        Openpay::setUserAgent($userAgent);
+
+        $url = Tools::getHttpHost(true).__PS_BASE_URI__.'modules/openpaypse/notification.php';
+        $webhooks = $openpay->webhooks->getList([]);
+        $webhookCreated = $this->isWebHookCreated($webhooks, $url);
+        if ($webhookCreated) { 
+            return $webhookCreated;
+        }
+
         $webhook_data = array(            
-            'url' => $domain.'/modules/openpaypse/notification.php',            
+            'url' => $url,            
             'force_host_ssl' => $force_host_ssl,
             'event_types' => array(
                 'verification',
@@ -712,15 +727,7 @@ class OpenpayPse extends PaymentModule
             )
         );
 
-        $mode = Configuration::get('OPENPAY_PSE_MODE') ? 'LIVE' : 'TEST';
-        $pk = Configuration::get('OPENPAY_PSE_MODE') ? Configuration::get('OPENPAY_PSE_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PSE_PRIVATE_KEY_TEST');
-        $id = Configuration::get('OPENPAY_PSE_MODE') ? Configuration::get('OPENPAY_PSE_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_PSE_MERCHANT_ID_TEST');
-
-        $openpay = Openpay::getInstance($id, $pk, 'CO');
-        Openpay::setProductionMode(Configuration::get('OPENPAY_PSE_MODE'));
-
-        $userAgent = "Openpay-PS17CO/v2";
-        Openpay::setUserAgent($userAgent);
+        
 
         try {
             $webhook = $openpay->webhooks->add($webhook_data);
@@ -887,5 +894,14 @@ class OpenpayPse extends PaymentModule
             }
             closedir($dhvalue);
         }
+    }
+
+    private function isWebHookCreated($webhooks, $url) {
+        foreach ($webhooks as $webhook) {
+            if ($webhook->url === $url) {
+                return $webhook;
+            }
+        }
+        return null;
     }
 }
