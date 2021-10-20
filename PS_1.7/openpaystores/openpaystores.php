@@ -697,6 +697,8 @@ class OpenpayStores extends PaymentModule
             $validation_title = $this->l('Al menos un problema fue encontrado para poder comenzar a utilizar Openpay. Por favor resuelve los problemas y refresca esta página.');
         }
 
+
+        $mode = Configuration::get('OPENPAY_MODE') ? 'LIVE' : 'TEST';
         $dashboard_openpay = ($mode == 'LIVE') ? Url::getDashboardUrlByCountryCode(Configuration::get('OPENPAY_COUNTRY'))['production'] : Url::getDashboardUrlByCountryCode(Configuration::get('OPENPAY_COUNTRY'))['sandbox'];
         
         $this->context->smarty->assign(array(
