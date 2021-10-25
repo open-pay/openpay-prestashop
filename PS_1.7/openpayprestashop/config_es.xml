@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<module>
+    <name>openpayprestashop</name>
+    <displayName><![CDATA[Openpay]]></displayName>
+    <version><![CDATA[4.2.0]]></version>
+    <description><![CDATA[Acepta pagos con tarjeta de cr&eacute;dito con Openpay.]]></description>
+    <author><![CDATA[Openpay SA de CV]]></author>
+    <tab><![CDATA[payments_gateways]]></tab>
+	<confirmUninstall><![CDATA[¿Estás seguro de querer desinstalar este módulo?]]></confirmUninstall>
+    <is_configurable>1</is_configurable>
+    <need_instance>1</need_instance>
+	<limited_countries></limited_countries>
+</module>
