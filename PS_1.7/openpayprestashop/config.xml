@@ -2,7 +2,7 @@
 <module>
     <name>openpayprestashop</name>
     <displayName><![CDATA[Openpay]]></displayName>
-    <version><![CDATA[4.1.4]]></version>
+    <version><![CDATA[4.2.0]]></version>
     <description><![CDATA[Acepta pagos con tarjeta de crédito con Openpay.]]></description>
     <author><![CDATA[Openpay SA de CV]]></author>
     <tab><![CDATA[payments_gateways]]></tab>
