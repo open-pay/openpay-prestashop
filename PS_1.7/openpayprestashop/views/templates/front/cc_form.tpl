@@ -36,6 +36,8 @@
                          <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/credit_cards.png">
                     {/if}
                     <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/debit_cards.png">
+                {elseif $country == 'PE'}
+                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/credit_cards_pe.png" style="max-width: 220px;">
                 {else}
                     <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/cards_co.png">
                 {/if}
