@@ -94,6 +94,12 @@
                                     </div>
                                 {/for}
                             {/if}
+                        {elseif $openpay_configuration.OPENPAY_COUNTRY == 'PE' }
+                            {for $i=1 to 4}
+                                <div class="col-xs-2 store-image">
+                                    <img {if $i==4} style="max-width:65%;" {/if} src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/credit_cards_pe/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
+                                </div>
+                            {/for}
                         {else}
                             {for $i=1 to 2}
                                 <div class="col-xs-2 store-image">
@@ -109,6 +115,12 @@
                             {for $i=1 to 4}
                                 <div class="col-xs-2 store-image">
                                     <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/debit_cards_mx/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
+                                </div>
+                            {/for}
+                        {elseif $openpay_configuration.OPENPAY_COUNTRY == 'PE' }
+                            {for $i=1 to 4}
+                                <div class="col-xs-2 store-image">
+                                    <img {if $i==4} style="max-width:65%;" {/if} src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/debit_cards_pe/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
                                 </div>
                             {/for}
                         {else}
