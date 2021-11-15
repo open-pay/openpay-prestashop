@@ -24,6 +24,7 @@
 *}
 
 <div id="card-container" class="payment_module">
+<div class="ajax-loader"></div>
     <div class="openpay-form-container" >
         <div class="row mt30 mb10">
             <div class="col-md-12 store-image">
@@ -72,18 +73,18 @@
             <div id="payment_form_openpay_cards">        
                 <div class="row">
                     <div class="col-md-12">
-                        <label>{l s='Nombre del tarjetahabiente' mod='openpayprestashop'}</label>
+                        <label>{l s='Nombre del títular' mod='openpayprestashop'}</label>
                         <input type="text" autocomplete="off" id="holder_name" data-openpay-card="holder_name" class="form-control" placeholder="{l s='Como se muestra en la tarjeta' mod='openpayprestashop'}" />
                     </div>
                     <div class="col-md-12">
-                        <label>{l s='Numero de tarjeta' mod='openpayprestashop'}</label>
+                        <label>{l s='Número de tarjeta' mod='openpayprestashop'}</label>
                         <input type="text" autocomplete="off" id="card_number" data-openpay-card="card_number" class="form-control" placeholder="•••• •••• •••• ••••" />
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
 
-                        <label>{l s='Fecha de expiracion' mod='openpayprestashop'}</label>
+                        <label>{l s='Fecha de expiración' mod='openpayprestashop'}</label>
                         <select id="expiration_month" data-openpay-card="expiration_month" class="openpay-card-expiry-month">
                             <option value="01">{l s='Enero' mod='openpayprestashop'}</option>
                             <option value="02">{l s='Febrero' mod='openpayprestashop'}</option>
@@ -111,7 +112,7 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label>{l s='Codigo de seguridad' mod='openpayprestashop'}</label>
+                        <label>{l s='Código de seguridad' mod='openpayprestashop'}</label>
                         <input id="cvv2" type="password" maxlength="4" autocomplete="off" data-openpay-card="cvv2" class="form-control" placeholder="CVV" />
                     </div>
 
@@ -135,7 +136,7 @@
             </div>    
            
             {if $show_months_interest_free }        
-                <div class="row">
+                <div class="row installments">
                     <div class="col-md-6">
                         <label>{l s='Meses sin intereses' mod='openpayprestashop'}</label>
                         <select name="interest_free" id="interest-free" style="width: 100%;">
@@ -153,7 +154,7 @@
             {/if}
 
             {if $show_installments }        
-                <div class="row">
+                <div class="row installments">
                     <div class="col-md-6">
                         <label>{l s='Cuotas' mod='openpayprestashop'}</label>
                         <select name="installment" id="installment" style="width: 100%;">
@@ -285,7 +286,71 @@
                 return openpayFormHandler();
             }
         });
+
+        var card_old;
+        $('body').on("keypress focusout", "#card_number", function() {
+            let card = jQuery(this).val()
+            let country = "{$country}";
+            let show_months_interest_free = "{$show_months_interest_free}";
+            let card_without_space = card.replace(/\s+/g, '')
+            if (card_without_space.length >= 6) {
+                if(country == "PE") return;
+                if(country == "MX" && !show_months_interest_free) {
+                    return;
+                }
+                var card_bin = card_without_space.substring(0, 6);
+                if(card_bin != card_old) {
+                    getTypeCard(card_bin, country);
+                    card_old = card_bin; 
+                }
+                
+            }
+        })
     });
+
+    function getTypeCard(cardBin, country) {
+        let url_ajax = "{$url_ajax}";
+        $.ajax({
+            type : "post",
+            url : url_ajax,
+            data : {
+                card_bin : cardBin
+            },
+            error: function(response){
+                console.log(response);
+            },
+            beforeSend: function () {
+                jQuery("#card-container").addClass("opacity");
+                jQuery(".ajax-loader").addClass("is-active");
+            },
+            success: function(response) {
+                let data = JSON.parse(response);
+                console.log(data);
+                if(data.status == 'success'){
+                    if (data.card_type == 'CREDIT') {
+                        if (country == 'MX') jQuery("#interest-free").closest(".row").show(); else jQuery('#installment').closest(".row").show();
+                    } else {
+                        if (country == 'MX') {
+                            jQuery("#interest-free").closest(".row").hide();
+                            jQuery('#interest-free option[value="1"]').attr("selected",true);
+                            $("#total-monthly-payment").addClass('hidden');
+                        } else {
+                            jQuery("#installment").closest(".row").hide();
+                            jQuery('#installment option[value="1"]').attr("selected",true);
+                        }
+                    }
+                } else {
+                    jQuery("#installment").closest(".installments").hide();
+                    jQuery("#interest-free").closest(".installments").hide();
+                    $("#total-monthly-payment").addClass('hidden');
+                }
+            },
+            complete: function () { 
+                jQuery("#card-container").removeClass("opacity");
+                jQuery(".ajax-loader").removeClass("is-active");  
+            } 
+        })
+    }
 
     function openpayFormHandler() {
         var holder_name = $('#holder_name').val();

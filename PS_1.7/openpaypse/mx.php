@@ -88,7 +88,7 @@ $_MODULE['<{openpaypse}default-bootstrap>configuration_026cd93085523cd54a85240d1
 $_MODULE['<{openpaypse}default-bootstrap>configuration_0da8d9a75492046bea7f314521e07cae'] = 'Formas de pago aceptadas';
 $_MODULE['<{openpaypse}default-bootstrap>configuration_40fed24d2e43a64767663257cfd5f4b1'] = 'Tarjeta de crédito/débito';
 $_MODULE['<{openpaypse}default-bootstrap>configuration_f9d299b21a010a3778a2f0f5367ed4a7'] = 'Pago en tiendas';
-$_MODULE['<{openpaypse}default-bootstrap>configuration_57e0b461454d4ddbde47036797a8413f'] = 'Transferencia bancaria';
+$_MODULE['<{openpaypse}default-bootstrap>configuration_57e0b461454d4ddbde47036797a8413f'] = 'Pago PSE';
 $_MODULE['<{openpaypse}default-bootstrap>configuration_1a85e8287e1d5a5bae142fb7287c99e1'] = 'Bitcoins';
 $_MODULE['<{openpaypse}default-bootstrap>configuration_a24010ae37280cc18caa55069b6800ed'] = 'Meses sin intereses';
 $_MODULE['<{openpaypse}default-bootstrap>configuration_42160631a3479f3ac1101809d80fb600'] = 'Si vas a utilizar meses sin intereses, favor de seleccionar una o más de las siguientes opciones.';
