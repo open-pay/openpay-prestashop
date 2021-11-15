@@ -46,13 +46,13 @@ class OpenpayPse extends PaymentModule
 
         $this->name = 'openpaypse';
         $this->tab = 'payments_gateways';
-        $this->version = '1.0.4';
+        $this->version = '1.0.5';
         $this->author = 'Openpay SA de CV';
 
         parent::__construct();
         $warning = 'Are you sure you want uninstall this module?';
         $this->displayName = $this->l('Openpay PSE');
-        $this->description = $this->l('Acepta transferencias bancarias con Openpay');
+        $this->description = $this->l('Permite que tus clientes realicen pagos referenciados desde su banco con Openpay');
         $this->confirmUninstall = $this->l($warning);
         $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);        
     }
@@ -289,7 +289,7 @@ class OpenpayPse extends PaymentModule
         ));                
 
         $externalOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
-        $externalOption->setCallToActionText($this->l('Transferencia Interbancaria'))            
+        $externalOption->setCallToActionText($this->l('Pago PSE'))            
             ->setModuleName($this->name)
             ->setLogo(_MODULE_DIR_.'openpaypse/views/img/openpay-logo.svg')         
             ->setAction($this->context->link->getModuleLink($this->name, 'validation', array(), Tools::usingSecureMode()))                       

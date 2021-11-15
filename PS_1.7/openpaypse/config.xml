@@ -2,8 +2,8 @@
 <module>
     <name>openpaypse</name>
     <displayName><![CDATA[Openpay PSE]]></displayName>
-    <version><![CDATA[1.0.4]]></version>
-    <description><![CDATA[Acepta transferencias bancarias con Openpay]]></description>
+    <version><![CDATA[1.0.5]]></version>
+    <description><![CDATA[Permite que tus clientes realicen pagos referenciados desde su banco con Openpay]]></description>
     <author><![CDATA[Openpay SA de CV]]></author>
     <tab><![CDATA[payments_gateways]]></tab>
     <confirmUninstall><![CDATA[Are you sure you want uninstall this module?]]></confirmUninstall>

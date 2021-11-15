@@ -314,18 +314,6 @@
                         <input type="text" autocomplete="off" type="text" name="openpay_iva" id="openpay_iva" value="{if $openpay_configuration.OPENPAY_IVA}{$openpay_configuration.OPENPAY_IVA|escape:'htmlall':'UTF-8'}{/if}" style="width: 100%; margin: 5px 0 0 0;">
                         <div><small>* Debe contener el valor de IVA, es campo solo informativo, no tiene ningún efecto sobre el campo amount.</small></div>
                     </td>
-                </tr>   
-                <tr>
-                    <td colspan="2">
-                        <h3>{l s='Cuotas' mod='openpayprestashop'}</h3>
-                        <label>{l s="Si vas a utilizar Cuotas deberás de seleccionar al menos una de las siguiente opciones." mod='openpayprestashop'}</label>                                      
-                        <select name="installments[]" id="installments" style="width: 100%; margin: 10px 0 0 0;" multiple>
-                             {foreach $installments as $key => $installment}
-                                <option value="{$key}" {if $key|in_array:$selected_installments } selected="selected"{/if}>{$installment}</option>
-                            {/foreach}
-                        </select>
-                        <div><smal>* Presione ctrl y clic para seleccionar más de una opción.</smal></div>                                                 
-                    </td>
                 </tr>     
                 <tr>
                     <td colspan="2" class="td-noborder save"><input type="submit" class="button" name="SubmitOpenpay" value="{l s='Guardar configuración' mod='openpayprestashop'}" /></td>
@@ -389,7 +377,6 @@ $(document).ready(function() {
     function showOrHideElements(country, merchantClassification){
         if (country === 'CO') {            
             $("#openpay_iva").closest("tr").show();
-            $("#installments").closest("tr").show();
             
             $("#openpay_affiliation_bbva").closest("tr").hide();
             $("#use_card_points").closest("tr").hide();
@@ -398,15 +385,13 @@ $(document).ready(function() {
             $("#capture").closest("tr").hide();        
         } else if(country === 'PE'){
             $("#openpay_iva").closest("tr").hide();
-            $("#installments").closest("tr").hide();
             $("#openpay_affiliation_bbva").closest("tr").hide();
             $("#use_card_points").closest("tr").hide();
             $("#months_interest_free").closest("tr").hide();
             $("#openpay_charge_type").closest("tr").hide();
             $("#capture").closest("tr").hide();
         } else if (country === 'MX') {
-            $("#openpay_iva").closest("tr").hide();  
-            $("#installments").closest("tr").hide();
+            $("#openpay_iva").closest("tr").hide();
 
             $("#use_card_points").closest("tr").show();
             $("#months_interest_free").closest("tr").show();      

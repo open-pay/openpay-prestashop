@@ -54,7 +54,7 @@ class OpenpayPrestashop extends PaymentModule
 
         $this->name = 'openpayprestashop';
         $this->tab = 'payments_gateways';
-        $this->version = '4.2.0';
+        $this->version = '4.3.0';
         $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';               
 
@@ -64,14 +64,13 @@ class OpenpayPrestashop extends PaymentModule
         $this->description = $this->l('Acepta pagos con tarjeta de crédito con Openpay.');
         $this->confirmUninstall = $this->l($warning);
         $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);
-        $this->months_interest_free = array('1' => 'No aceptar pagos a meses' , '3' => '3 meses', '6' => '6 meses', '9' => '9 meses', '12' => '12 meses', '18' => '18 meses');        
-        $this->installments = $this->getOptions();        
+        $this->months_interest_free = array('1' => 'No aceptar pagos a meses' , '3' => '3 meses', '6' => '6 meses', '9' => '9 meses', '12' => '12 meses', '18' => '18 meses');       
     }
 
     public function getOptions() {
         $installments = [];
         for ($i=1; $i <= 36; $i++) {
-            $label = $i == 1 ? 'No aceptar pagos en cuotas' : $i.' cuotas';
+            $label = $i.' cuotas';
             $installments[$i] = $label;
         }
         return $installments;        
@@ -416,20 +415,14 @@ class OpenpayPrestashop extends PaymentModule
             $selected_months_interest_free = array_diff($selected_months_interest_free, array(1));
         }
 
-        $select_installments = array();
-        if (Configuration::get('OPENPAY_INSTALLMENTS') != null) {
-            $select_installments = explode(',', Configuration::get('OPENPAY_INSTALLMENTS'));
-            $select_installments = array_diff($select_installments, array(1));
-        }
-
-
         $show_months_interest_free = false;
         if (count($selected_months_interest_free) > 0 && $country == 'MX') {
             $show_months_interest_free = true;
         }
 
         $show_installments = false;
-        if (count($select_installments) > 0 && $country == 'CO') {
+        if ($country == 'CO') {
+            $select_installments = $this->getOptions();
             $show_installments = true;
         }
 
@@ -457,6 +450,7 @@ class OpenpayPrestashop extends PaymentModule
             'use_card_points' => Configuration::get('USE_CARD_POINTS'),
             'can_save_cc' => Configuration::get('OPENPAY_SAVE_CC') == '1' && (bool)$this->context->customer->isLogged() ? true : false,
             'cc_options' => $this->getCreditCardList(),
+            'url_ajax' => Tools::getHttpHost(true).__PS_BASE_URI__.'module/openpayprestashop/typecard',
             'action' => $this->context->link->getModuleLink($this->name, 'validation', array(), Tools::usingSecureMode()),
         ));
 
@@ -708,7 +702,6 @@ class OpenpayPrestashop extends PaymentModule
         /** Update Configuration Values when settings are updated */
         if (Tools::isSubmit('SubmitOpenpay')) {
             $months = is_array(Tools::getValue('months_interest_free')) ? implode(',', Tools::getValue('months_interest_free')) : '';
-            $installments = is_array(Tools::getValue('installments')) ? implode(',', Tools::getValue('installments')) : '';
             
             $configuration_values = array(
                 'OPENPAY_MODE' => Tools::getValue('openpay_mode'),
@@ -720,7 +713,6 @@ class OpenpayPrestashop extends PaymentModule
                 'OPENPAY_PRIVATE_KEY_TEST' => trim(Tools::getValue('openpay_private_key_test')),
                 'OPENPAY_PRIVATE_KEY_LIVE' => trim(Tools::getValue('openpay_private_key_live')),
                 'OPENPAY_MONTHS_INTEREST_FREE' => $months,
-                'OPENPAY_INSTALLMENTS' => $installments,
                 'OPENPAY_IVA' => Tools::getValue('openpay_iva'),
                 'OPENPAY_CLASSIFICATION' => Tools::getValue('openpay_classification'),
                 'OPENPAY_AFFILIATION' => Tools::getValue('openpay_affiliation_bbva'),
@@ -768,11 +760,6 @@ class OpenpayPrestashop extends PaymentModule
         $selected_months_interest_free = array();
         if (Configuration::get('OPENPAY_MONTHS_INTEREST_FREE') != null) {
             $selected_months_interest_free = explode(',', Configuration::get('OPENPAY_MONTHS_INTEREST_FREE'));
-        }
-
-        $selected_installments = array();
-        if (Configuration::get('OPENPAY_INSTALLMENTS') != null) {
-            $selected_installments = explode(',', Configuration::get('OPENPAY_INSTALLMENTS'));
         }
 
         $dashboard_openpay = '';
@@ -846,8 +833,6 @@ class OpenpayPrestashop extends PaymentModule
             'openpay_error' => (empty($this->error) ? false : $this->error),
             'openpay_validation_title' => $validation_title,
             'months_interest_free' => $this->months_interest_free,
-            'installments' => $this->installments,
-            'selected_installments' => $selected_installments,
             'selected_months_interest_free' =>  $selected_months_interest_free,
             'dashboard_openpay' => $dashboard_openpay
         ));
@@ -926,6 +911,7 @@ class OpenpayPrestashop extends PaymentModule
             return $this->getCustomer($openpay_customer['openpay_customer_id']);
         }
     }
+
     private function formatAddress($customer_data, $address) {
         $country = Configuration::get('OPENPAY_COUNTRY');
         if ($country === 'MX' || $country === 'PE' ) {
@@ -1050,6 +1036,16 @@ class OpenpayPrestashop extends PaymentModule
             return $charge;
         } catch (Exception $e) {
             $this->error($e);
+        }
+    }
+
+    public function getTypeCardByBine($card_bin) {
+        $openpay = $this->getOpenpayInstance();
+        try {
+            $cardInfo = $openpay->bines->get($card_bin);
+            return $cardInfo;
+        } catch (Exception $e) {
+            return null;
         }
     }
 
@@ -1245,7 +1241,7 @@ class OpenpayPrestashop extends PaymentModule
         return (!isset($string) || trim($string) === '');
     }
     
-    protected function getOpenpayInstance() {   
+    protected function getOpenpayInstance() {
         $country = Configuration::get('OPENPAY_COUNTRY'); 
         $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
         $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
