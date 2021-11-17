@@ -36,7 +36,9 @@ class OpenpayPrestashop extends PaymentModule
 
     private $error = array();
     private $validation = array();
-    private $limited_currencies = array('MXN', 'USD');
+    private $limited_currencies_mx = array('MXN', 'USD');
+    private $limited_currencies_co = array('COP', 'USD');
+    private $limited_currencies_pe = array('PEN', 'USD');
 
     public function __construct() {
         if (!class_exists('Openpay', false)) {
@@ -848,11 +850,11 @@ class OpenpayPrestashop extends PaymentModule
     public function checkCurrency() {
         $country = Configuration::get('OPENPAY_COUNTRY'); 
         if ($country === 'MX') {
-            return in_array($this->context->currency->iso_code, $this->limited_currencies);
+            return in_array($this->context->currency->iso_code, $this->limited_currencies_mx);
         }elseif ($country === 'CO'){
-            return $this->context->currency->iso_code === 'COP' ? true : false;
+            return in_array($this->context->currency->iso_code, $this->limited_currencies_co);
         }elseif ($country === 'PE'){
-            return $this->context->currency->iso_code === 'PEN' ? true : false;
+            return in_array($this->context->currency->iso_code, $this->limited_currencies_pe);
         }
     }
 
