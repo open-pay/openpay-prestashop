@@ -54,7 +54,7 @@ class OpenpayPrestashop extends PaymentModule
 
         $this->name = 'openpayprestashop';
         $this->tab = 'payments_gateways';
-        $this->version = '4.3.0';
+        $this->version = '4.4.0';
         $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';               
 
@@ -531,6 +531,8 @@ class OpenpayPrestashop extends PaymentModule
                 $charge_request['source_id'] = $card->id;                                                            
             }
 
+            $charge_request = $this->chargebackGuarantee($charge_request);
+
             $charge = $openpay_customer->charges->create($charge_request);
 
             // Si tiene habilitado el 3D SECURE 
@@ -630,6 +632,87 @@ class OpenpayPrestashop extends PaymentModule
             Tools::redirect('index.php?controller=order&step=1');
         }
     }
+
+    /**
+     * @throws Exception
+     */
+    public function chargebackGuarantee($charge_request)
+    {
+        $shipping_address = new Address($this->context->cart->id_address_delivery);
+        $billing_address = new Address($this->context->cart->id_address_invoice);
+        $products = $this->context->cart->getProducts();
+
+        $charge_request['ship_to'] = Array(
+            'phone_area_code' => $this->chargebackGuaranteePhoneAreaCode($shipping_address,$billing_address),
+            'address' => Array(
+                'city' => ($shipping_address->city) ?: $billing_address->city,
+                'state' => (State::getNameById($shipping_address->id_state)) ?: State::getNameById($billing_address->id_state),
+                'postal_code' => ($shipping_address->postcode) ?: $billing_address->postcode,
+                'line1' => ($shipping_address->address1) ?: $billing_address->address1,
+                'line2' => ($shipping_address->address2) ?: $billing_address->address2,
+                'country_code' => ($shipping_address->country === 'Mexico' || $billing_address->country === "México" ) ? "MX" : false
+            )
+        );
+
+        $charge_request['billing'] = Array(
+            'address' => Array(
+                'city' => ($billing_address->city) ?: $shipping_address->city,
+                'state' => (State::getNameById($billing_address->id_state)) ?: State::getNameById($shipping_address->id_state),
+                'postal_code' => ($billing_address->postcode) ?: $shipping_address->postcode,
+            )
+        );
+
+        foreach ($products as $item) {
+            $product = Array(
+                'id' => $item['id_product'],
+                'name' => $item['name'],
+                'quantity' => $item['cart_quantity'],
+                'price' => number_format(floatval($item['price_wt']), 2, '.', ''),
+                'type' => $item['is_virtual'] ? "DIGITAL" : "PHYSICAL",
+                'category' => Array(
+                    'id' => $item['id_category_default'],
+                    'name' => $item['category']
+                )
+            );
+            $charge_request['products'][] = $product;
+        }
+
+        $charge_request['product_sum'] = number_format(floatval($this->context->cart->getOrderTotal(true,  Cart::BOTH_WITHOUT_SHIPPING)), 2, '.', '');
+
+        return $charge_request;
+    }
+
+    public function chargebackGuaranteePhoneAreaCode($shipping_address,$billing_address)
+    {
+        if ($shipping_address->country){
+            switch ($shipping_address->country){
+                case 'Mexico':
+                case 'México':
+                    return '+52';
+                case 'Colombia':
+                    return '+57';
+                case 'Peru':
+                case 'Perú':
+                    return '+51';
+                case 'Argentina':
+                    return '+54';
+            }
+        }else{
+            switch ($billing_address->country){
+                case 'Mexico':
+                case 'México':
+                    return '+52';
+                case 'Colombia':
+                    return '+57';
+                case 'Peru':
+                case 'Perú':
+                    return '+51';
+                case 'Argentina':
+                    return '+54';
+            }
+        }
+    }
+
 
     /**
      * Check settings requirements to make sure the Openpay's module will work properly
