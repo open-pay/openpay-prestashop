@@ -26,16 +26,31 @@
 <div class="openpay-module-wrapper">
 
     <div class="openpay-module-header">
-        <a href="http://www.openpay.mx" target="_blank" rel="external"><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/openpay-logo.png" alt="Openpay logo" class="openpay-logo" /></a>
-        <span class="openpay-module-intro">{l s='Comienza ha aceptar pagos con tarjetas de crédito-débito hoy mismo con Openpay.' mod='openpayprestashop'}</span>
-        <a href="https://sandbox-dashboard.openpay.mx/merchant/production" rel="external" target="_blank" class="openpay-module-create-btn"><span>{l s='Crea una cuenta' mod='openpayprestashop'}</span></a>
+        {if $openpay_configuration.OPENPAY_CLASSIFICATION != 'eglobal' }
+            <a href="{if $openpay_configuration.OPENPAY_COUNTRY == 'MX' } http://www.openpay.mx {else} http://www.openpay.co {/if}" target="_blank" rel="external"><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/openpay-logo.png" alt="Openpay logo" class="openpay-logo" /></a>
+            <span class="openpay-module-intro">{l s='Comienza ha aceptar pagos con tarjetas de crédito-débito hoy mismo con Openpay.' mod='openpayprestashop'}</span>
+            <a href="{if $openpay_configuration.OPENPAY_COUNTRY == 'MX' }
+            https://sandbox-dashboard.openpay.mx/login/register
+            {elseif $openpay_configuration.OPENPAY_COUNTRY == 'CO'} https://sandbox-dashboard.openpay.co/login/register
+            {else} https://sandbox-dashboard.openpay.pe/login/register
+            {/if}  " rel="external" target="_blank" class="openpay-module-create-btn"><span>{l s='Crea una cuenta' mod='openpayprestashop'}</span></a>
+        {else}
+            <a href="https://docs.ecommercebbva.com/index.html#cargos" target="_blank" rel="external"><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/bbva-logo.png" alt="Openpay logo" class="openpay-logo" /></a>
+            <span class="openpay-module-intro">{l s='Comienza ha aceptar pagos con tarjetas de crédito-débito hoy mismo con BBVA.' mod='openpayprestashop'}</span>
+            <a href="https://sand-portal.ecommercebbva.com/login/register/bbva" rel="external" target="_blank" class="openpay-module-create-btn"><span>{l s='Crea una cuenta' mod='openpayprestashop'}</span></a>
+        {/if}
     </div>
     <div class="openpay-module-wrap">
         <div class="openpay-module-col1 floatRight">
             <div class="openpay-module-wrap-video">
                 <h3>{l s='Panel de administración' mod='openpayprestashop'}</h3>
                 <p>{l s='Contamos con un panel donde podrás visualizar todas tus transacciones.' mod='openpayprestashop'}</p>
-                <a target="_blank" href="http://www.openpay.mx"><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/openpay-dashboard.png" alt="openpay dashboard" class="openpay-dashboard" /></a>
+                <a target="_blank" href="{$dashboard_openpay}">
+                    {if $openpay_configuration.OPENPAY_CLASSIFICATION != 'eglobal' }
+                        <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/openpay_dashboard.png" alt="openpay dashboard" class="openpay-dashboard" /></a>
+                    {else}
+                        <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/bbva-dashboard.png" alt="BBVA dashboard" class="openpay-dashboard" /></a>
+                    {/if}
                 <hr>
                 <div class="openpay-prestashop-partner mt30">
                     <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/prestashop_partner.png" alt="" />
@@ -65,32 +80,89 @@
                     <div class="col-md-7">
                         <h3>{l s='Acepta pagos con tarjetas de crédito' mod='openpayprestashop'}</h3>
                         <div class="row">
+                        {if $openpay_configuration.OPENPAY_COUNTRY == 'MX' }
+                            {if $openpay_configuration.OPENPAY_CLASSIFICATION != 'eglobal' }
+                                {for $i=1 to 4}
+                                    <div class="col-xs-2 store-image">
+                                        <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/credit_cards_mx/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
+                                    </div>
+                                {/for}
+                            {else}
+                                {for $i=1 to 3}
+                                    <div class="col-xs-2 store-image">
+                                        <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/credit_cards_bbva/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
+                                    </div>
+                                {/for}
+                            {/if}
+                        {elseif $openpay_configuration.OPENPAY_COUNTRY == 'PE' }
                             {for $i=1 to 4}
                                 <div class="col-xs-2 store-image">
-                                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/credit_cards/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
+                                    <img {if $i==4} style="max-width:65%;" {/if} src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/credit_cards_pe/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
                                 </div>
                             {/for}
+                        {else}
+                            {for $i=1 to 2}
+                                <div class="col-xs-2 store-image">
+                                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/credit_cards_co/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
+                                </div>
+                            {/for}
+                        {/if}
                         </div>
                         <br><br>
                         <h3>{l s='Acepta pagos con tarjetas de débito' mod='openpayprestashop'}</h3>
                         <div class="row">
+                        {if $openpay_configuration.OPENPAY_COUNTRY == 'MX' }
                             {for $i=1 to 4}
                                 <div class="col-xs-2 store-image">
-                                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/debit_cards/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
+                                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/debit_cards_mx/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
                                 </div>
                             {/for}
+                        {elseif $openpay_configuration.OPENPAY_COUNTRY == 'PE' }
+                            {for $i=1 to 4}
+                                <div class="col-xs-2 store-image">
+                                    <img {if $i==4} style="max-width:65%;" {/if} src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/debit_cards_pe/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
+                                </div>
+                            {/for}
+                        {else}
+                            {for $i=1 to 2}
+                                <div class="col-xs-2 store-image">
+                                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/debit_cards_co/{sprintf("%02d", $i|escape:'htmlall':'UTF-8')}.png">
+                                </div>
+                            {/for}
+                        {/if}
                         </div>
+                        {if $openpay_configuration.OPENPAY_CLASSIFICATION != 'eglobal' }
                         <div>
-                            <strong><a href="http://www.openpay.mx/tarjetas.html" target="_blank" class="openpay-module-btn">{l s='Tarjetas soportadas' mod='openpayprestashop'}</a></strong>
+                            <strong><a href="{if $openpay_configuration.OPENPAY_COUNTRY == 'MX' } http://www.openpay.mx/tarjetas.html
+                                             {elseif $openpay_configuration.OPENPAY_COUNTRY == 'CO'} https://www.openpay.co/tdc-tdd
+                                             {else} https://www.openpay.pe/
+                                             {/if}" target="_blank" class="openpay-module-btn">{l s='Tarjetas soportadas' mod='openpayprestashop'}</a></strong>
                         </div>
+                        {/if}
                     </div>
-                    <div class="col-md-4">
-                        <h3>{l s='Comisión por transacción exitosa: Visa y MasterCard' mod='openpayprestashop'}</h3>
-                        <p class="comision">{l s='2.9% + $2.5 MXN' mod='openpayprestashop'}</p>
-                        <br><br>
-                        <h3>{l s='Comisión por transacción exitosa: American Express' mod='openpayprestashop'}</h3>
-                        <p class="comision">{l s='4.5% + $2.5 MXN' mod='openpayprestashop'}</p>
+                    {if $openpay_configuration.OPENPAY_CLASSIFICATION != 'eglobal' }
+                    <div style="text-align: center" class="col-md-4">
+                        {if $openpay_configuration.OPENPAY_COUNTRY == 'MX' }
+                            <h3>{l s='Comisión por transacción exitosa' mod='openpayprestashop'}</h3>
+                            <p class="comision">{l s='2.9% + $2.5 MXN' mod='openpayprestashop'}</p>
+                        {elseif $openpay_configuration.OPENPAY_COUNTRY == 'CO'}
+                            <h3>{l s='Costos para clientes con cuentas de otros bancos' mod='openpayprestashop'}</h3>
+                            <p class="comision">{l s='2.90% + $900 COP' mod='openpayprestashop'}</p>
+                            <br><br>
+                            <h3>{l s='Costos para clientes BBVA' mod='openpayprestashop'}</h3>
+                            <p class="comision">{l s='2.70% + $900 COP' mod='openpayprestashop'}</p>
+                        {else}
+                            <h3>{l s='Costos para clientes con cuentas de otros bancos' mod='openpayprestashop'}</h3>
+                            <p class="comision">{l s='3.79% + S/1.00' mod='openpayprestashop'}</p>
+                            <p>{l s='Y tendrás tu dinero disponible en 48 hrs. Además recibirás notificaciones en tiempo real' mod='openpayprestashop'}</p>
+
+                            <br><br>
+                            <h3>{l s='Costos para clientes BBVA' mod='openpayprestashop'}</h3>
+                            <p class="comision">{l s='3.49%' mod='openpayprestashop'}</p>
+                            <p>{l s='Y tendrás tu dinero disponible en 24 hrs. Además recibirás notificaciones en tiempo real' mod='openpayprestashop'}</p>
+                        {/if}
                     </div>
+                    {/if}
                 </div>
             </div>            
         </div>
@@ -169,7 +241,30 @@
                             </tr>
                         </table>
                     </td>
-                </tr>                        
+                </tr>
+                <tr>
+                    <td>                                                     
+                        <input type="text" autocomplete="off" type="text" name="openpay_classification" id="openpay_classification" value="{if $openpay_configuration.OPENPAY_CLASSIFICATION}{$openpay_configuration.OPENPAY_CLASSIFICATION|escape:'htmlall':'UTF-8'}{/if}" style="width: 100%; margin: 5px 0 0 0;">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">                        
+                        <label style="">{l s="País" mod='openpayprestashop'}</label>                                          
+                        <select name="openpay_country" id="country" style="width: 100%; margin: 10px 0 0 0;">
+                            <option value="MX" {if $openpay_configuration.OPENPAY_COUNTRY == 'MX'} selected="selected"{/if}>México</option>
+                            <option value="CO" {if $openpay_configuration.OPENPAY_COUNTRY == 'CO'} selected="selected"{/if}>Colombia</option>
+                            <option value="PE" {if $openpay_configuration.OPENPAY_COUNTRY == 'PE'} selected="selected"{/if}>Perú</option>
+                        </select>
+                        <div><small>* Seleccionar el país </small></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>                        
+                        <label style="">{l s="Número de afiliación" mod='openpayprestashop'}</label>                                          
+                        <input type="text" autocomplete="off" type="text" name="openpay_affiliation_bbva" id="openpay_affiliation_bbva" value="{if $openpay_configuration.OPENPAY_AFFILIATION}{$openpay_configuration.OPENPAY_AFFILIATION|escape:'htmlall':'UTF-8'}{/if}" style="width: 100%; margin: 5px 0 0 0;">
+                        <div><small>* Número de afiliación BBVA.</small></div>
+                    </td>
+                </tr>                         
                 <tr>
                     <td colspan="2">                        
                         <label style="">{l s="¿Cómo procesar el cargo?" mod='openpayprestashop'}</label>                                          
@@ -217,17 +312,21 @@
                     <td colspan="2">
                         <h3>{l s='Meses sin intereses' mod='openpayprestashop'}</h3>
                         <label>{l s="Si vas a utilizar MSI deberás de seleccionar al menos una de las siguiente opciones." mod='openpayprestashop'}</label>                                      
-                        <table cellspacing="0" cellpadding="0" class="innerTable mb20">
-                            <tr>                                
-                                {foreach $months_interest_free as $key => $interest_free}                                        
-                                    <td align="left" valign="middle">
-                                        <input type="checkbox" name="months_interest_free[]" id="months_interest_free_{$key}" value="{$key}" {if $key|in_array:$selected_months_interest_free } checked="checked" {/if}> {$interest_free}
-                                    </td>    
-                                {/foreach}                                                                                                
-                            </tr>
-                        </table>                                                    
+                        <select name="months_interest_free[]" id="months_interest_free" style="width: 100%; margin: 10px 0 0 0;" multiple>
+                             {foreach $months_interest_free as $key => $interest_free}
+                                <option value="{$key}" {if $key|in_array:$selected_months_interest_free } selected="selected"{/if}>{$interest_free}</option>
+                            {/foreach}
+                        </select>
+                        <div><smal>* Presione ctrl y clic para seleccionar más de una opción.</smal></div>                                                  
                     </td>
-                </tr>   
+                </tr>
+                <tr>
+                    <td>                        
+                        <label style="">{l s="IVA" mod='openpayprestashop'}</label>                                          
+                        <input type="text" autocomplete="off" type="text" name="openpay_iva" id="openpay_iva" value="{if $openpay_configuration.OPENPAY_IVA}{$openpay_configuration.OPENPAY_IVA|escape:'htmlall':'UTF-8'}{/if}" style="width: 100%; margin: 5px 0 0 0;">
+                        <div><small>* Debe contener el valor de IVA, es campo solo informativo, no tiene ningún efecto sobre el campo amount.</small></div>
+                    </td>
+                </tr>     
                 <tr>
                     <td colspan="2" class="td-noborder save"><input type="submit" class="button" name="SubmitOpenpay" value="{l s='Guardar configuración' mod='openpayprestashop'}" /></td>
                 </tr>
@@ -262,15 +361,66 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
+    $("#openpay_classification").closest("tr").hide();
+
+    var country = $('#country').val();
+    var merchantClassification = $('#openpay_classification').val();
+    showOrHideElements(country, merchantClassification);
+
     $('input:radio[name=openpay_mode]').click(function() {
         updateOpenpaySettings();
     });
-    
+
+    $('#country').change(function () {
+        var country = $(this).val();
+        console.log('openpay_cards_country', country);        
+
+        showOrHideElements(country)
+    });
+
     function updateOpenpaySettings() {
         if ($('input:radio[name=openpay_mode]:checked').val() === 1) {
             $('fieldset.openpay-cc-numbers').hide(1000);
         } else {
             $('fieldset.openpay-cc-numbers').show(1000);
+        }
+    }
+
+    function showOrHideElements(country, merchantClassification){
+        if (country === 'CO') {            
+            $("#openpay_iva").closest("tr").show();
+            
+            $("#openpay_affiliation_bbva").closest("tr").hide();
+            $("#use_card_points").closest("tr").hide();
+            $("#months_interest_free").closest("tr").hide(); 
+            $("#openpay_charge_type").closest("tr").hide();
+            $("#capture").closest("tr").hide();        
+        } else if(country === 'PE'){
+            $("#openpay_iva").closest("tr").hide();
+            $("#openpay_affiliation_bbva").closest("tr").hide();
+            $("#use_card_points").closest("tr").hide();
+            $("#months_interest_free").closest("tr").hide();
+            $("#openpay_charge_type").closest("tr").hide();
+            $("#capture").closest("tr").hide();
+        } else if (country === 'MX') {
+            $("#openpay_iva").closest("tr").hide();
+
+            $("#use_card_points").closest("tr").show();
+            $("#months_interest_free").closest("tr").show();      
+
+            if(merchantClassification === 'eglobal'){
+                $("#openpay_affiliation_bbva").closest("tr").show();
+
+                $("#openpay_charge_type").closest("tr").hide();
+                $("#capture").closest("tr").hide();
+                $("#country").closest("tr").hide();
+            }else{
+                $("#openpay_affiliation_bbva").closest("tr").hide();
+
+                $("#openpay_charge_type").closest("tr").show();
+                $("#capture").closest("tr").show();
+                $("#country").closest("tr").show();
+            }                          
         }
     }
 });

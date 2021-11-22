@@ -1,3 +1,11 @@
+body#checkout section.checkout-step .payment-options .payment-option {
+    margin-bottom: 0.8rem;
+}
+
+body#checkout section.checkout-step .payment-options .payment-option img {
+    width: 80px;
+}
+
 .openpay-bitcoin-container {
     border: 1px solid #d6d4d4;
     border-radius: 4px;
@@ -216,4 +224,51 @@ a#openpay_error { display: none; }
 .hidden {
   display: none;
   visibility: hidden;
+}
+
+.installments {
+    display: none;
+}
+
+#card-container {
+    position: relative;
+}
+
+#card-container.opacity {
+    opacity: 0.5;
+}
+
+#card-container.opacity .ajax-loader.is-active {
+    position: absolute;
+    left: calc(50% - 15px);
+    top: calc(50% - 15px);
+    height:30px;
+    width:30px;
+    margin:0px auto;
+    -webkit-animation: rotation .6s infinite linear;
+    -moz-animation: rotation .6s infinite linear;
+    -o-animation: rotation .6s infinite linear;
+    animation: rotation .6s infinite linear;
+    border-left:4px solid rgba(0,174,239,.15);
+    border-right:4px solid rgba(0,174,239,.15);
+    border-bottom:4px solid rgba(0,174,239,.15);
+    border-top:4px solid rgba(0,174,239,.8);
+    border-radius:100%;
+}
+
+@-webkit-keyframes rotation {
+from {-webkit-transform: rotate(0deg);}
+to {-webkit-transform: rotate(359deg);}
+}
+@-moz-keyframes rotation {
+from {-moz-transform: rotate(0deg);}
+to {-moz-transform: rotate(359deg);}
+}
+@-o-keyframes rotation {
+from {-o-transform: rotate(0deg);}
+to {-o-transform: rotate(359deg);}
+}
+@keyframes rotation {
+from {transform: rotate(0deg);}
+to {transform: rotate(359deg);}
 }

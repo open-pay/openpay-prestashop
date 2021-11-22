@@ -32,46 +32,58 @@ if (!class_exists('Logger', false)) {
     include(dirname(__FILE__).'/../../classes/PrestaShopLogger.php');
 }
 
+if (!class_exists('Openpay', false)) {
+    include_once(dirname(__FILE__).'/lib/Openpay.php');
+}
+
 /* To configure, add webhook in account storename.com/modules/openpayprestahsop/notification.php */
 $objeto = Tools::file_get_contents('php://input');
 $json = Tools::jsonDecode($objeto);
-Logger::addLog('Request type: '.$json->type, 1, null, null, null, true);
 
-if ($json->type == 'charge.succeeded' && ($json->transaction->method == 'bitcoin' || $json->transaction->method == 'store' || $json->transaction->method == 'bank_account')) {
-
-    Logger::addLog('Cart ID: '.$json->transaction->order_id, 1, null, null, null, true);
-    Logger::addLog('Trans ID: '.$json->transaction->id, 1, null, null, null, true);
-
-    if ($json->transaction->method == 'bitcoin') {
-        $transaction_order_id = (int) $json->transaction->description;
-        $order_id = Order::getOrderByCartId($transaction_order_id);
-    } else {        
-        $order = new Order((int) $json->transaction->order_id);
-        $order_id = $order->id;
-    }
-    
-    Logger::addLog('ORDER ID: '.$order_id, 1, null, null, null, true);
-    if ($order_id) {
-        Logger::addLog('IF ORDER: '.$order_id, 1, null, null, null, true);
-        $order_history = new OrderHistory();
-        $order_history->id_order = (int) $order_id;
-        $order_history->changeIdOrderState(Configuration::get('PS_OS_PAYMENT'), (int) $order_id);        
-        $order_history->addWithemail();
-
-        Db::getInstance()->Execute(
-            'UPDATE '._DB_PREFIX_.'openpay_transaction SET status = "paid" WHERE id_transaction = "'.pSQL($json->transaction->id).'"'
-        );
-    } else {
-        Logger::addLog('NO ORDER', 1, null, null, null, true);
-    }
+if(empty($json->type)){
     header('HTTP/1.1 200 OK');
     exit;
 }
+
+Logger::addLog('Request type: '.$json->type, 1, null, null, null, true);
+
+if($json->transaction->method == 'store' || $json->transaction->method == 'bank_account'){
+    $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
+    $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
+    $openpay = Openpay::getInstance($id, $pk);
+    Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
+
+    $charge = $openpay->charges->get($json->transaction->id);
+    $order = new Order((int) $json->transaction->order_id);
+    $order_id = $order->id;
+
+    Logger::addLog('IF ORDER: '.$order_id, 1, null, null, null, true);
+
+    if ($order_id) {
+        Logger::addLog('ORDER ID: '.$order_id, 1, null, null, null, true);
+
+        if ($json->type == 'charge.succeeded' &&   $charge->status == 'completed') {
+            Logger::addLog('Cart ID: '.$json->transaction->order_id, 1, null, null, null, true);
+            Logger::addLog('Trans ID: '.$json->transaction->id, 1, null, null, null, true);
+
+            $order_history = new OrderHistory();
+            $order_history->id_order = (int) $order_id;
+            $order_history->changeIdOrderState(Configuration::get('PS_OS_PAYMENT'), (int) $order_id);        
+            $order_history->addWithemail();
+
+            Db::getInstance()->Execute(
+                'UPDATE '._DB_PREFIX_.'openpay_transaction SET status = "paid" WHERE id_transaction = "'.pSQL($json->transaction->id).'"'
+            );
+        }else if($json->type == 'transaction.expired'){
+
+            $order_history = new OrderHistory();
+            $order_history->id_order = (int) $order_id;
+            $order_history->changeIdOrderState(Configuration::get('PS_OS_CANCELED'), (int) $order_id);        
+            $order_history->addWithemail();
+        }
+    } else {
+        Logger::addLog('NO ORDER', 1, null, null, null, true);
+    }
+}
 header('HTTP/1.1 200 OK');
 exit;
-
-
-
-
-
-

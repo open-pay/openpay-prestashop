@@ -62,7 +62,7 @@ $_MODULE['<{openpayprestashop}prestashop>configuration_53ec60f35cc6540782a146766
 $_MODULE['<{openpayprestashop}prestashop>configuration_151cc725606e5b25a7819ee4ae0d34f2'] = 'Acepta pagos con tarjetas de crédito';
 $_MODULE['<{openpayprestashop}prestashop>configuration_3af067d2854baf5fc115d4aaf214f1ee'] = 'Acepta pagos con tarjetas de débito';
 $_MODULE['<{openpayprestashop}prestashop>configuration_5d13fd12fe5ce8f9966cc14aab851f5e'] = 'Consulta las tarjetas soportadas';
-$_MODULE['<{openpayprestashop}prestashop>configuration_614312ed5cbb0e8437c36cd40788570c'] = 'Comisión por cargo exitoso: Visa y MasterCard';
+$_MODULE['<{openpayprestashop}prestashop>configuration_614312ed5cbb0e8437c36cd40788570c'] = 'Comisión por cargo exitoso';
 $_MODULE['<{openpayprestashop}prestashop>configuration_612a531dd63e9b678aa9de2301f7ff64'] = '2.9% + $2.5 MXN';
 $_MODULE['<{openpayprestashop}prestashop>configuration_463ea67c3392dff58057327807f4257a'] = 'Comisión por cargo exitoso: American Express';
 $_MODULE['<{openpayprestashop}prestashop>configuration_8e4e595e987a55f267effc93b95138e1'] = '4.5% + $2.5 MXN';
@@ -137,7 +137,7 @@ $_MODULE['<{openpayprestashop}prestashop>card_execution_879f6b8877752685a966564d
 $_MODULE['<{openpayprestashop}prestashop>card_execution_4d3df28e3e68ed692ae51475bbe0860d'] = 'Tarjetas de crédito';
 $_MODULE['<{openpayprestashop}prestashop>card_execution_22dfc2f5b165aa665fd5668c234c658d'] = 'Tarjetas de débito';
 $_MODULE['<{openpayprestashop}prestashop>card_execution_605b9107cc740b18034c761edb6d6fe7'] = 'Estamos registrando tu pago, por favor espera.';
-$_MODULE['<{openpayprestashop}prestashop>card_execution_63171e216532becbb0be4a43aa4252fa'] = 'Nombre del tarjetahabiente';
+$_MODULE['<{openpayprestashop}prestashop>card_execution_63171e216532becbb0be4a43aa4252fa'] = 'Nombre del títular';
 $_MODULE['<{openpayprestashop}prestashop>card_execution_38bf9127129f60f3f1d66b84554d9026'] = 'Como aparece en la tarjeta';
 $_MODULE['<{openpayprestashop}prestashop>card_execution_7c773fc36d32c0e4a95e9c1a06189bf6'] = 'Número de tarjeta';
 $_MODULE['<{openpayprestashop}prestashop>card_execution_8c1279db4db86553e4b9682f78cf500e'] = 'Fecha de expiración';

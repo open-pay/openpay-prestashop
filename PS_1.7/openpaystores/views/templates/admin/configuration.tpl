@@ -26,16 +26,16 @@
 <div class="openpay-module-wrapper">
 
     <div class="openpay-module-header">
-        <a href="http://www.openpay.mx" target="_blank" rel="external"><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/openpay-logo.png" alt="Openpay logo" class="openpay-logo" /></a>
-        <span class="openpay-module-intro">{l s='Comienza ha aceptar pagos con tarjetas de crédito-débito hoy mismo con Openpay.' mod='openpaystores'}</span>
-        <a href="https://sandbox-dashboard.openpay.mx/merchant/production" rel="external" target="_blank" class="openpay-module-create-btn"><span>{l s='Crea una cuenta' mod='openpaystores'}</span></a>
+        <a href="{if $openpay_configuration.OPENPAY_COUNTRY == 'MX' } http://www.openpay.mx {elseif $openpay_configuration.OPENPAY_COUNTRY == 'CO' } http://www.openpay.co {else} http://www.openpay.pe {/if}" target="_blank" rel="external"><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/openpay-logo.png" alt="Openpay logo" class="openpay-logo" /></a>
+        <span class="openpay-module-intro">{l s='Comienza a aceptar pagos en efectivo hoy mismo con Openpay.' mod='openpaystores'}</span>
+        <a href="{if $openpay_configuration.OPENPAY_COUNTRY == 'MX' } https://sandbox-dashboard.openpay.mx/login/register {elseif $openpay_configuration.OPENPAY_COUNTRY == 'CO' } https://sandbox-dashboard.openpay.co/login/register {else} https://sandbox-dashboard.openpay.pe/login/register {/if}" rel="external" target="_blank" class="openpay-module-create-btn"><span>{l s='Crea una cuenta' mod='openpaystores'}</span></a>
     </div>
     <div class="openpay-module-wrap">
         <div class="openpay-module-col1 floatRight">
             <div class="openpay-module-wrap-video">
                 <h3>{l s='Panel de administración' mod='openpaystores'}</h3>
                 <p>{l s='Contamos con un panel donde podrás visualizar todas tus transacciones.' mod='openpaystores'}</p>
-                <a target="_blank" href="http://www.openpay.mx"><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/openpay-dashboard.png" alt="openpay dashboard" class="openpay-dashboard" /></a>
+                <a target="_blank" href="{$dashboard_openpay}"><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/openpay-dashboard.png" alt="openpay dashboard" class="openpay-dashboard" /></a>
                 <hr>
                 <div class="openpay-prestashop-partner mt30">
                     <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/prestashop_partner.png" alt="" />
@@ -64,19 +64,47 @@
                 <div class="row">
                     <div class="col-md-7">
                         <h3>{l s='Acepta pagos en efectivo' mod='openpaystores'}</h3>
-                        <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores.png" class="img-responsive">
+                        {if $openpay_configuration.OPENPAY_COUNTRY == 'MX' }
+                            <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores_mx.png" class="img-responsive">
+                        {elseif $openpay_configuration.OPENPAY_COUNTRY == 'CO'}
+                            <div class="store-logos">
+                                <div class="store-logos__puntored">
+                                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores/puntored_logo.jpeg" class="img-responsive">
+                                </div>
+                                <div class="store-logos__via">
+                                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores/baloto_logo.png">
+                                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores/via_logo.png">
+                                </div>
+                            </div>
+                        {else}
+                             <div class="store-logos">
+                                <div class="store-logos__puntored">
+                                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores-pe.png">
+                                </div>
+                            </div>
+                        {/if}
                         <div>
                             <strong>
-                                <a href="http://www.openpay.mx/tiendas-de-conveniencia.html" target="_blank" class="openpay-module-btn">
+                                <a href="{if $openpay_configuration.OPENPAY_COUNTRY == 'MX' } http://www.openpay.mx/tiendas-de-conveniencia.html {elseif $openpay_configuration.OPENPAY_COUNTRY == 'CO'} https://www.openpay.co/tiendas/ {else} https://www.openpay.pe/documentacion/tiendas-en-el-mapa/ {/if}" target="_blank" class="openpay-module-btn">
                                     {l s='Tiendas afiliadas' mod='openpaystores'}
                                 </a>
                             </strong>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <h3>{l s='Comisión por transacción exitosa' mod='openpaystores'}</h3>
-                        <br>
-                        <p class="comision">{l s='2.9% + $2.5 MXN' mod='openpaystores'}</p>
+                        {if $openpay_configuration.OPENPAY_COUNTRY == 'MX' }
+                            <h3>{l s='Comisión por transacción exitosa' mod='openpaystores'}</h3>
+                            <br>
+                            <p class="comision">{l s='2.9% + $2.5 MXN' mod='openpaystores'}</p>
+                        {elseif $openpay_configuration.OPENPAY_COUNTRY == 'CO'}
+                            <h3>{l s='Transacciones en efectivo menores a $15.000 tiene un costo fijo' mod='openpaystores'}</h3>
+                            <br>
+                            <p class="comision">{l s='$1.500 + IVA' mod='openpaystores'}</p>
+                        {else}
+                            <h3>{l s='Comisión por transacción exitosa. Las tarifas no incluyen IGV.' mod='openpaystores'}</h3>
+                            <br>
+                            <p class="comision">{l s='3.79% + S/1.00' mod='openpaystores'}</p>                        
+                        {/if}
                     </div>
                 </div>
             </div>            
@@ -146,15 +174,18 @@
                                 <td align="left" valign="middle">{l s='Llave privada' mod='openpaystores'}</td>
                                 <td align="left" valign="middle"><input autocomplete="off" type="password" name="openpay_private_key_live" value="{if $openpay_configuration.OPENPAY_PRIVATE_KEY_LIVE}{$openpay_configuration.OPENPAY_PRIVATE_KEY_LIVE|escape:'htmlall':'UTF-8'}{/if}" /></td>
                             </tr>
-                            <tr>
-                                <td align="left" valign="middle">{l s='Sandbox llave pública' mod='openpaystores'}</td>
-                                <td align="left" valign="middle"><input autocomplete="off" type="text" name="openpay_public_key_test" value="{if $openpay_configuration.OPENPAY_PUBLIC_KEY_TEST}{$openpay_configuration.OPENPAY_PUBLIC_KEY_TEST|escape:'htmlall':'UTF-8'}{/if}" /></td>
-                                <td width="15"></td>
-                                <td width="15" class="vertBorder"></td>
-                                <td align="left" valign="middle">{l s='Llave pública' mod='openpaystores'}</td>
-                                <td align="left" valign="middle"><input autocomplete="off" type="text" name="openpay_public_key_live" value="{if $openpay_configuration.OPENPAY_PUBLIC_KEY_LIVE}{$openpay_configuration.OPENPAY_PUBLIC_KEY_LIVE|escape:'htmlall':'UTF-8'}{/if}" /></td>
-                            </tr>
                         </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">                        
+                        <label style="">{l s="País" mod='openpaystores'}</label>                                          
+                        <select name="openpay_country" id="country" style="width: 100%; margin: 10px 0 0 0;">
+                            <option value="MX" {if $openpay_configuration.OPENPAY_COUNTRY == 'MX'} selected="selected"{/if}>México</option>
+                            <option value="CO" {if $openpay_configuration.OPENPAY_COUNTRY == 'CO'} selected="selected"{/if}>Colombia</option>
+                            <option value="PE" {if $openpay_configuration.OPENPAY_COUNTRY == 'PE'} selected="selected"{/if}>Perú</option>
+                        </select>
+                        <div><small>* Seleccionar el país </small></div>
                     </td>
                 </tr>
                 <tr>
@@ -173,14 +204,21 @@
                 </tr>
                 <tr>
                     <td colspan="2">                        
-                        <label style="">{l s="Mostrar mapa" mod='openpayprestashop'}</label>                                          
+                        <label style="">{l s="Mostrar mapa" mod='openpaystores'}</label>                                          
                         <select name="show_map" id="show_map" style="width: 100%; margin: 10px 0 0 0;">
                             <option value="0" {if $openpay_configuration.OPENPAY_SHOW_MAP == '0'} selected="selected"{/if}>NO</option>
                             <option value="1" {if $openpay_configuration.OPENPAY_SHOW_MAP == '1'} selected="selected"{/if}>SI</option>                            
                         </select>
-                        <div><small>Al selccionar esta opción, un mapa se desplegará mostrando las tiendas más cercanas al momento mostrar el recipo de pago (https://www.openpay.mx/docs/stores-map.html).</small></div>                        
+                        <div><small>Al selccionar esta opción, un mapa se desplegará mostrando las tiendas más cercanas al momento mostrar el recipo de pago.</small></div>                        
                     </td>
-                </tr> 
+                </tr>
+                <tr>
+                    <td>                        
+                        <label style="">{l s="IVA" mod='openpaystores'}</label>                                          
+                        <input type="text" autocomplete="off" type="text" name="openpay_store_iva" id="openpay_store_iva" value="{if $openpay_configuration.OPENPAY_STORE_IVA}{$openpay_configuration.OPENPAY_STORE_IVA|escape:'htmlall':'UTF-8'}{/if}" style="width: 100%; margin: 5px 0 0 0;">
+                        <div><small>* Debe contener el valor de IVA, es campo solo informativo, no tiene ningún efecto sobre el campo amount.</small></div>
+                    </td>
+                </tr>   
                 <tr>
                     <td colspan="2" class="td-noborder save"><input type="submit" class="button" name="SubmitOpenpay" value="{l s='Guardar configuración' mod='openpaystores'}" /></td>
                 </tr>
@@ -190,3 +228,31 @@
     <div class="clear"></div>
 
 </div>
+
+
+<script type="text/javascript">
+$(document).ready(function() {
+    var country = jQuery('#country').val();
+    showOrHideElements(country);
+
+    jQuery('#country').change(function () {
+        var country = jQuery(this).val();
+        console.log('openpay_cards_country', country);        
+
+        showOrHideElements(country)
+    });
+
+    function showOrHideElements(country){
+        if (country === 'CO'  ) {            
+            jQuery("#openpay_store_iva").closest("tr").show();
+            jQuery("#show_map").closest("tr").show();  
+        } else if (country === 'MX') {            
+            jQuery("#openpay_store_iva").closest("tr").hide();
+            jQuery("#show_map").closest("tr").show();                           
+        } else if( country === 'PE') {
+            jQuery("#openpay_store_iva").closest("tr").hide();
+            jQuery("#show_map").closest("tr").hide();  
+        }
+    }
+});
+</script>

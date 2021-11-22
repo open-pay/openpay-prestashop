@@ -46,8 +46,8 @@ class OpenpayBanks extends PaymentModule
 
         $this->name = 'openpaybanks';
         $this->tab = 'payments_gateways';
-        $this->version = '3.0.3';
-        $this->author = 'Openpay SAPI de CV';
+        $this->version = '3.1.3';
+        $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';
 
         parent::__construct();
@@ -115,12 +115,13 @@ class OpenpayBanks extends PaymentModule
         $names = array();
 
         foreach ($languages as $lang) {
-            $names[$lang['id_lang']] = $this->l('Awaiting payment');
+            $names[$lang['id_lang']] = $this->l('Awaiting Banks payment');
         }
 
         $state->name = $names;
         $state->color = '#4169E1';
         $state->send_email = true;
+        $state->logable = true;
         $state->module_name = 'openpaybanks';
         $templ = array();
 
@@ -132,7 +133,7 @@ class OpenpayBanks extends PaymentModule
 
         if ($state->save()) {
             try {
-                Configuration::updateValue('waiting_cash_payment', $state->id);
+                Configuration::updateValue('PS_OS_WAITING_BANKS_PAYMENT', $state->id);
                 $this->copyMailTemplate();
             } catch (Exception $e) {
                 if (class_exists('Logger')) {
@@ -205,13 +206,18 @@ class OpenpayBanks extends PaymentModule
             $this->deleteWebhook(Configuration::get('OPENPAY_SPEI_WEBHOOK_ID_LIVE'), true);
         }
 
+        $order_status = (int) Configuration::get('PS_OS_WAITING_BANKS_PAYMENT');
+        $orderState = new OrderState($order_status);
+        $orderState->delete();
+
         return parent::uninstall() &&                
             Configuration::deleteByName('OPENPAY_DEADLINE_SPEI') &&
             Configuration::deleteByName('OPENPAY_SPEI_WEBHOOK_ID_TEST') &&
             Configuration::deleteByName('OPENPAY_SPEI_WEBHOOK_ID_LIVE') &&
             Configuration::deleteByName('OPENPAY_SPEI_WEBHOOK_USER') &&
             Configuration::deleteByName('OPENPAY_SPEI_WEBHOOK_PASSWORD') &&                                
-            Configuration::deleteByName('OPENPAY_SPEI_WEBHOOOK_URL');                
+            Configuration::deleteByName('OPENPAY_SPEI_WEBHOOOK_URL') &&
+            Configuration::deleteByName('PS_OS_WAITING_BANKS_PAYMENT');          
     }
     
     public function hookActionEmailSendBefore($params) {        
@@ -317,7 +323,8 @@ class OpenpayBanks extends PaymentModule
 
         $externalOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
         $externalOption->setCallToActionText($this->l('Transferencia Interbancaria'))            
-            ->setModuleName($this->name)            
+            ->setModuleName($this->name)
+            ->setLogo(_MODULE_DIR_.'openpaybanks/views/img/openpay-logo.svg')            
             ->setAction($this->context->link->getModuleLink($this->name, 'validation', array(), Tools::usingSecureMode()))                       
             ->setAdditionalInformation($this->context->smarty->fetch('module:openpaybanks/views/templates/hook/spei.tpl'));            
 
@@ -394,7 +401,7 @@ class OpenpayBanks extends PaymentModule
             $payment_method = 'bank_account';
             $display_name = $this->l('Openpay SPEI');            
             $result_json = $this->offlinePayment($payment_method);
-            $order_status = (int) Configuration::get('waiting_cash_payment');
+            $order_status = (int) Configuration::get('PS_OS_WAITING_BANKS_PAYMENT');
 
             $clabe = $result_json->payment_method->clabe;
             $reference = $result_json->payment_method->name;
@@ -439,7 +446,7 @@ class OpenpayBanks extends PaymentModule
                 }
             }            
 
-            $fee = ($result_json->amount * 0.029) + 2.5;
+            $fee = ($result_json->amount * 0.029) + 2.5;  /* DUDAS*/
             
             if($result_json->due_date){
                 $due_date = $result_json->due_date;
@@ -775,6 +782,9 @@ class OpenpayBanks extends PaymentModule
         $openpay = Openpay::getInstance($id, $pk);
         Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
 
+        $userAgent = "Openpay-PS17MX/v2";
+        Openpay::setUserAgent($userAgent);
+
         try {
             $customer = $openpay->customers->add($customer_data);
             return $customer;
@@ -790,6 +800,9 @@ class OpenpayBanks extends PaymentModule
 
         Openpay::getInstance($id, $pk);
         Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
+
+        $userAgent = "Openpay-PS17MX/v2";
+        Openpay::setUserAgent($userAgent);
 
         try {
             $charge = $customer->charges->create($charge_request);
@@ -807,6 +820,9 @@ class OpenpayBanks extends PaymentModule
 
         Openpay::getInstance($id, $pk);
         Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
+
+        $userAgent = "Openpay-PS17MX/v2";
+        Openpay::setUserAgent($userAgent);
         
         try {
             $charge = $customer->charges->get($transaction_id);            
@@ -835,15 +851,29 @@ class OpenpayBanks extends PaymentModule
 
     public function createWebhook($force_host_ssl = false)
     {
+        $mode = Configuration::get('OPENPAY_MODE') ? 'LIVE' : 'TEST';
+        $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
+        $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
+
+        $openpay = Openpay::getInstance($id, $pk);
+        Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
+
+        $userAgent = "Openpay-PS17MX/v2";
+        Openpay::setUserAgent($userAgent);
+
+        $url = Tools::getHttpHost(true).__PS_BASE_URI__.'modules/openpaybanks/notification.php';
+        $webhooks = $openpay->webhooks->getList([]);
+        $webhookCreated = $this->isWebHookCreated($webhooks, $url);
+        if ($webhookCreated) { 
+            return $webhookCreated;
+        }
         
-        $domain = rtrim(Configuration::get('OPENPAY_SPEI_WEBHOOK_URL'), "/");        
         $webhook_data = array(            
-            'url' => $domain.'/modules/openpaybanks/notification.php',            
+            'url' => $url,            
             'force_host_ssl' => $force_host_ssl,
             'event_types' => array(
                 'verification',
                 'charge.succeeded',
-                'charge.created',
                 'charge.cancelled',
                 'charge.failed',
                 'payout.created',
@@ -852,16 +882,10 @@ class OpenpayBanks extends PaymentModule
                 'spei.received',
                 'chargeback.created',
                 'chargeback.rejected',
-                'chargeback.accepted'
+                'chargeback.accepted',
+                'transaction.expired'
             )
         );
-
-        $mode = Configuration::get('OPENPAY_MODE') ? 'LIVE' : 'TEST';
-        $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
-        $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
-
-        $openpay = Openpay::getInstance($id, $pk);
-        Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
 
         try {
             $webhook = $openpay->webhooks->add($webhook_data);
@@ -1028,5 +1052,14 @@ class OpenpayBanks extends PaymentModule
             }
             closedir($dhvalue);
         }
+    }
+
+    private function isWebHookCreated($webhooks, $url) {
+        foreach ($webhooks as $webhook) {
+            if ($webhook->url === $url) {
+                return $webhook;
+            }
+        }
+        return null;
     }
 }

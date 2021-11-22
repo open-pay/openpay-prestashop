@@ -85,11 +85,8 @@
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <h3>{l s='Fee for successful transaction: Visa y MasterCard' mod='openpayprestashop'}</h3>
+                        <h3>{l s='Fee for successful transaction' mod='openpayprestashop'}</h3>
                         <p class="comision">{l s='2.9% + $2.5 MXN' mod='openpayprestashop'}</p>
-                        <br><br>
-                        <h3>{l s='Fee for successful transaction: American Express' mod='openpayprestashop'}</h3>
-                        <p class="comision">{l s='4.5% + $2.5 MXN' mod='openpayprestashop'}</p>
                     </div>
                 </div>
             </div>
@@ -240,9 +237,6 @@
                                 </td>
                                 <td align="left" valign="middle">
                                     <input type="checkbox" name="openpay_spei" id="openpay_spei" value="1" {if $openpay_configuration.OPENPAY_SPEI == 1} checked="checked" {/if}> {l s='Bank payment' mod='openpayprestashop'}
-                                </td>
-                                <td align="left" valign="middle">
-                                    <input type="checkbox" name="openpay_bitcoins" id="openpay_bitcoins" value="1" {if $openpay_configuration.OPENPAY_BITCOINS == 1} checked="checked" {/if}> {l s='Bitcoins' mod='openpayprestashop'}
                                 </td>
                             </tr>
                         </table>
