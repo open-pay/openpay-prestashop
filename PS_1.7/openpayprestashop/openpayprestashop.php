@@ -423,6 +423,7 @@ class OpenpayPrestashop extends PaymentModule
         }
 
         $show_installments = false;
+        $select_installments = null;
         if ($country == 'CO') {
             $select_installments = $this->getOptions();
             $show_installments = true;
