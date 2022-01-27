@@ -52,11 +52,18 @@ class OpenpayBanksPaymentModuleFrontController extends ModuleFrontController
     {
         $openpay = new OpenpayBanks();
         if ($openpay->active) {
-            $openpay->processPayment(Tools::getValue('payment_method'), Tools::getValue('openpay_token'), Tools::getValue('device_session_id'), Tools::getValue('transaction'), Tools::getValue('interest_free'));
+            $openpay->processPayment(
+                Tools::getValue('payment_method'),
+                Tools::getValue('openpay_token'),
+                Tools::getValue('device_session_id'),
+                Tools::getValue('transaction'),
+                Tools::getValue('interest_free')
+            );
         } else {
             $this->context->cookie->__set('openpay_error', 'There was a problem with your payment');
             $controller = Configuration::get('PS_ORDER_PROCESS_TYPE') ? 'order-opc.php' : 'order.php';
-            $redirect = $this->context->link->getPageLink($controller).(strpos($controller, '?') !== false ? '&' : '?').'step=3#openpay_error';
+            $redirect = $this->context->link->getPageLink($controller)
+                .(strpos($controller, '?') !== false ? '&' : '?').'step=3#openpay_error';
             Tools::redirect($redirect);
         }
     }

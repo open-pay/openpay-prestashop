@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Openpay API v1 Client for PHP (version 1.0.0)
- *
+ * Openpay API v1 Client for PHP (version 2.0.0)
+ * 
  * Copyright © Openpay SAPI de C.V. All rights reserved.
  * http://www.openpay.mx/
  * soporte@openpay.mx
@@ -139,7 +139,11 @@ abstract class OpenpayApiResourceBase
             $parent = $this->parent->parent;
         }
 
-        if ($parent != null && $container = $parent->getResource($resource->resourceName)) {
+        if (!is_object($parent)) {
+            return;
+        }
+
+        if ($container = $parent->getResource($resource->resourceName)) { // $resourceName
             if ($container instanceof OpenpayApiDerivedResource && method_exists($container, 'addResource')) {
                 OpenpayConsole::trace('OpenpayApiResourceBase @registerInParent > registering derived resource in parent');
                 $container->addResource($resource);
@@ -153,11 +157,14 @@ abstract class OpenpayApiResourceBase
     }
 
     private function getResource($resourceName) {
-        foreach ($this->derivedResources as $resource) {
-            if ($resource->resourceName == $resourceName) {
-                return $resource;
+        if ($this->derivedResources !== null) {
+            foreach ($this->derivedResources as $resource) {
+                if ($resource->resourceName == $resourceName) {
+                    return $resource;
+                }
             }
         }
+                
         return false;
     }
 
@@ -237,12 +244,15 @@ abstract class OpenpayApiResourceBase
 
     protected function validateId($id) {
         OpenpayConsole::trace('OpenpayApiResourceBase @validateId');
-        if (!is_string($id) || !preg_match('/^[a-z][a-z0-9]{0,20}$/i', $id)) {
-            throw new OpenpayApiRequestError("Invalid ID detected (value '".$id."' received, alphanumeric string not longer than 20 characters expected)");
+        $class = $this->resourceName;
+        if (substr($class, -1 * strlen('Bine')) != 'Bine') {
+            if (!is_string($id) || !preg_match('/^[a-z][a-z0-9]{0,20}$/i', $id)) {
+                throw new OpenpayApiRequestError("Invalid ID detected (value '".$id."' received, alphanumeric string not longer than 20 characters expected)");
+            }
         }
     }
 
-    protected static function _create($resourceName, $params, $props = null) {
+    protected function _create($resourceName, $params, $props = null) {
 
         $resource = self::getInstance($resourceName, $props);
         $resource->validateParams($params);
@@ -252,7 +262,7 @@ abstract class OpenpayApiResourceBase
         return $resource->refreshData($response);
     }
 
-    protected static function _retrieve($resourceName, $id, $props = null) {
+    protected function _retrieve($resourceName, $id, $props = null) {
         if ($props && is_array($props)) {
             $props['id'] = $id;
         } else {
@@ -266,14 +276,14 @@ abstract class OpenpayApiResourceBase
         return $resource->refreshData($response);
     }
 
-    protected static function _find($resourceName, $params, $props = null) {
+    protected function _find($resourceName, $params, $props = null) {
 
         $resource = self::getInstance($resourceName, $props);
         $resource->validateParams($params);
 
         $list = array();
         $response = OpenpayApiConnector::request('get', $resource->getUrl(), $params);
-        if (self::isList($response)) {
+        if ($this->isList($response)) {
             foreach ($response as $v) {
                 $item = self::getInstance($resourceName);
                 $item->refreshData($v);
@@ -291,7 +301,7 @@ abstract class OpenpayApiResourceBase
             return $this->refreshData($response);
         }
     }
-    
+
     protected function _updateCharge($params) {
         if (count($params)) {
             $response = OpenpayApiConnector::request('put', $this->getResourceUrl(), $params);
@@ -307,6 +317,12 @@ abstract class OpenpayApiResourceBase
             $this->parent->removeResource($this->id);
         }
         //$this->empty(); // TODO
+    }
+
+    protected function _getAttributes($param) {
+        $url = $this->getUrl().'/'.$param;
+        $response = OpenpayApiConnector::request('get', $url, null);
+        return json_decode(json_encode($response));
     }
 
     // ---------------------------------------------------------
@@ -325,7 +341,7 @@ abstract class OpenpayApiResourceBase
         $resourceUrlName = $this->getResourceUrlName();
         return ($parentUrl != '' ? $parentUrl : '').($resourceUrlName != '' ? '/'.$resourceUrlName : '').($this->id ? '/'.$this->id : '');
     }
-    
+
     public function getResourceUrl() {
         $resourceUrlName = $this->getResourceUrlName();
         return ($resourceUrlName != '' ? '/'.$resourceUrlName : '').($this->id ? '/'.$this->id : '');
@@ -357,7 +373,7 @@ abstract class OpenpayApiResourceBase
             return $this->$key;
         } else if (array_key_exists($key, $this->serializableData)) {
             return $this->serializableData[$key];
-        } else if (is_array($this->derivedResources) && array_key_exists($key, $this->derivedResources)) {
+        } else if (array_key_exists($key, $this->derivedResources)) {
             return $this->derivedResources[$key];
         } else if (array_key_exists($key, $this->noSerializableData)) {
             return $this->noSerializableData[$key];
