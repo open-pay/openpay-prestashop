@@ -26,7 +26,7 @@
 <div class="openpay-module-wrapper">
 
     <div class="openpay-module-header">
-        <a href="{if $openpay_configuration.OPENPAY_COUNTRY == 'MX' } http://www.openpay.mx {else} http://www.openpay.co {/if}" target="_blank" rel="external"><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/openpay-logo.png" alt="Openpay logo" class="openpay-logo" /></a>
+        <a href="{if $openpay_configuration.OPENPAY_COUNTRY == 'MX' } http://www.openpay.mx {else} http://www.openpay.co {/if}" target="_blank" rel="external"><img src="https://img.openpay.mx/plugins/openpay_logo.svg" alt="Openpay logo" class="openpay-logo" /></a>
         <span class="openpay-module-intro">{l s='Comienza a recibir pagos a credito con checkout lending.' mod='openpaycheckoutlending'}</span>
         <a href="{if $openpay_configuration.OPENPAY_COUNTRY == 'MX' } https://sandbox-dashboard.openpay.mx/login/register {else} https://sandbox-dashboard.openpay.co/login/register {/if}" rel="external" target="_blank" class="openpay-module-create-btn"><span>{l s='Crea una cuenta' mod='openpaycheckoutlending'}</span></a>
     </div>

@@ -26,7 +26,7 @@
 <div class="openpay-module-wrapper">
 
     <div class="openpay-module-header">
-        <a href="{if $openpay_configuration.OPENPAY_COUNTRY == 'MX' } http://www.openpay.mx {elseif $openpay_configuration.OPENPAY_COUNTRY == 'CO' } http://www.openpay.co {else} http://www.openpay.pe {/if}" target="_blank" rel="external"><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/openpay-logo.png" alt="Openpay logo" class="openpay-logo" /></a>
+        <a href="{if $openpay_configuration.OPENPAY_COUNTRY == 'MX' } http://www.openpay.mx {elseif $openpay_configuration.OPENPAY_COUNTRY == 'CO' } http://www.openpay.co {else} http://www.openpay.pe {/if}" target="_blank" rel="external"><img src="https://img.openpay.mx/plugins/openpay_logo.svg" alt="Openpay logo" class="openpay-logo" /></a>
         <span class="openpay-module-intro">{l s='Comienza a aceptar pagos en efectivo hoy mismo con Openpay.' mod='openpaystores'}</span>
         <a href="{if $openpay_configuration.OPENPAY_COUNTRY == 'MX' } https://sandbox-dashboard.openpay.mx/login/register {elseif $openpay_configuration.OPENPAY_COUNTRY == 'CO' } https://sandbox-dashboard.openpay.co/login/register {else} https://sandbox-dashboard.openpay.pe/login/register {/if}" rel="external" target="_blank" class="openpay-module-create-btn"><span>{l s='Crea una cuenta' mod='openpaystores'}</span></a>
     </div>
@@ -65,16 +65,10 @@
                     <div class="col-md-7">
                         <h3>{l s='Acepta pagos en efectivo' mod='openpaystores'}</h3>
                         {if $openpay_configuration.OPENPAY_COUNTRY == 'MX' }
-                            <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores_mx.png" class="img-responsive">
+                            <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores/stores_mx.png" class="img-responsive">
                         {elseif $openpay_configuration.OPENPAY_COUNTRY == 'CO'}
                             <div class="store-logos">
-                                <div class="store-logos__puntored">
-                                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores/puntored_logo.jpeg" class="img-responsive">
-                                </div>
-                                <div class="store-logos__via">
-                                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores/baloto_logo.png">
-                                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores/via_logo.png">
-                                </div>
+                                    <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/stores/puntored_via_baloto_logo.png" class="img-responsive">
                             </div>
                         {else}
                              <div class="store-logos">

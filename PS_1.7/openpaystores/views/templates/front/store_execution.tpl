@@ -59,15 +59,15 @@
             <div class="row mb30">
                 
                 <div class="col-md-4 center">
-                    <div><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/step1.png"></div>
+                    <div><img src="https://img.openpay.mx/plugins/file.svg"></div>
                     <p>{l s='Haz clic en el botón de "Realizar Pedido" al final de la página' mod='openpaystores'}</p>
                 </div>
                 <div class="col-md-4 center">
-                    <div><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/step_store.png"></div>
+                    <div><img src="https://img.openpay.mx/plugins/printer.svg"></div>
                     <p>{l s='Realiza el pago escaneando el código QR o copiando la dirección y el monto a pagar.' mod='openpaystores'}</p>
                 </div>
                 <div class="col-md-4 center">
-                    <div><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/step3.png"></div>
+                    <div><img src="https://img.openpay.mx/plugins/mail.svg"></div>
                     <p>{l s='Inmediatamente después de verificar tu pago te enviaremos un correo electrónico de confirmación y tu pedido será procesado.' mod='openpaystores'}</p>
                 </div>
             </div>

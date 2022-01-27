@@ -399,7 +399,7 @@ class OpenpayPrestashop extends PaymentModule
         $externalOption->setCallToActionText($this->l('Tarjeta de crédito-débito'))                    
                 ->setForm($this->generateForm($cart))
                 ->setModuleName($this->name)
-                ->setLogo(_MODULE_DIR_.'openpayprestashop/views/img/openpay-logo.svg')
+                ->setLogo('https://img.openpay.mx/plugins/openpay_logo.svg')
                 ->setAdditionalInformation($this->context->smarty->fetch('module:openpayprestashop/views/templates/front/payment_infos.tpl'));
 
         return array($externalOption);

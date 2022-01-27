@@ -35,10 +35,6 @@ body#checkout section.checkout-step .payment-options .payment-option img {
 /*    background: #fbfbfb;*/
 }
 
-.openpay-form-container p{
-    font-weight: normal;
-}
-
 div.payment_module{
     margin-bottom: 10px;
 }
@@ -46,15 +42,6 @@ div.payment_module{
 .openpay-form-container small{
     font-weight: normal;
     font-size: 14px;
-}
-
-.openpay-form-container small > a{
-    color: #0083ff;
-}
-
-.openpay-form-container small > a:hover{
-    color: #0083ff;
-    text-decoration: underline;
 }
 
 .openpay-form-container label{
@@ -222,10 +209,7 @@ a#openpay_error { display: none; }
 }
 
 .store-logos {
-    align-items: center;
-    display: grid;
-    justify-content: space-between;
-    grid-template-columns: 25% 70%;
+   text-align: center;
 }
 .store-logos .store-logos__via {
     text-align: center;
@@ -237,3 +221,60 @@ a#openpay_error { display: none; }
 .store-logos .store-logos__via > img:last-child {
     max-width: 90px;
 }
+
+/*################  REBRANDING ####################*/
+
+.openpay-form-container small > a{
+    color: #0063A8;
+}
+
+.openpay-form-container small > a:hover{
+    color: #0063A8;
+    text-decoration: underline;
+}
+
+.openpay-form-container p{
+    text-align: justify;
+}
+
+.openpay-form-container h4.blue_subtitle{
+    text-align: center;
+}
+
+.openpay-form-container p,
+.openpay-form-container h4.blue_subtitle{
+    color: #0063A8;
+    font-weight: 600;
+}
+
+.steps img{
+    margin-bottom: 1.2em;
+}
+
+.store-image{
+    text-align: center;
+}
+
+@media only screen and (max-width: 767px) {
+    .steps img{
+        width: 60%;
+    }
+
+    .store-logos-pe img{
+        width: 100%;
+    }
+}
+
+@media only screen and (min-width: 992px) {
+    .steps div{
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+
+    .steps div > img{
+        width: 18%;
+        margin-right: 1em;
+    }
+}
+/*###############################################*/
