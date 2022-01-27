@@ -40,7 +40,7 @@ class OpenpayCheckoutLending extends PaymentModule {
         /* Module configuration data  */
         $this->name = 'openpaycheckoutlending';
         $this->displayName = $this->l('Openpay Checkout Lending');
-        $this->version = '1.0.2';
+        $this->version = '1.1.0';
         $this->author = 'Openpay SA de CV';
         $this->tab = 'payments_gateways';
         $this->description = $this->l('Compra ahora, paga después');

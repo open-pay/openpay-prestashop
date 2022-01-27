@@ -33,7 +33,6 @@ if (!defined('_PS_VERSION_')) {
 
 class OpenpayPrestashop extends PaymentModule
 {
-
     private $error = array();
     private $validation = array();
     private $limited_currencies_mx = array('MXN', 'USD');
@@ -56,7 +55,7 @@ class OpenpayPrestashop extends PaymentModule
 
         $this->name = 'openpayprestashop';
         $this->tab = 'payments_gateways';
-        $this->version = '4.4.0';
+        $this->version = '4.5.0';
         $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';               
 

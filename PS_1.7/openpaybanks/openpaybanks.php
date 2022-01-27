@@ -46,7 +46,7 @@ class OpenpayBanks extends PaymentModule
 
         $this->name = 'openpaybanks';
         $this->tab = 'payments_gateways';
-        $this->version = '3.1.3';
+        $this->version = '3.2.0';
         $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';
 
