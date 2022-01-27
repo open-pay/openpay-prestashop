@@ -1,4 +1,4 @@
-![Openpay Prestashop](http://www.openpay.mx/img/github/prestashop.jpg)
+![Openpay Prestashop](https://www.openpay.mx/img/github/prestashop.jpg)
 
 Supported versions: 1.6.x, 1.7.7
 
