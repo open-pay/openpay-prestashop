@@ -35,10 +35,6 @@ body#checkout section.checkout-step .payment-options .payment-option img {
 /*    background: #fbfbfb;*/
 }
 
-.openpay-form-container p{
-    font-weight: normal;
-}
-
 div.payment_module{
     margin-bottom: 10px;
 }
@@ -48,14 +44,6 @@ div.payment_module{
     font-size: 14px;
 }
 
-.openpay-form-container small > a{
-    color: #0083ff;
-}
-
-.openpay-form-container small > a:hover{
-    color: #0083ff;
-    text-decoration: underline;
-}
 
 .openpay-form-container label{
     font-weight: normal;
@@ -220,3 +208,26 @@ a#openpay_error { display: none; }
     font-weight: bold;
     margin-top: 10px;
 }
+
+
+/*################  REBRANDING ####################*/
+.openpay-form-container small > a{
+    color: #0063A8;
+}
+
+.openpay-form-container small > a:hover{
+    color: #0063A8;
+    text-decoration: underline;
+}
+
+.openpay-form-container p{
+    color: #0063A8;
+    font-weight: 600;
+}
+
+@media only screen and (max-width: 767px) {
+    .pse_logo{
+        text-align: center;
+    }
+}
+/*###############################################*/

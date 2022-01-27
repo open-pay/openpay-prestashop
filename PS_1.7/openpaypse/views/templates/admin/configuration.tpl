@@ -26,7 +26,7 @@
 <div class="openpay-module-wrapper">
 
     <div class="openpay-module-header">
-        <a href="http://www.openpay.co" target="_blank" rel="external"><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/openpay-logo.png" alt="Openpay logo" class="openpay-logo" /></a>
+        <a href="http://www.openpay.co" target="_blank" rel="external"><img src="https://img.openpay.mx/plugins/openpay_logo.svg" alt="Openpay logo" class="openpay-logo" /></a>
         <span class="openpay-module-intro">{l s='Comienza ha aceptar pagos con tarjetas de crédito-débito hoy mismo con Openpay.' mod='openpaypse'}</span>
         <a href="https://sandbox-dashboard.openpay.co/login/register" rel="external" target="_blank" class="openpay-module-create-btn"><span>{l s='Crea una cuenta' mod='openpaypse'}</span></a>
     </div>
