@@ -18,9 +18,9 @@
  * versions in the future. If you wish to customize PrestaShop for your
  * needs please refer to http://www.prestashop.com for more information.
  *
- *  @author    PrestaShop SA <contact@prestashop.com>
- *  @copyright 2007-2015 PrestaShop SA
- *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @author    PrestaShop SA <contact@prestashop.com>
+ * @copyright 2007-2015 PrestaShop SA
+ * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  *  International Registered Trademark & Property of PrestaShop SA
  */
 
@@ -41,12 +41,12 @@ class OpenpayPrestashopTypeCardModuleFrontController extends ModuleFrontControll
 
     public function displayAjax()
     {
-        
+
         $cardBin = Tools::getValue('card_bin');
         $cardType = $this->getTypeCard($cardBin);
 
-        Logger::addLog('#cardType => '.$cardType, 1, null, 'Cart', (int) $this->context->cart->id, true);
-        
+        Logger::addLog('#cardType => ' . $cardType, 1, null, 'Cart', (int)$this->context->cart->id, true);
+
         if ($cardType) {
             $json = array(
                 'status' => 'success',
@@ -62,8 +62,9 @@ class OpenpayPrestashopTypeCardModuleFrontController extends ModuleFrontControll
         die(Tools::jsonEncode($json));
     }
 
-    private function getTypeCard($cardBin) {
-        Logger::addLog('#getTypeCard() => '.$cardBin, 1, null, 'Cart', (int) $this->context->cart->id, true);
+    private function getTypeCard($cardBin)
+    {
+        Logger::addLog('#getTypeCard() => ' . $cardBin, 1, null, 'Cart', (int)$this->context->cart->id, true);
 
         $country = Configuration::get('OPENPAY_COUNTRY');
         if ($country == 'MX') {
@@ -71,12 +72,13 @@ class OpenpayPrestashopTypeCardModuleFrontController extends ModuleFrontControll
             $cardInfo = $openpay_prestashop->getTypeCardByBine($cardBin);
             return ($cardBin != null) ? $cardInfo->type : false;
         } else {
-            $cardInfo = $this->requestOpenpay(null,'/cards/validate-bin?bin='.$cardBin);
+            $cardInfo = $this->requestOpenpay(null, '/cards/validate-bin?bin=' . $cardBin);
             return $cardInfo['card_type'];
         }
     }
 
-    private function requestOpenpay($params, $api, $method = 'GET') {
+    private function requestOpenpay($params, $api, $method = 'GET')
+    {
         $url = $country === 'MX' ? $this->url_mx : $this->url_co;
         $sandbox_url = $country === 'MX' ? $this->sandbox_url_mx : $this->sandbox_url_co;
 
@@ -90,10 +92,13 @@ class OpenpayPrestashopTypeCardModuleFrontController extends ModuleFrontControll
         $result = curl_exec($ch);
 
         if (curl_exec($ch) === false) {
-            Logger::addLog('Curl error '.curl_errno($ch).': '.curl_error($ch), 1, null, null, null, true);
+            Logger::addLog('Curl error ' . curl_errno($ch) . ': ' . curl_error($ch), 1, null, null, null, true);
         } else {
             $info = curl_getinfo($ch);
-            Logger::addLog('HTTP code '.$info['http_code'].' on request to '.$info['url'], 1, null, null, null, true);
+            Logger::addLog('HTTP code ' .
+                $info['http_code'] .
+                ' on request to ' .
+                $info['url'], 1, null, null, null, true);
         }
 
         curl_close($ch);
@@ -101,4 +106,3 @@ class OpenpayPrestashopTypeCardModuleFrontController extends ModuleFrontControll
         return Tools::jsonDecode($result, true);
     }
 }
- ?>

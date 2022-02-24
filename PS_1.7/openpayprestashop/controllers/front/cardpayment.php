@@ -18,9 +18,9 @@
  * versions in the future. If you wish to customize PrestaShop for your
  * needs please refer to http://www.prestashop.com for more information.
  *
- *  @author    PrestaShop SA <contact@prestashop.com>
- *  @copyright 2007-2015 PrestaShop SA
- *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @author    PrestaShop SA <contact@prestashop.com>
+ * @copyright 2007-2015 PrestaShop SA
+ * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  *  International Registered Trademark & Property of PrestaShop SA
  */
 
@@ -43,16 +43,21 @@ class OpenpayPrestashopCardPaymentModuleFrontController extends ModuleFrontContr
         }
 
         $country = Configuration::get('OPENPAY_COUNTRY');
-        $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PUBLIC_KEY_LIVE') : Configuration::get('OPENPAY_PUBLIC_KEY_TEST');
-        $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
+        $pk = Configuration::get('OPENPAY_MODE')?
+                Configuration::get('OPENPAY_PUBLIC_KEY_LIVE'):
+                Configuration::get('OPENPAY_PUBLIC_KEY_TEST');
+
+        $id = Configuration::get('OPENPAY_MODE')?
+                Configuration::get('OPENPAY_MERCHANT_ID_LIVE'):
+                Configuration::get('OPENPAY_MERCHANT_ID_TEST');
 
         if (!empty($this->context->cookie->openpay_error)) {
             $this->context->smarty->assign('openpay_error', $this->context->cookie->openpay_error);
             $this->context->cookie->__set('openpay_error', null);
         }
-        
+
         $selected_months_interest_free = array();
-        if(Configuration::get('OPENPAY_MONTHS_INTEREST_FREE') != null){
+        if (Configuration::get('OPENPAY_MONTHS_INTEREST_FREE') != null) {
             $selected_months_interest_free = explode(',', Configuration::get('OPENPAY_MONTHS_INTEREST_FREE'));
         }
 
@@ -60,9 +65,9 @@ class OpenpayPrestashopCardPaymentModuleFrontController extends ModuleFrontContr
         if (Configuration::get('OPENPAY_INSTALLMENTS') != null) {
             $selected_installments = explode(',', Configuration::get('OPENPAY_INSTALLMENTS'));
         }
-        
+
         $show_months_interest_free = false;
-        if(count($selected_months_interest_free) > 0 && $country == 'MX'){
+        if (count($selected_months_interest_free) > 0 && $country == 'MX') {
             $show_months_interest_free = true;
         }
 
@@ -85,16 +90,17 @@ class OpenpayPrestashopCardPaymentModuleFrontController extends ModuleFrontContr
             'installments' => $selected_installments,
             'show_installments' => $show_installments
         ));
-        if($country == 'MX'){
+        if ($country == 'MX') {
             $this->context->controller->addJS('https://openpay.s3.amazonaws.com/openpay.v1.min.js');
             $this->context->controller->addJS('https://openpay.s3.amazonaws.com/openpay-data.v1.min.js');
-        }if($country == 'CO'){
+        }
+        if ($country == 'CO') {
             $this->context->controller->addJS('https://resources.openpay.co/openpay.v1.min.js');
             $this->context->controller->addJS('https://resources.openpay.co/openpay-data.v1.min.js');
         }
-        
 
-        $this->context->controller->addCSS($this->module->getPath().'views/css/openpay-prestashop.css');
+
+        $this->context->controller->addCSS($this->module->getPath() . 'views/css/openpay-prestashop.css');
 
         $this->setTemplate('card_execution.tpl');
     }

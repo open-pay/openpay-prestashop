@@ -19,14 +19,15 @@
  * versions in the future. If you wish to customize PrestaShop for your
  * needs please refer to http://www.prestashop.com for more information.
  *
- *  @author    PrestaShop SA <contact@prestashop.com>
- *  @copyright 2007-2015 PrestaShop SA
- *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @author    PrestaShop SA <contact@prestashop.com>
+ * @copyright 2007-2015 PrestaShop SA
+ * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  *  International Registered Trademark & Property of PrestaShop SA
  */
-class OpenpayPrestashopPaymentModuleFrontController extends ModuleFrontController {
-
-    public function __construct() {
+class OpenpayPrestashopPaymentModuleFrontController extends ModuleFrontController
+{
+    public function __construct()
+    {
         $this->auth = false;
         parent::__construct();
         $this->context = Context::getContext();
@@ -36,7 +37,8 @@ class OpenpayPrestashopPaymentModuleFrontController extends ModuleFrontControlle
     /**
      * @see FrontController::initContent()
      */
-    public function initContent() {
+    public function initContent()
+    {
         $this->display_column_left = false;
         $this->display_column_right = false;
         parent::initContent();
@@ -45,18 +47,25 @@ class OpenpayPrestashopPaymentModuleFrontController extends ModuleFrontControlle
         }
     }
 
-    public function validation() {
+    public function validation()
+    {
         Logger::addLog('Payment validation', 1, null, null, null, true);
-        
+
         $openpay = new OpenpayPrestashop();
         if ($openpay->active) {
-            $openpay->processPayment(Tools::getValue('payment_method'), Tools::getValue('openpay_token'), Tools::getValue('device_session_id'), Tools::getValue('transaction'), Tools::getValue('interest_free'));
+            $openpay->processPayment(
+                Tools::getValue('payment_method'),
+                Tools::getValue('openpay_token'),
+                Tools::getValue('device_session_id'),
+                Tools::getValue('transaction'),
+                Tools::getValue('interest_free')
+            );
         } else {
             $this->context->cookie->__set('openpay_error', 'There was a problem with your payment');
             $controller = Configuration::get('PS_ORDER_PROCESS_TYPE') ? 'order-opc.php' : 'order.php';
-            $redirect = $this->context->link->getPageLink($controller) . (strpos($controller, '?') !== false ? '&' : '?') . 'step=3#openpay_error';
+            $redirect = $this->context->link->getPageLink($controller) .
+                (strpos($controller, '?') !== false ? '&' : '?') . 'step=3#openpay_error';
             Tools::redirect($redirect);
         }
     }
-
 }

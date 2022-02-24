@@ -18,9 +18,9 @@
  * versions in the future. If you wish to customize PrestaShop for your
  * needs please refer to http://www.prestashop.com for more information.
  *
- *  @author    PrestaShop SA <contact@prestashop.com>
- *  @copyright 2007-2015 PrestaShop SA
- *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @author    PrestaShop SA <contact@prestashop.com>
+ * @copyright 2007-2015 PrestaShop SA
+ * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  *  International Registered Trademark & Property of PrestaShop SA
  */
 
@@ -35,7 +35,13 @@ function upgrade_module_1_6_3($object)
         Configuration::updateValue('OPENPAY_WEBHOOK_ID_TEST', null) &&
         Configuration::updateValue('OPENPAY_WEBHOOK_ID_LIVE', null) &&
         Db::getInstance()->Execute(
-            'ALTER TABLE `' . _DB_PREFIX_ . 'openpay_transaction` CHANGE `type` `type` ENUM( \'card\',\'store\',\'bank_account\', \'bitcoin\' ) NOT NULL'
+            'ALTER TABLE `'.
+            _DB_PREFIX_.
+            'openpay_transaction` CHANGE `type` `type` ENUM(
+                \'card\',
+                \'store\',
+                \'bank_account\', 
+                \'bitcoin\') NOT NULL'
         )
     );
 }

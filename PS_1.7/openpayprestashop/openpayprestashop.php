@@ -19,9 +19,9 @@
  * versions in the future. If you wish to customize PrestaShop for your
  * needs please refer to http://www.prestashop.com for more information.
  *
- *  @author    PrestaShop SA <contact@prestashop.com>
- *  @copyright 2007-2015 PrestaShop SA
- *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @author    PrestaShop SA <contact@prestashop.com>
+ * @copyright 2007-2015 PrestaShop SA
+ * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  *  International Registered Trademark & Property of PrestaShop SA
  */
 
@@ -38,10 +38,12 @@ class OpenpayPrestashop extends PaymentModule
     private $limited_currencies_mx = array('MXN', 'USD');
     private $limited_currencies_co = array('COP', 'USD');
     private $limited_currencies_pe = array('PEN', 'USD');
+    private $limited_currencies_ar = array('ARS', 'USD');
 
-    public function __construct() {
+    public function __construct()
+    {
         if (!class_exists('Openpay', false)) {
-            include_once(dirname(__FILE__).'/lib/Openpay.php');
+            include_once(dirname(__FILE__) . '/lib/Openpay.php');
         }
 
         $this->sandbox_url_mx = 'https://sandbox-api.openpay.mx/v1';
@@ -53,11 +55,14 @@ class OpenpayPrestashop extends PaymentModule
         $this->sandbox_url_pe = 'https://sandbox-api.openpay.pe/v1';
         $this->url_pe = 'https://api.openpay.pe/v1';
 
+        $this->sandbox_url_ar = 'https://sandbox-api.openpay.ar/v1';
+        $this->url_ar = 'https://api.openpay.ar/v1';
+
         $this->name = 'openpayprestashop';
         $this->tab = 'payments_gateways';
-        $this->version = '4.5.0';
+        $this->version = '4.6.0';
         $this->author = 'Openpay SA de CV';
-        $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';               
+        $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';
 
         parent::__construct();
         $warning = '¿Estás seguro de querer desinstalar este módulo?';
@@ -65,16 +70,24 @@ class OpenpayPrestashop extends PaymentModule
         $this->description = $this->l('Acepta pagos con tarjeta de crédito con Openpay.');
         $this->confirmUninstall = $this->l($warning);
         $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);
-        $this->months_interest_free = array('1' => 'No aceptar pagos a meses' , '3' => '3 meses', '6' => '6 meses', '9' => '9 meses', '12' => '12 meses', '18' => '18 meses');       
+        $this->months_interest_free = array(
+            '1' => 'No aceptar pagos a meses',
+            '3' => '3 meses',
+            '6' => '6 meses',
+            '9' => '9 meses',
+            '12' => '12 meses',
+            '18' => '18 meses'
+        );
     }
 
-    public function getOptions() {
+    public function getOptions()
+    {
         $installments = [];
-        for ($i=1; $i <= 36; $i++) {
-            $label = $i.' cuotas';
+        for ($i = 1; $i <= 36; $i++) {
+            $label = $i . ' cuotas';
             $installments[$i] = $label;
         }
-        return $installments;        
+        return $installments;
     }
 
     /**
@@ -82,33 +95,35 @@ class OpenpayPrestashop extends PaymentModule
      *
      * @return boolean Install result
      */
-    public function install() {
-        $ret = parent::install() && $this->createPendingState() && 
-                $this->registerHook('payment') &&
-                $this->registerHook('paymentOptions') &&
-                $this->registerHook('displayHeader') &&
-                $this->registerHook('displayPaymentTop') &&
-                $this->registerHook('paymentReturn') &&
-                $this->registerHook('displayMobileHeader') &&
-                $this->registerHook('displayAdminOrder') &&
-                $this->registerHook('actionOrderStatusPostUpdate') &&
-                Configuration::updateValue('OPENPAY_MODE', 0) &&
-                Configuration::updateValue('OPENPAY_COUNTRY', 'MX') &&
-                Configuration::updateValue('OPENPAY_MONTHS_INTEREST_FREE', 1) &&                
-                Configuration::updateValue('OPENPAY_INSTALLMENTS', 1) &&                
-                Configuration::updateValue('OPENPAY_IVA', 0) &&                
-                Configuration::updateValue('OPENPAY_CLASSIFICATION', 'general') &&                
-                Configuration::updateValue('OPENPAY_AFFILIATION', '') &&                
-                Configuration::updateValue('OPENPAY_CHARGE_TYPE', 'direct') &&      
-                Configuration::updateValue('USE_CARD_POINTS', '0') &&                      
-                Configuration::updateValue('OPENPAY_CAPTURE', 'true') &&                      
-                Configuration::updateValue('OPENPAY_SAVE_CC', '0') &&                      
-                $this->installDb();
+    public function install()
+    {
+        $ret = parent::install() && $this->createPendingState() &&
+            $this->registerHook('payment') &&
+            $this->registerHook('paymentOptions') &&
+            $this->registerHook('displayHeader') &&
+            $this->registerHook('displayPaymentTop') &&
+            $this->registerHook('paymentReturn') &&
+            $this->registerHook('displayMobileHeader') &&
+            $this->registerHook('displayAdminOrder') &&
+            $this->registerHook('actionOrderStatusPostUpdate') &&
+            Configuration::updateValue('OPENPAY_MODE', 0) &&
+            Configuration::updateValue('OPENPAY_COUNTRY', '') &&
+            Configuration::updateValue('OPENPAY_MONTHS_INTEREST_FREE', 1) &&
+            Configuration::updateValue('OPENPAY_INSTALLMENTS', 1) &&
+            Configuration::updateValue('OPENPAY_IVA', 0) &&
+            Configuration::updateValue('OPENPAY_CLASSIFICATION', 'general') &&
+            Configuration::updateValue('OPENPAY_AFFILIATION', '') &&
+            Configuration::updateValue('OPENPAY_CHARGE_TYPE', 'direct') &&
+            Configuration::updateValue('USE_CARD_POINTS', '0') &&
+            Configuration::updateValue('OPENPAY_CAPTURE', 'true') &&
+            Configuration::updateValue('OPENPAY_SAVE_CC', '0') &&
+            $this->installDb();
 
         return $ret;
     }
-    
-    private function createPendingState() {
+
+    private function createPendingState()
+    {
         $state = new OrderState();
         $languages = Language::getLanguages();
         $names = array();
@@ -151,22 +166,24 @@ class OpenpayPrestashop extends PaymentModule
      *
      * @return boolean Database tables installation result
      */
-    public function installDb() {
+    public function installDb()
+    {
 
         $return = true;
 
         $return &= Db::getInstance()->Execute('
-            CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'openpay_customer` (
+            CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'openpay_customer` (
                 `id_openpay_customer` int(10) unsigned NOT NULL AUTO_INCREMENT,
                 `openpay_customer_id` varchar(32) NULL,
                 `id_customer` int(10) unsigned NOT NULL,
                 `date_add` datetime NOT NULL,
                 `mode` enum(\'live\',\'test\') NOT NULL,
                 PRIMARY KEY (`id_openpay_customer`),
-                KEY `id_customer` (`id_customer`)) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8 AUTO_INCREMENT=1');
+                KEY `id_customer` (`id_customer`)) ENGINE=' .
+                _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8 AUTO_INCREMENT=1');
 
         $return &= Db::getInstance()->Execute('
-            CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'openpay_transaction` (
+            CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'openpay_transaction` (
                 `id_openpay_transaction` int(11) NOT NULL AUTO_INCREMENT,
                 `type` enum(\'card\',\'store\',\'bank_account\', \'bitcoin\') NOT NULL,
                 `id_cart` int(10) unsigned NOT NULL,
@@ -183,7 +200,9 @@ class OpenpayPrestashop extends PaymentModule
                 `barcode` varchar(250) NULL,
                 `clabe` varchar(50) NULL,
                 PRIMARY KEY (`id_openpay_transaction`),
-                KEY `idx_transaction` (`type`,`id_order`,`status`)) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8 AUTO_INCREMENT=1');
+                KEY `idx_transaction` (`type`,`id_order`,`status`)) ENGINE=' .
+                _MYSQL_ENGINE_ .
+                ' DEFAULT CHARSET=utf8 AUTO_INCREMENT=1');
 
         return $return;
     }
@@ -193,119 +212,143 @@ class OpenpayPrestashop extends PaymentModule
      *
      * @return boolean Uninstall result
      */
-    public function uninstall() {
+    public function uninstall()
+    {
 
-        $order_status = (int) Configuration::get('OPENPAY_OS_HOLD');
+        $order_status = (int)Configuration::get('OPENPAY_OS_HOLD');
         $orderState = new OrderState($order_status);
         $orderState->delete();
 
-        return parent::uninstall() &&                
+        return parent::uninstall() &&
             Configuration::deleteByName('OPENPAY_MONTHS_INTEREST_FREE') &&
             Configuration::deleteByName('OPENPAY_OS_HOLD');
     }
-    
+
     /**
      * Capturar pago de una pre-autorización
-     * 
+     *
      * @link https://devdocs.prestashop.com/1.7/modules/concepts/hooks/list-of-hooks/
      * @param type $params
      * @return type
      */
-    public function hookActionOrderStatusPostUpdate($params) {
-        Logger::addLog('hookActionOrderStatusPostUpdate => '.$params['id_order'], 1, null, null, null, true);
-        
-        $order_id =  $params['id_order'];
-        
-        $order = new Order((int) $order_id);        
-        
+    public function hookActionOrderStatusPostUpdate($params)
+    {
+        Logger::addLog('hookActionOrderStatusPostUpdate => ' . $params['id_order'], 1, null, null, null, true);
+
+        $order_id = $params['id_order'];
+
+        $order = new Order((int)$order_id);
+
         $openpay_transaction = Db::getInstance()->getRow('
             SELECT *
-            FROM '._DB_PREFIX_.'openpay_transaction
-            WHERE id_order = '. (int) $order_id
-        );
+            FROM ' . _DB_PREFIX_ . 'openpay_transaction
+            WHERE id_order = ' . (int)$order_id);
 
         if (!$openpay_transaction) {
-            Logger::addLog('There is no Openpay transaction for Order ID => '.$order_id, 2, null, null, null, true);  
+            Logger::addLog('There is no Openpay transaction for Order ID => ' . $order_id, 2, null, null, null, true);
             return;
         }
-        
+
         $openpay_customer = Db::getInstance()->getRow('
             SELECT openpay_customer_id
-            FROM '._DB_PREFIX_.'openpay_customer
-            WHERE id_customer = '.(int) $order->id_customer
-        );               
-        
-        Logger::addLog('amount_capture => '.$order->total_paid, 1, null, null, null, true);
-        Logger::addLog('order_estatus => '.$order->getCurrentState(), 1, null, null, null, true);
-        Logger::addLog('PS_OS_PAYMENT => '.Configuration::get('PS_OS_PAYMENT'), 1, null, null, null, true);
-        Logger::addLog('id_transaction => '.$openpay_transaction['id_transaction'], 1, null, null, null, true);        
-        
+            FROM ' . _DB_PREFIX_ . 'openpay_customer
+            WHERE id_customer = ' . (int)$order->id_customer);
+
+        Logger::addLog('amount_capture => ' . $order->total_paid, 1, null, null, null, true);
+        Logger::addLog('order_estatus => ' . $order->getCurrentState(), 1, null, null, null, true);
+        Logger::addLog('PS_OS_PAYMENT => ' . Configuration::get('PS_OS_PAYMENT'), 1, null, null, null, true);
+        Logger::addLog('id_transaction => ' . $openpay_transaction['id_transaction'], 1, null, null, null, true);
+
         try {
-            if (Configuration::get('PS_OS_PAYMENT') == $order->getCurrentState() && $openpay_transaction['status'] == 'unpaid' && $openpay_transaction['type'] == 'card') {
-                $charge = $this->capture($order->total_paid, $openpay_transaction['id_transaction'], $openpay_customer['openpay_customer_id']);                             
-                
+            if (Configuration::get('PS_OS_PAYMENT') == $order->getCurrentState() &&
+                $openpay_transaction['status'] == 'unpaid' &&
+                $openpay_transaction['type'] == 'card') {
+                $charge = $this->capture(
+                    $order->total_paid,
+                    $openpay_transaction['id_transaction'],
+                    $openpay_customer['openpay_customer_id']
+                );
+
                 $payment = $order->getOrderPaymentCollection();
                 if (isset($payment[0])) {
                     $payment[0]->transaction_id = pSQL($charge->id);
                     $payment[0]->card_holder = pSQL($charge->card->holder_name);
                     $payment[0]->card_number = pSQL($charge->card->card_number);
                     $payment[0]->card_brand = pSQL(strtoupper($charge->card->brand));
-                    $payment[0]->card_expiration = pSQL($charge->card->expiration_month.'/'.$charge->card->expiration_year);
+                    $payment[0]->card_expiration = pSQL(
+                        $charge->card->expiration_month . '/' . $charge->card->expiration_year
+                    );
                     $payment[0]->save();
                 }
             }
         } catch (Exception $e) {
             if (class_exists('Logger')) {
-                Logger::addLog($this->l('Openpay - Capture failed').' '.$e->getMessage(), 1, null, 'Cart', (int) $this->context->cart->id, true);
-                Logger::addLog($this->l('Openpay - Capture failed').' '.$e->getTraceAsString(), 4, $e->getCode(), 'Cart', (int) $this->context->cart->id, true);
+                Logger::addLog(
+                    $this->l('Openpay - Capture failed') . ' ' . $e->getMessage(),
+                    1,
+                    null,
+                    'Cart',
+                    (int)$this->context->cart->id,
+                    true
+                );
+                Logger::addLog(
+                    $this->l('Openpay - Capture failed') . ' ' . $e->getTraceAsString(),
+                    4,
+                    $e->getCode(),
+                    'Cart',
+                    (int)$this->context->cart->id,
+                    true
+                );
             }
         }
-                
+
         return;
     }
-    
-    private function capture($amount, $transaction_id, $customer_id) {
+
+    private function capture($amount, $transaction_id, $customer_id)
+    {
         try {
             $openpay = $this->getOpenpayInstance();
-            
+
             $formatted_amount = number_format(floatval($amount), 2, '.', '');
-            
+
             $customer = $openpay->customers->get($customer_id);
             $charge = $customer->charges->get($transaction_id);
             $charge->capture(array('amount' => $formatted_amount));
-            
+
             return $charge;
         } catch (Exception $e) {
             throw $e;
         }
     }
-    
-    public function hookDisplayAdminOrder($params) {        
+
+    public function hookDisplayAdminOrder($params)
+    {
         Logger::addLog('hookDisplayAdminOrder', 1, null, null, null, true);
-        
+
         $refund_url = (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://') . htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8') . __PS_BASE_URI__ . 'modules/openpayprestashop/refund.php';
-        $order = new Order((int) $params['id_order']);
-        
+        $order = new Order((int)$params['id_order']);
+
         $order_state_query = 'SELECT * FROM `' . _DB_PREFIX_ . 'openpay_transaction` WHERE `id_order`= "' . $params['id_order'] . '"';
         $order_state = Db::getInstance()->ExecuteS($order_state_query);
-        
-        Logger::addLog('order_estatus => '.$order->getCurrentState(), 1, null, null, null, true);
-        Logger::addLog('PS_OS_REFUND => '.Configuration::get('PS_OS_REFUND'), 1, null, null, null, true);
-        Logger::addLog('id_transaction => '.$order_state[0]['id_transaction'], 1, null, null, null, true);
-        
-        
+
+        Logger::addLog('order_estatus => ' . $order->getCurrentState(), 1, null, null, null, true);
+        Logger::addLog('PS_OS_REFUND => ' . Configuration::get('PS_OS_REFUND'), 1, null, null, null, true);
+        Logger::addLog('id_transaction => ' . $order_state[0]['id_transaction'], 1, null, null, null, true);
+
+
         $show_refund = Configuration::get('PS_OS_REFUND') == $order->getCurrentState();
-        
+
         $this->smarty->assign(array(
             'refund_url' => $refund_url,
             'show_refund' => $show_refund,
-            'order_id' => $params['id_order'],            
+            'order_id' => $params['id_order'],
             'transaction_id' => $order_state[0]['id_transaction'],
             'form_action' => '',
             'error' => ''
         ));
-        
-        return $this->display(__FILE__, 'order_detail.tpl');        
+
+        return $this->display(__FILE__, 'order_detail.tpl');
     }
 
     /**
@@ -314,12 +357,14 @@ class OpenpayPrestashop extends PaymentModule
      * @param array $params Hook parameters
      * @return string Hook HTML
      */
-    public function hookDisplayPaymentTop($params) {
+    public function hookDisplayPaymentTop($params)
+    {
         Logger::addLog('hookDisplayPaymentTop', 1, null, null, null, true);
         return;
     }
 
-    public function hookDisplayMobileHeader() {
+    public function hookDisplayMobileHeader()
+    {
         return $this->hookHeader();
     }
 
@@ -329,7 +374,8 @@ class OpenpayPrestashop extends PaymentModule
      *
      * @return string HTML/JS Content
      */
-    public function hookHeader($params) {
+    public function hookHeader($params)
+    {
         if (!$this->active) {
             return;
         }
@@ -337,37 +383,47 @@ class OpenpayPrestashop extends PaymentModule
         $country = Configuration::get('OPENPAY_COUNTRY');
 
         if (Tools::getValue('module') === 'onepagecheckoutps' ||
-                Tools::getValue('controller') === 'order-opc' ||
-                Tools::getValue('controller') === 'orderopc' ||
-                Tools::getValue('controller') === 'order') {
-
-            $this->context->controller->addCSS($this->_path.'views/css/openpay-prestashop.css');
-            if($country == 'MX'){
+            Tools::getValue('controller') === 'order-opc' ||
+            Tools::getValue('controller') === 'orderopc' ||
+            Tools::getValue('controller') === 'order') {
+            $this->context->controller->addCSS($this->_path . 'views/css/openpay-prestashop.css');
+            if ($country == 'MX') {
                 $this->context->controller->registerJavascript(
-                    'remote-openpay-js', 'https://openpay.s3.amazonaws.com/openpay.v1.min.js', ['position' => 'bottom', 'server' => 'remote']
+                    'remote-openpay-js',
+                    'https://openpay.s3.amazonaws.com/openpay.v1.min.js',
+                    ['position' => 'bottom', 'server' => 'remote']
+                );
+                $this->context->controller->registerJavascript(
+                    'remote-openpaydata-js',
+                    'https://openpay.s3.amazonaws.com/openpay-data.v1.min.js',
+                    ['position' => 'bottom', 'server' => 'remote']
+                );
+            } elseif ($country == 'CO') {
+                $this->context->controller->registerJavascript(
+                    'remote-openpay-js',
+                    'https://resources.openpay.co/openpay.v1.min.js',
+                    ['position' => 'bottom','server' => 'remote']
                 );
 
                 $this->context->controller->registerJavascript(
-                        'remote-openpaydata-js', 'https://openpay.s3.amazonaws.com/openpay-data.v1.min.js', ['position' => 'bottom', 'server' => 'remote']
+                    'remote-openpaydata-js',
+                    'https://resources.openpay.co/openpay-data.v1.min.js',
+                    ['position' => 'bottom', 'server' => 'remote']
                 );
-            }elseif($country == 'CO'){
+            } elseif ($country == 'PE') {
                 $this->context->controller->registerJavascript(
-                    'remote-openpay-js', 'https://resources.openpay.co/openpay.v1.min.js', ['position' => 'bottom', 'server' => 'remote']
-                );
-
-                $this->context->controller->registerJavascript(
-                        'remote-openpaydata-js', 'https://resources.openpay.co/openpay-data.v1.min.js', ['position' => 'bottom', 'server' => 'remote']
-                );
-            }elseif ($country == 'PE'){
-                $this->context->controller->registerJavascript(
-                    'remote-openpay-js', 'https://js.openpay.pe/openpay.v1.min.js', ['position' => 'bottom', 'server' => 'remote']
+                    'remote-openpay-js',
+                    'https://js.openpay.pe/openpay.v1.min.js',
+                    ['position' => 'bottom', 'server' => 'remote']
                 );
                 $this->context->controller->registerJavascript(
-                    'remote-openpaydata-js', 'https://js.openpay.pe/openpay-data.v1.min.js', ['position' => 'bottom', 'server' => 'remote']
+                    'remote-openpaydata-js',
+                    'https://js.openpay.pe/openpay-data.v1.min.js',
+                    ['position' => 'bottom', 'server' => 'remote']
                 );
             }
         } else {
-            Logger::addLog('NO hookHeader, Controller => '.Tools::getValue('controller'), 1, null, null, null, true);
+            Logger::addLog('NO hookHeader, Controller => ' . Tools::getValue('controller'), 1, null, null, null, true);
         }
     }
 
@@ -379,7 +435,8 @@ class OpenpayPrestashop extends PaymentModule
      * @throws Exception
      * @throws SmartyException
      */
-    public function hookPaymentOptions($params) {
+    public function hookPaymentOptions($params)
+    {
 
         if (version_compare(_PS_VERSION_, '1.7.0.0', '<')) {
             return false;
@@ -395,16 +452,17 @@ class OpenpayPrestashop extends PaymentModule
         }
 
         $externalOption = new PaymentOption();
-        $externalOption->setCallToActionText($this->l('Tarjeta de crédito-débito'))                    
-                ->setForm($this->generateForm($cart))
-                ->setModuleName($this->name)
-                ->setLogo('https://img.openpay.mx/plugins/openpay_logo.svg')
-                ->setAdditionalInformation($this->context->smarty->fetch('module:openpayprestashop/views/templates/front/payment_infos.tpl'));
+        $externalOption->setCallToActionText($this->l('Tarjeta de crédito-débito'))
+            ->setForm($this->generateForm($cart))
+            ->setModuleName($this->name)
+            ->setLogo('https://img.openpay.mx/plugins/openpay_logo.svg')
+            ->setAdditionalInformation($this->context->smarty->fetch('module:openpayprestashop/views/templates/front/payment_infos.tpl'));
 
         return array($externalOption);
     }
 
-    protected function generateForm($cart) {
+    protected function generateForm($cart)
+    {
         $country = Configuration::get('OPENPAY_COUNTRY');
         $merchant_classification = Configuration::get('OPENPAY_CLASSIFICATION');
         $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PUBLIC_KEY_LIVE') : Configuration::get('OPENPAY_PUBLIC_KEY_TEST');
@@ -428,7 +486,7 @@ class OpenpayPrestashop extends PaymentModule
             $show_installments = true;
         }
 
-        Logger::addLog('generateForm => '.$this->context->cookie->openpay_error, 1, null, null, null, true);
+        Logger::addLog('generateForm => ' . $this->context->cookie->openpay_error, 1, null, null, null, true);
 
         if (!empty($this->context->cookie->openpay_error)) {
             $this->context->smarty->assign('openpay_error', $this->context->cookie->openpay_error);
@@ -452,7 +510,7 @@ class OpenpayPrestashop extends PaymentModule
             'use_card_points' => Configuration::get('USE_CARD_POINTS'),
             'can_save_cc' => Configuration::get('OPENPAY_SAVE_CC') == '1' && (bool)$this->context->customer->isLogged() ? true : false,
             'cc_options' => $this->getCreditCardList(),
-            'url_ajax' => Tools::getHttpHost(true).__PS_BASE_URI__.'module/openpayprestashop/typecard',
+            'url_ajax' => Tools::getHttpHost(true) . __PS_BASE_URI__ . 'module/openpayprestashop/typecard',
             'action' => $this->context->link->getModuleLink($this->name, 'validation', array(), Tools::usingSecureMode()),
         ));
 
@@ -464,11 +522,12 @@ class OpenpayPrestashop extends PaymentModule
      *
      * @param string $token Openpay Transaction ID (token)
      */
-    public function processPayment($token = null, $device_session_id = null, $installments = null, $use_card_points = null, $openpay_cc = null, $save_cc = false) {
+    public function processPayment($token = null, $device_session_id = null, $installments = null, $use_card_points = null, $openpay_cc = null, $save_cc = false)
+    {
         if (!$this->active) {
             return;
         }
-        
+
         $mail_detail = '';
         $message_aux = '';
         $payment_method = 'card';
@@ -486,13 +545,15 @@ class OpenpayPrestashop extends PaymentModule
         Openpay::getInstance($id, $pk, $country);
         Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
 
-        if($merchant_classification === 'eglobal')
-            $userAgent = "BBVA-PS17".$country."/v1";
-        else
-            $userAgent = "Openpay-PS17".$country."/v2";
+        if ($merchant_classification === 'eglobal') {
+            $userAgent = "BBVA-PS17" . $country . "/v1";
+        } else {
+            $userAgent = "Openpay-PS17" . $country . "/v2";
+        }
+
         Openpay::setUserAgent($userAgent);
-        try {   
-            Logger::addLog('$save_cc => '. json_encode($save_cc), 1, null, null, null, true);
+        try {
+            Logger::addLog('$save_cc => ' . json_encode($save_cc), 1, null, null, null, true);
             $openpay_customer = $this->getOpenpayCustomer($this->context->cookie->id_customer);
 
             $amount = number_format(floatval($cart->getOrderTotal()), 2, '.', '');
@@ -503,69 +564,78 @@ class OpenpayPrestashop extends PaymentModule
                 'source_id' => $token,
                 'device_session_id' => $device_session_id,
                 'amount' => $amount,
-                'description' => $this->l('PrestaShop Cart ID:').' '.(int) $cart->id,
+                'description' => $this->l('PrestaShop Cart ID:') . ' ' . (int)$cart->id,
                 'use_card_points' => $use_card_points,
                 'capture' => $capture
             );
-            if($country === 'MX' && $merchant_classification == 'eglobal'){
+            if ($country === 'MX' && $merchant_classification == 'eglobal') {
                 $charge_request['affiliation_bbva'] = Configuration::get('OPENPAY_AFFILIATION');
             }
             if ($country === 'CO') {
                 $charge_request['iva'] = Configuration::get('OPENPAY_IVA');
             }
             if ($installments > 1) {
-                $charge_request['payment_plan'] = array('payments' => (int) $installments);
+                $charge_request['payment_plan'] = array('payments' => (int)$installments);
             }
             if ($country === 'MX' && $charge_type == '3d') {
                 $charge_request['use_3d_secure'] = true;
-                $charge_request['redirect_url'] = _PS_BASE_URL_.__PS_BASE_URI__.'module/openpayprestashop/confirm';
+                $charge_request['redirect_url'] = _PS_BASE_URL_ . __PS_BASE_URI__ . 'module/openpayprestashop/confirm';
             }
 
             // Si desea guardar la TC se crea y se asigna a los parámetros de la transacción
             if ($save_cc === true && $openpay_cc == 'new') {
-                $card_data = array(            
-                    'token_id' => $token,            
+                $card_data = array(
+                    'token_id' => $token,
                     'device_session_id' => $device_session_id
                 );
                 $card = $this->createCreditCard($openpay_customer, $card_data);
 
                 // Se reemplaza el "source_id" por el ID de la tarjeta
-                $charge_request['source_id'] = $card->id;                                                            
+                $charge_request['source_id'] = $card->id;
             }
 
             $charge_request = $this->chargebackGuarantee($charge_request);
 
             $charge = $openpay_customer->charges->create($charge_request);
 
-            // Si tiene habilitado el 3D SECURE 
+            // Si tiene habilitado el 3D SECURE
             if ($charge->payment_method && $charge->payment_method->type == 'redirect') {
                 Tools::redirect($charge->payment_method->url);
             }
 
-            $order_status = $capture ? (int) Configuration::get('PS_OS_PAYMENT') : (int) Configuration::get('OPENPAY_OS_HOLD');
+            $order_status = $capture ? (int)Configuration::get('PS_OS_PAYMENT') : (int)Configuration::get('OPENPAY_OS_HOLD');
 
-            $message_aux = $this->l(Tools::ucfirst($charge->card->type).' card:').' '.
-                    Tools::ucfirst($charge->card->brand).' (Exp: '.$charge->card->expiration_month.'/'.$charge->card->expiration_year.')'."\n".
-                    $this->l('Card number:').' '.$charge->card->card_number."\n";
+            $message_aux = $this->l(Tools::ucfirst($charge->card->type) . ' card:') . ' ' .
+                Tools::ucfirst($charge->card->brand) . ' (Exp: ' . $charge->card->expiration_month . '/' . $charge->card->expiration_year . ')' . "\n" .
+                $this->l('Card number:') . ' ' . $charge->card->card_number . "\n";
 
-            $message = $this->l('Openpay Transaction Details:')."\n\n".
-                    $this->l('Transaction ID:').' '.$charge->id."\n".
-                    $this->l('Payment method:').' '.Tools::ucfirst($payment_method)."\n".
-                    $message_aux.
-                    $this->l('Amount:').' $'.number_format($charge->amount, 2).' '.Tools::strtoupper($charge->currency)."\n".
-                    $this->l('Status:').' '.($charge->status == 'completed' ? $this->l('Paid') : $this->l('Unpaid'))."\n".
-                    $this->l('Processed on:').' '.date('Y-m-d H:i:s')."\n".
-                    $this->l('Mode:').' '.(Configuration::get('OPENPAY_MODE') ? $this->l('Live') : $this->l('Test'))."\n";
+            $message = $this->l('Openpay Transaction Details:') . "\n\n" .
+                $this->l('Transaction ID:') . ' ' . $charge->id . "\n" .
+                $this->l('Payment method:') . ' ' . Tools::ucfirst($payment_method) . "\n" .
+                $message_aux .
+                $this->l('Amount:') . ' $' . number_format($charge->amount, 2) . ' ' . Tools::strtoupper($charge->currency) . "\n" .
+                $this->l('Status:') . ' ' . ($charge->status == 'completed' ? $this->l('Paid') : $this->l('Unpaid')) . "\n" .
+                $this->l('Processed on:') . ' ' . date('Y-m-d H:i:s') . "\n" .
+                $this->l('Mode:') . ' ' . (Configuration::get('OPENPAY_MODE') ? $this->l('Live') : $this->l('Test')) . "\n";
 
             /* Create the PrestaShop order in database */
             $detail = array('{detail}' => $mail_detail);
-            
-            Logger::addLog('OrderStatus => '.$order_status, 1, null, null, null, true);
+
+            Logger::addLog('OrderStatus => ' . $order_status, 1, null, null, null, true);
 
             $this->validateOrder(
-                    (int) $this->context->cart->id, (int) $order_status, $charge->amount, $display_name, $message, $detail, null, false, $this->context->customer->secure_key
+                (int)$this->context->cart->id,
+                (int)$order_status,
+                $charge->amount,
+                $display_name,
+                $message,
+                $detail,
+                null,
+                false,
+                $this->context->customer->secure_key
             );
-            $new_order = new Order((int) $this->currentOrder);
+
+            $new_order = new Order((int)$this->currentOrder);
             if (Validate::isLoadedObject($new_order)) {
                 $payment = $new_order->getOrderPaymentCollection();
                 if (isset($payment[0])) {
@@ -573,21 +643,21 @@ class OpenpayPrestashop extends PaymentModule
                     $payment[0]->card_holder = pSQL($charge->card->holder_name);
                     $payment[0]->card_number = pSQL($charge->card->card_number);
                     $payment[0]->card_brand = pSQL(strtoupper($charge->card->brand));
-                    $payment[0]->card_expiration = pSQL($charge->card->expiration_month.'/'.$charge->card->expiration_year);
+                    $payment[0]->card_expiration = pSQL($charge->card->expiration_month . '/' . $charge->card->expiration_year);
                     $payment[0]->save();
                 }
-            }            
+            }
 
-            /** Store the transaction details */            
+            /** Store the transaction details */
             $fee = $charge->fee ? ($charge->fee->amount + $charge->fee->tax) : 0;
             Db::getInstance()->insert('openpay_transaction', array(
                 'type' => pSQL($payment_method),
-                'id_cart' => (int) $this->context->cart->id,
-                'id_order' => (int) $this->currentOrder,
+                'id_cart' => (int)$this->context->cart->id,
+                'id_order' => (int)$this->currentOrder,
                 'id_transaction' => pSQL($charge->id),
-                'amount' => (float) $charge->amount,
+                'amount' => (float)$charge->amount,
                 'status' => pSQL($charge->status == 'completed' ? 'paid' : 'unpaid'),
-                'fee' => (float) $fee,
+                'fee' => (float)$fee,
                 'currency' => pSQL($charge->currency),
                 'mode' => pSQL(Configuration::get('OPENPAY_MODE') == 'true' ? 'live' : 'test'),
                 'date_add' => date('Y-m-d H:i:s'),
@@ -596,15 +666,15 @@ class OpenpayPrestashop extends PaymentModule
                 'reference' => null,
                 'clabe' => null
             ));
-            
+
             // Update order_id from Openpay Charge
             $this->updateOpenpayCharge($charge->id, $this->currentOrder, $new_order->reference);
 
             /** Redirect the user to the order confirmation page history */
-            $redirect = __PS_BASE_URI__.'index.php?controller=order-confirmation&id_cart='.(int) $this->context->cart->id.
-                    '&id_module='.(int) $this->id.
-                    '&id_order='.(int) $this->currentOrder.
-                    '&key='.$this->context->customer->secure_key;
+            $redirect = __PS_BASE_URI__ . 'index.php?controller=order-confirmation&id_cart=' . (int)$this->context->cart->id .
+                '&id_module=' . (int)$this->id .
+                '&id_order=' . (int)$this->currentOrder .
+                '&key=' . $this->context->customer->secure_key;
 
             Logger::addLog($redirect, 1, null, null, null, true);
 
@@ -615,22 +685,22 @@ class OpenpayPrestashop extends PaymentModule
             // Si tiene habilitada la autenticación selectiva
             if ($charge_type == 'auth' && $e->getCode() == '3005') {
                 $charge_request['use_3d_secure'] = true;
-                $charge_request['redirect_url'] = _PS_BASE_URL_.__PS_BASE_URI__.'module/openpayprestashop/confirm';
-                
+                $charge_request['redirect_url'] = _PS_BASE_URL_ . __PS_BASE_URI__ . 'module/openpayprestashop/confirm';
+
                 $openpay_customer = $this->getOpenpayCustomer($this->context->cookie->id_customer);
                 $charge = $openpay_customer->charges->create($charge_request);
-                
+
                 Tools::redirect($charge->payment_method->url);
             }
-            
+
             if (class_exists('Logger')) {
-                Logger::addLog($this->l('Openpay - Payment transaction failed').' '.$e->getMessage(), 1, null, 'Cart', (int) $this->context->cart->id, true);
-                Logger::addLog($this->l('Openpay - Payment transaction failed').' '.$e->getTraceAsString(), 4, $e->getCode(), 'Cart', (int) $this->context->cart->id, true);
+                Logger::addLog($this->l('Openpay - Payment transaction failed') . ' ' . $e->getMessage(), 1, null, 'Cart', (int)$this->context->cart->id, true);
+                Logger::addLog($this->l('Openpay - Payment transaction failed') . ' ' . $e->getTraceAsString(), 4, $e->getCode(), 'Cart', (int)$this->context->cart->id, true);
             }
 
             $this->error($e);
             //$this->context->cookie->__set('openpay_error', $e->getMessage());
-            
+
             Tools::redirect('index.php?controller=order&step=1');
         }
     }
@@ -644,20 +714,20 @@ class OpenpayPrestashop extends PaymentModule
         $billing_address = new Address($this->context->cart->id_address_invoice);
         $products = $this->context->cart->getProducts();
 
-        $charge_request['ship_to'] = Array(
-            'phone_area_code' => $this->chargebackGuaranteePhoneAreaCode($shipping_address,$billing_address),
-            'address' => Array(
+        $charge_request['ship_to'] = array(
+            'phone_area_code' => $this->chargebackGuaranteePhoneAreaCode($shipping_address, $billing_address),
+            'address' => array(
                 'city' => ($shipping_address->city) ?: $billing_address->city,
                 'state' => (State::getNameById($shipping_address->id_state)) ?: State::getNameById($billing_address->id_state),
                 'postal_code' => ($shipping_address->postcode) ?: $billing_address->postcode,
                 'line1' => ($shipping_address->address1) ?: $billing_address->address1,
                 'line2' => ($shipping_address->address2) ?: $billing_address->address2,
-                'country_code' => ($shipping_address->country === 'Mexico' || $billing_address->country === "México" ) ? "MX" : false
+                'country_code' => ($shipping_address->country === 'Mexico' || $billing_address->country === "México") ? "MX" : false
             )
         );
 
-        $charge_request['billing'] = Array(
-            'address' => Array(
+        $charge_request['billing'] = array(
+            'address' => array(
                 'city' => ($billing_address->city) ?: $shipping_address->city,
                 'state' => (State::getNameById($billing_address->id_state)) ?: State::getNameById($shipping_address->id_state),
                 'postal_code' => ($billing_address->postcode) ?: $shipping_address->postcode,
@@ -665,13 +735,13 @@ class OpenpayPrestashop extends PaymentModule
         );
 
         foreach ($products as $item) {
-            $product = Array(
+            $product = array(
                 'id' => $item['id_product'],
                 'name' => $item['name'],
                 'quantity' => $item['cart_quantity'],
                 'price' => number_format(floatval($item['price_wt']), 2, '.', ''),
                 'type' => $item['is_virtual'] ? "DIGITAL" : "PHYSICAL",
-                'category' => Array(
+                'category' => array(
                     'id' => $item['id_category_default'],
                     'name' => $item['category']
                 )
@@ -679,15 +749,15 @@ class OpenpayPrestashop extends PaymentModule
             $charge_request['products'][] = $product;
         }
 
-        $charge_request['product_sum'] = number_format(floatval($this->context->cart->getOrderTotal(true,  Cart::BOTH_WITHOUT_SHIPPING)), 2, '.', '');
+        $charge_request['product_sum'] = number_format(floatval($this->context->cart->getOrderTotal(true, Cart::BOTH_WITHOUT_SHIPPING)), 2, '.', '');
 
         return $charge_request;
     }
 
-    public function chargebackGuaranteePhoneAreaCode($shipping_address,$billing_address)
+    public function chargebackGuaranteePhoneAreaCode($shipping_address, $billing_address)
     {
-        if ($shipping_address->country){
-            switch ($shipping_address->country){
+        if ($shipping_address->country) {
+            switch ($shipping_address->country) {
                 case 'Mexico':
                 case 'México':
                     return '+52';
@@ -699,8 +769,8 @@ class OpenpayPrestashop extends PaymentModule
                 case 'Argentina':
                     return '+54';
             }
-        }else{
-            switch ($billing_address->country){
+        } else {
+            switch ($billing_address->country) {
                 case 'Mexico':
                 case 'México':
                     return '+52';
@@ -721,7 +791,8 @@ class OpenpayPrestashop extends PaymentModule
      *
      * @return boolean Check result
      */
-    public function checkSettings() {
+    public function checkSettings()
+    {
         if (Configuration::get('OPENPAY_MODE')) {
             return Configuration::get('OPENPAY_PUBLIC_KEY_LIVE') != '' && Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') != '';
         } else {
@@ -734,7 +805,8 @@ class OpenpayPrestashop extends PaymentModule
      *
      * @return array Requirements tests results
      */
-    public function checkRequirements() {
+    public function checkRequirements()
+    {
         $tests = array('result' => true);
 
         $tests['curl'] = array(
@@ -747,7 +819,7 @@ class OpenpayPrestashop extends PaymentModule
                 'result' => Configuration::get('PS_SSL_ENABLED') || (!empty($_SERVER['HTTPS']) && Tools::strtolower($_SERVER['HTTPS']) != 'off'));
         }
 
-        if(Configuration::get('OPENPAY_CLASSIFICATION') === 'eglobal'){
+        if (Configuration::get('OPENPAY_CLASSIFICATION') === 'eglobal') {
             $tests['affiliation_bbva'] = array(
                 'name' => $this->l('Deberás ingresar el número de afiliación BBVA'),
                 'result' => Configuration::get('OPENPAY_AFFILIATION') != '',
@@ -755,7 +827,7 @@ class OpenpayPrestashop extends PaymentModule
             $tests['configuration'] = array(
                 'name' => $this->l('Deberás de registrarte en BBVA y configurar las credenciales (ID, llave privada y llave pública.)'),
                 'result' => $this->getMerchantInfo());
-        }else{
+        } else {
             $tests['configuration'] = array(
                 'name' => $this->l('Deberás de registrarte en Openpay y configurar las credenciales (ID, llave privada y llave pública.)'),
                 'result' => $this->getMerchantInfo());
@@ -779,15 +851,16 @@ class OpenpayPrestashop extends PaymentModule
      *
      * @return string HTML/JS Content
      */
-    public function getContent() {
-        $this->context->controller->addCSS(array($this->_path.'views/css/openpay-prestashop-admin.css'));
+    public function getContent()
+    {
+        $this->context->controller->addCSS(array($this->_path . 'views/css/openpay-prestashop-admin.css'));
 
         $errors = array();
 
         /** Update Configuration Values when settings are updated */
         if (Tools::isSubmit('SubmitOpenpay')) {
             $months = is_array(Tools::getValue('months_interest_free')) ? implode(',', Tools::getValue('months_interest_free')) : '';
-            
+
             $configuration_values = array(
                 'OPENPAY_MODE' => Tools::getValue('openpay_mode'),
                 'OPENPAY_COUNTRY' => Tools::getValue('openpay_country'),
@@ -813,13 +886,12 @@ class OpenpayPrestashop extends PaymentModule
 
             $mode = Configuration::get('OPENPAY_MODE') ? 'LIVE' : 'TEST';
 
-                if (!$this->getMerchantInfo()) {
-                    $errors[] = 'Openpay keys are incorrect.';
-                    Configuration::deleteByName('OPENPAY_PUBLIC_KEY_'.$mode);
-                    Configuration::deleteByName('OPENPAY_MERCHANT_ID_'.$mode);
-                    Configuration::deleteByName('OPENPAY_PRIVATE_KEY_'.$mode);
-                }
-
+            if (!$this->getMerchantInfo()) {
+                $errors[] = 'Openpay keys are incorrect.';
+                Configuration::deleteByName('OPENPAY_PUBLIC_KEY_' . $mode);
+                Configuration::deleteByName('OPENPAY_MERCHANT_ID_' . $mode);
+                Configuration::deleteByName('OPENPAY_PRIVATE_KEY_' . $mode);
+            }
         }
 
         if (!empty($errors)) {
@@ -848,78 +920,85 @@ class OpenpayPrestashop extends PaymentModule
         }
 
         $dashboard_openpay = '';
-        if(Configuration::get('OPENPAY_CLASSIFICATION') != 'eglobal'){
-            if(Configuration::get('OPENPAY_MODE')){
+        if (Configuration::get('OPENPAY_CLASSIFICATION') != 'eglobal') {
+            if (Configuration::get('OPENPAY_MODE')) {
                 //$dashboard_openpay = Configuration::get('OPENPAY_COUNTRY') == 'MX' ? 'https://dashboard.openpay.mx' : 'https://dashboard.openpay.co';
-                switch (Configuration::get('OPENPAY_COUNTRY')){
+                switch (Configuration::get('OPENPAY_COUNTRY')) {
                     case 'MX':
                         $dashboard_openpay = 'https://dashboard.openpay.mx';
                         break;
                     case 'CO':
-                        $dashboard_openpay ='https://dashboard.openpay.co';
+                        $dashboard_openpay = 'https://dashboard.openpay.co';
                         break;
                     case 'PE':
-                        $dashboard_openpay ='https://dashboard.openpay.pe';
+                        $dashboard_openpay = 'https://dashboard.openpay.pe';
+                        break;
+                    case 'AR':
+                        $dashboard_openpay = 'https://dashboard.openpay.ar';
                         break;
                 }
-            }else{
-                $dashboard_openpay = Configuration::get('OPENPAY_COUNTRY') == 'MX' ? 'https://sandbox-dashboard.openpay.mx' : 'https://sandbox-dashboard.openpay.co';
-                switch (Configuration::get('OPENPAY_COUNTRY')){
+            } else {
+                //$dashboard_openpay = Configuration::get('OPENPAY_COUNTRY') == 'MX' ? 'https://sandbox-dashboard.openpay.mx' : 'https://sandbox-dashboard.openpay.co';
+                switch (Configuration::get('OPENPAY_COUNTRY')) {
                     case 'MX':
                         $dashboard_openpay = 'https://sandbox-dashboard.openpay.mx';
                         break;
                     case 'CO':
-                        $dashboard_openpay ='https://sandbox-dashboard.openpay.co';
+                        $dashboard_openpay = 'https://sandbox-dashboard.openpay.co';
                         break;
                     case 'PE':
-                        $dashboard_openpay ='https://sandbox-dashboard.openpay.pe';
+                        $dashboard_openpay = 'https://sandbox-dashboard.openpay.pe';
+                        break;
+                    case 'AR':
+                        $dashboard_openpay = 'https://sandbox-dashboard.openpay.ar';
                         break;
                 }
             }
-        }else{
+        } else {
             $dashboard_openpay = (Configuration::get('OPENPAY_MODE')) ? 'https://portal.ecommercebbva.com/' : 'https://test-bancomer.openpay.mx/';
         }
-        
 
-        if(Configuration::get('OPENPAY_CLASSIFICATION') === 'eglobal'){
-            if(Configuration::get('OPENPAY_AFFILIATION') == ''){
+
+        if (Configuration::get('OPENPAY_CLASSIFICATION') === 'eglobal') {
+            if (Configuration::get('OPENPAY_AFFILIATION') == '') {
                 Configuration::updateValue('OPENPAY_CHARGE_TYPE', '3d');
             }
-        }else{
-            if(Configuration::get('OPENPAY_AFFILIATION') != ''){
+        } else {
+            if (Configuration::get('OPENPAY_AFFILIATION') != '') {
                 Configuration::updateValue('OPENPAY_CHARGE_TYPE', 'direct');
                 Configuration::updateValue('OPENPAY_AFFILIATION', '');
-            }      
+            }
         }
         $this->context->smarty->assign(array(
-            'receipt' => $this->_path.'views/img/recibo.png',
+            'receipt' => $this->_path . 'views/img/recibo.png',
             'openpay_form_link' => $_SERVER['REQUEST_URI'],
             'openpay_configuration' => Configuration::getMultiple(
-                    array(
-                        'OPENPAY_MODE',
-                        'OPENPAY_COUNTRY',
-                        'OPENPAY_MERCHANT_ID_TEST',
-                        'OPENPAY_MERCHANT_ID_LIVE',
-                        'OPENPAY_PUBLIC_KEY_TEST',
-                        'OPENPAY_PUBLIC_KEY_LIVE',
-                        'OPENPAY_PRIVATE_KEY_TEST',
-                        'OPENPAY_PRIVATE_KEY_LIVE',                        
-                        'OPENPAY_CHARGE_TYPE',
-                        'USE_CARD_POINTS',
-                        'OPENPAY_CAPTURE',
-                        'OPENPAY_SAVE_CC',
-                        'OPENPAY_IVA',
-                        'OPENPAY_CLASSIFICATION',
-                        'OPENPAY_AFFILIATION'
-                    )
+                array(
+                    'OPENPAY_MODE',
+                    'OPENPAY_COUNTRY',
+                    'OPENPAY_MERCHANT_ID_TEST',
+                    'OPENPAY_MERCHANT_ID_LIVE',
+                    'OPENPAY_PUBLIC_KEY_TEST',
+                    'OPENPAY_PUBLIC_KEY_LIVE',
+                    'OPENPAY_PRIVATE_KEY_TEST',
+                    'OPENPAY_PRIVATE_KEY_LIVE',
+                    'OPENPAY_CHARGE_TYPE',
+                    'USE_CARD_POINTS',
+                    'OPENPAY_CAPTURE',
+                    'OPENPAY_SAVE_CC',
+                    'OPENPAY_IVA',
+                    'OPENPAY_CLASSIFICATION',
+                    'OPENPAY_AFFILIATION'
+                )
             ),
             'openpay_ssl' => Configuration::get('PS_SSL_ENABLED'),
             'openpay_validation' => $this->validation,
             'openpay_error' => (empty($this->error) ? false : $this->error),
             'openpay_validation_title' => $validation_title,
             'months_interest_free' => $this->months_interest_free,
-            'selected_months_interest_free' =>  $selected_months_interest_free,
-            'dashboard_openpay' => $dashboard_openpay
+            'selected_months_interest_free' => $selected_months_interest_free,
+            'dashboard_openpay' => $dashboard_openpay,
+            'openpay_default_country' => $this->context->country->iso_code
         ));
 
         return $this->display(__FILE__, 'views/templates/admin/configuration.tpl');
@@ -927,43 +1006,48 @@ class OpenpayPrestashop extends PaymentModule
 
     /**
      * Check availables currencies for module
-     * 
+     *
      * @return boolean
      */
-    public function checkCurrency() {
-        $country = Configuration::get('OPENPAY_COUNTRY'); 
+    public function checkCurrency()
+    {
+        $country = Configuration::get('OPENPAY_COUNTRY');
         if ($country === 'MX') {
             return in_array($this->context->currency->iso_code, $this->limited_currencies_mx);
-        }elseif ($country === 'CO'){
+        } elseif ($country === 'CO') {
             return in_array($this->context->currency->iso_code, $this->limited_currencies_co);
-        }elseif ($country === 'PE'){
+        } elseif ($country === 'PE') {
             return in_array($this->context->currency->iso_code, $this->limited_currencies_pe);
+        } elseif ($country === 'AR') {
+            return in_array($this->context->currency->iso_code, $this->limited_currencies_ar);
         }
     }
 
-    public function getPath() {
+    public function getPath()
+    {
         return $this->_path;
     }
 
-    public function getOpenpayCustomer($customer_id) {
+    public function getOpenpayCustomer($customer_id)
+    {
         $cart = $this->context->cart;
-        $customer = new Customer((int) $cart->id_customer);
+        $customer = new Customer((int)$cart->id_customer);
         $mode = Configuration::get('OPENPAY_MODE') == 'true' ? 'live' : 'test';
         $openpay_customer = Db::getInstance()->getRow('
             SELECT openpay_customer_id
-            FROM '._DB_PREFIX_.'openpay_customer
-            WHERE id_customer = '.(int) $customer_id.' AND (mode = "'.$mode.'" OR mode IS NULL)'
-        );
+            FROM ' . _DB_PREFIX_ . 'openpay_customer
+            WHERE id_customer = ' . (int)$customer_id . ' AND (mode = "' . $mode . '" OR mode IS NULL)');
+
         if (!isset($openpay_customer['openpay_customer_id'])) {
             try {
                 $address = Db::getInstance()->getRow('
                     SELECT *
-                    FROM '._DB_PREFIX_.'address
-                    WHERE id_customer = '.(int) $customer_id);
+                    FROM ' . _DB_PREFIX_ . 'address
+                    WHERE id_customer = ' . (int)$customer_id);
                 $state = Db::getInstance()->getRow('
                     SELECT id_country, name
-                    FROM '._DB_PREFIX_.'state
-                    WHERE id_state = '.(int) $address['id_state']);
+                    FROM ' . _DB_PREFIX_ . 'state
+                    WHERE id_state = ' . (int)$address['id_state']);
                 $address['state'] = $state['name'];
                 $customer_data = array(
                     'requires_account' => false,
@@ -976,12 +1060,12 @@ class OpenpayPrestashop extends PaymentModule
                 if ($this->validateAddress($address)) {
                     $customer_data = $this->formatAddress($customer_data, $address);
                     $string_array = http_build_query($customer_data, '', ', ');
-                    Logger::addLog($this->l('Customer Address: ').$string_array, 1, null, 'Cart', (int) $this->context->cart->id, true);
+                    Logger::addLog($this->l('Customer Address: ') . $string_array, 1, null, 'Cart', (int)$this->context->cart->id, true);
                 }
                 $customer_openpay = $this->createOpenpayCustomer($customer_data);
                 Db::getInstance()->insert('openpay_customer', array(
                     'openpay_customer_id' => pSQL($customer_openpay->id),
-                    'id_customer' => (int) $this->context->cookie->id_customer,
+                    'id_customer' => (int)$this->context->cookie->id_customer,
                     'date_add' => date('Y-m-d H:i:s'),
                     'mode' => pSQL($mode)
                 ));
@@ -989,7 +1073,7 @@ class OpenpayPrestashop extends PaymentModule
                 return $customer_openpay;
             } catch (Exception $e) {
                 if (class_exists('Logger')) {
-                    Logger::addLog($this->l('Openpay - Can not create Openpay Customer'), 1, null, 'Cart', (int) $this->context->cart->id, true);
+                    Logger::addLog($this->l('Openpay - Can not create Openpay Customer'), 1, null, 'Cart', (int)$this->context->cart->id, true);
                 }
             }
         } else {
@@ -997,9 +1081,10 @@ class OpenpayPrestashop extends PaymentModule
         }
     }
 
-    private function formatAddress($customer_data, $address) {
+    private function formatAddress($customer_data, $address)
+    {
         $country = Configuration::get('OPENPAY_COUNTRY');
-        if ($country === 'MX' || $country === 'PE' ) {
+        if ($country === 'MX' || $country === 'PE') {
             $customer_data['address'] = array(
                 'line1' => substr($address['address1'], 0, 200),
                 'line2' => substr($address['address2'], 0, 50),
@@ -1008,28 +1093,37 @@ class OpenpayPrestashop extends PaymentModule
                 'postal_code' => $address['postcode'],
                 'country_code' => $country
             );
-        } else if ($country === 'CO') {
+        } elseif ($country === 'CO') {
             $customer_data['customer_address'] = array(
                 'department' => $address['state'],
                 'city' => $address['city'],
-                'additional' => substr($address['address1'], 0, 200).' '.substr($address['address2'], 0, 50)
+                'additional' => substr($address['address1'], 0, 200) . ' ' . substr($address['address2'], 0, 50)
             );
         }
-        
+
         return $customer_data;
     }
 
-    public function validateAddress($address) {
+    public function validateAddress($address)
+    {
         $country = Configuration::get('OPENPAY_COUNTRY');
-        if ( ($country == 'MX' || $country == 'PE') && !$this->isNullOrEmpty($address['address1']) && !$this->isNullOrEmpty($address['city']) && !$this->isNullOrEmpty($address['postcode']) && !$this->isNullOrEmpty($address['state'])) {
+        if (($country == 'MX' || $country == 'PE') &&
+            !$this->isNullOrEmpty($address['address1']) &&
+            !$this->isNullOrEmpty($address['city']) &&
+            !$this->isNullOrEmpty($address['postcode']) &&
+            !$this->isNullOrEmpty($address['state'])) {
             return true;
-        } else if ($country == 'CO' && !$this->isNullOrEmpty($address['address1']) && !$this->isNullOrEmpty($address['city']) && !$this->isNullOrEmpty($address['state'])) {
+        } elseif ($country == 'CO' &&
+            !$this->isNullOrEmpty($address['address1']) &&
+            !$this->isNullOrEmpty($address['city']) &&
+            !$this->isNullOrEmpty($address['state'])) {
             return true;
         }
-        return false;  
+        return false;
     }
 
-    public function getCustomer($customer_id) {
+    public function getCustomer($customer_id)
+    {
         $country = Configuration::get('OPENPAY_COUNTRY');
         $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
         $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
@@ -1039,7 +1133,8 @@ class OpenpayPrestashop extends PaymentModule
         return $customer;
     }
 
-    public function createOpenpayCustomer($customer_data) {
+    public function createOpenpayCustomer($customer_data)
+    {
         $country = Configuration::get('OPENPAY_COUNTRY');
         $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
         $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
@@ -1048,10 +1143,11 @@ class OpenpayPrestashop extends PaymentModule
         $openpay = Openpay::getInstance($id, $pk, $country);
         Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
 
-        if($merchant_classification === 'eglobal')
-            $userAgent = "BBVA-PS17".$country."/v1";
-        else
-            $userAgent = "Openpay-PS17".$country."/v2";
+        if ($merchant_classification === 'eglobal') {
+            $userAgent = "BBVA-PS17" . $country . "/v1";
+        } else {
+            $userAgent = "Openpay-PS17" . $country . "/v2";
+        }
 
         Openpay::setUserAgent($userAgent);
 
@@ -1073,16 +1169,15 @@ class OpenpayPrestashop extends PaymentModule
 //        try {
 //            $charge = $customer->charges->create($charge_request);
 //            return $charge;
-//        } catch (Exception $e) {                        
+//        } catch (Exception $e) {
 //            if (Configuration::get('OPENPAY_CHARGE_TYPE') == 'auth' && $e->getCode() == '3005') {
-//                
 //            }
-//            
 //            return $this->error($e);
 //        }
 //    }
 
-    public function updateOpenpayCharge($transaction_id, $order_id, $reference) {
+    public function updateOpenpayCharge($transaction_id, $order_id, $reference)
+    {
         $customer = $this->getOpenpayCustomer($this->context->cookie->id_customer);
         $country = Configuration::get('OPENPAY_COUNTRY');
         $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
@@ -1092,23 +1187,25 @@ class OpenpayPrestashop extends PaymentModule
         Openpay::getInstance($id, $pk, $country);
         Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
 
-        if($merchant_classification === 'eglobal')
-            $userAgent = "BBVA-PS17".$country."/v1";
-        else
-            $userAgent = "Openpay-PS17".$country."/v2";
-            
+        if ($merchant_classification === 'eglobal') {
+            $userAgent = "BBVA-PS17" . $country . "/v1";
+        } else {
+            $userAgent = "Openpay-PS17" . $country . "/v2";
+        }
+
         Openpay::setUserAgent($userAgent);
 
         try {
             $charge = $customer->charges->get($transaction_id);
-            $charge->update(array('order_id' => $order_id, 'description' => 'PrestaShop ORDER #'.$reference));
+            $charge->update(array('order_id' => $order_id, 'description' => 'PrestaShop ORDER #' . $reference));
             return true;
         } catch (Exception $e) {
             $this->error($e);
         }
     }
 
-    public function getOpenpayCharge($customer, $transaction_id) {
+    public function getOpenpayCharge($customer, $transaction_id)
+    {
         $country = Configuration::get('OPENPAY_COUNTRY');
         $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
         $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
@@ -1124,7 +1221,8 @@ class OpenpayPrestashop extends PaymentModule
         }
     }
 
-    public function getTypeCardByBine($card_bin) {
+    public function getTypeCardByBine($card_bin)
+    {
         $openpay = $this->getOpenpayInstance();
         try {
             $cardInfo = $openpay->bines->get($card_bin);
@@ -1134,12 +1232,13 @@ class OpenpayPrestashop extends PaymentModule
         }
     }
 
-    public function getMerchantInfo() {
+    public function getMerchantInfo()
+    {
         $country = Configuration::get('OPENPAY_COUNTRY');
         $sk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
         $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
 
-        switch ($country){
+        switch ($country) {
             case 'MX':
                 $url = $this->url_mx;
                 $sandbox_url = $this->sandbox_url_mx;
@@ -1151,125 +1250,140 @@ class OpenpayPrestashop extends PaymentModule
             case 'PE':
                 $url = $this->url_pe;
                 $sandbox_url = $this->sandbox_url_pe;
+                break;
+            case 'AR':
+                $url = $this->url_pe;
+                $sandbox_url = $this->sandbox_url_ar;
+                break;
         }
 
-        if ($country != 'PE') {
-            $url = (Configuration::get('OPENPAY_MODE') ? $url : $sandbox_url) . '/' . $id;
+        if (isset($url) || isset($sandbox_url)) {
+            if ($country != 'PE') {
+                $url = (Configuration::get('OPENPAY_MODE') ? $url : $sandbox_url) . '/' . $id;
 
-        $username = $sk;
-        $password = '';
+                $username = $sk;
+                $password = '';
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-        curl_setopt($ch, CURLOPT_CAINFO, _PS_MODULE_DIR_.$this->name.'/lib/data/cacert.pem');
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        curl_setopt($ch, CURLOPT_USERPWD, "$username:$password");
-        $result = curl_exec($ch);
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+                curl_setopt($ch, CURLOPT_CAINFO, _PS_MODULE_DIR_ . $this->name . '/lib/data/cacert.pem');
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+                curl_setopt($ch, CURLOPT_USERPWD, "$username:$password");
+                $result = curl_exec($ch);
 
-        if (curl_exec($ch) === false) {
-            Logger::addLog('Curl error '.curl_errno($ch).': '.curl_error($ch), 1, null, null, null, true);
-        } else {
-            $info = curl_getinfo($ch);
-            Logger::addLog('HTTP code '.$info['http_code'].' on request to '.$info['url'], 1, null, null, null, true);
-        }
+                if (curl_exec($ch) === false) {
+                    Logger::addLog('Curl error ' . curl_errno($ch) . ': ' . curl_error($ch), 1, null, null, null, true);
+                } else {
+                    $info = curl_getinfo($ch);
+                    Logger::addLog('HTTP code ' . $info['http_code'] . ' on request to ' . $info['url'], 1, null, null, null, true);
+                }
 
-        curl_close($ch);
+                curl_close($ch);
 
-        $array = Tools::jsonDecode($result, true);
+                /*############### BORRAR AL TENER URL DE API EN ARGENTINA ###########################*/
+                if ($country == 'AR') {
+                    $result = '{"url":"No API URL for Argentina"}';
+                }
+                /*###################################################################################*/
 
-        if (array_key_exists('id', $array)) {
-            Configuration::updateValue('OPENPAY_CLASSIFICATION', $array['classification']);
-            return true;
-        } else {
-            return false;
-        }
-        // IF-ELSE $country != 'PE'
-        }else{
-            $url = (Configuration::get('OPENPAY_MODE') ? $url : $sandbox_url) . '/' . $id.'/webhooks';
-            $username = $sk;
-            $password = '';
+                $array = Tools::jsonDecode($result, true);
 
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-            curl_setopt($ch, CURLOPT_CAINFO, _PS_MODULE_DIR_.$this->name.'/lib/data/cacert.pem');
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-            curl_setopt($ch, CURLOPT_USERPWD, "$username:$password");
-            $result = curl_exec($ch);
-
-            if (curl_exec($ch) === false) {
-                Logger::addLog('Curl error '.curl_errno($ch).': '.curl_error($ch), 1, null, null, null, true);
-            } else {
-                $info = curl_getinfo($ch);
-                Logger::addLog('HTTP code '.$info['http_code'].' on request to '.$info['url'], 1, null, null, null, true);
-                if ($info['http_code'] != 200){
+                if (array_key_exists('id', $array)) {
+                    Configuration::updateValue('OPENPAY_CLASSIFICATION', $array['classification']);
+                    return true;
+                } else {
                     return false;
                 }
-                return true;
+                // IF-ELSE $country != 'PE'
+            } else {
+                $url = (Configuration::get('OPENPAY_MODE') ? $url : $sandbox_url) . '/' . $id . '/webhooks';
+                $username = $sk;
+                $password = '';
+
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+                curl_setopt($ch, CURLOPT_CAINFO, _PS_MODULE_DIR_ . $this->name . '/lib/data/cacert.pem');
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+                curl_setopt($ch, CURLOPT_USERPWD, "$username:$password");
+                $result = curl_exec($ch);
+
+                if (curl_exec($ch) === false) {
+                    Logger::addLog('Curl error ' . curl_errno($ch) . ': ' . curl_error($ch), 1, null, null, null, true);
+                } else {
+                    $info = curl_getinfo($ch);
+                    Logger::addLog('HTTP code ' . $info['http_code'] . ' on request to ' . $info['url'], 1, null, null, null, true);
+                    if ($info['http_code'] != 200) {
+                        return false;
+                    }
+                    return true;
+                }
+                curl_close($ch);
             }
-            curl_close($ch);
         }
     }
-    
-    private function getCreditCardList() {
-        if (!(bool)$this->context->customer->isLogged()) {                    
+
+    private function getCreditCardList()
+    {
+        if (!(bool)$this->context->customer->isLogged()) {
             return array(array('value' => 'new', 'name' => 'Nueva tarjeta'));
-        }        
-        
+        }
+
         $mode = Configuration::get('OPENPAY_MODE') == 'true' ? 'live' : 'test';
         $openpay_customer = Db::getInstance()->getRow('
             SELECT openpay_customer_id
-            FROM '._DB_PREFIX_.'openpay_customer
-            WHERE id_customer = '.(int) $this->context->cookie->id_customer.' AND (mode = "'.$mode.'" OR mode IS NULL)'
-        );
-                
-        
+            FROM ' . _DB_PREFIX_ . 'openpay_customer
+            WHERE id_customer = ' . (int)$this->context->cookie->id_customer . ' AND (mode = "' . $mode . '" OR mode IS NULL)');
+
         if (!isset($openpay_customer['openpay_customer_id'])) {
             return array(array('value' => 'new', 'name' => 'Nueva tarjeta'));
-        } 
-        
-        $list = array(array('value' => 'new', 'name' => 'Nueva tarjeta'));        
-        try {            
-            $openpay = $this->getOpenpayInstance();            
+        }
+
+        $list = array(array('value' => 'new', 'name' => 'Nueva tarjeta'));
+        try {
+            $openpay = $this->getOpenpayInstance();
             $customer = $openpay->customers->get($openpay_customer['openpay_customer_id']);
-            
-            $cards = $this->getCreditCards($customer);            
-            foreach ($cards as $card) {                
-                array_push($list, array('value' => $card->id, 'name' => strtoupper($card->brand).' '.$card->card_number));
+
+            $cards = $this->getCreditCards($customer);
+            foreach ($cards as $card) {
+                array_push($list, array('value' => $card->id, 'name' => strtoupper($card->brand) . ' ' . $card->card_number));
             }
-            
-            return $list;            
-        } catch (Exception $e) {
-            Logger::addLog('#getCreditCardList() => '.$e->getMessage(), 3, null, 'Cart', (int) $this->context->cart->id, true);            
+
             return $list;
-        }        
-    }
-    
-    private function getCreditCards($customer) {        
-        try {
-            return $customer->cards->getList(array(                
-                'offset' => 0,
-                'limit' => 10
-            ));            
         } catch (Exception $e) {
-            Logger::addLog('#getCreditCards() => '.$e->getMessage(), 3, null, 'Cart', (int) $this->context->cart->id, true);            
-            throw $e;
-        }        
-    }
-    
-    private function createCreditCard($customer, $data) {
-        try {
-            return $customer->cards->add($data);            
-        } catch (Exception $e) {
-            Logger::addLog('#createCreditCard() => '.$e->getMessage(), 3, null, 'Cart', (int) $this->context->cart->id, true);                    
-            throw $e;
-        }        
+            Logger::addLog('#getCreditCardList() => ' . $e->getMessage(), 3, null, 'Cart', (int)$this->context->cart->id, true);
+            return $list;
+        }
     }
 
-    public function error($e, $backend = false) {
+    private function getCreditCards($customer)
+    {
+        try {
+            return $customer->cards->getList(array(
+                'offset' => 0,
+                'limit' => 10
+            ));
+        } catch (Exception $e) {
+            Logger::addLog('#getCreditCards() => ' . $e->getMessage(), 3, null, 'Cart', (int)$this->context->cart->id, true);
+            throw $e;
+        }
+    }
+
+    private function createCreditCard($customer, $data)
+    {
+        try {
+            return $customer->cards->add($data);
+        } catch (Exception $e) {
+            Logger::addLog('#createCreditCard() => ' . $e->getMessage(), 3, null, 'Cart', (int)$this->context->cart->id, true);
+            throw $e;
+        }
+    }
+
+    public function error($e, $backend = false)
+    {
         switch ($e->getErrorCode()) {
             /* ERRORES GENERALES */
             case '1000':
@@ -1284,7 +1398,7 @@ class OpenpayPrestashop extends PaymentModule
             case '3005':
             case '3009':
             case '3010':
-            case '3011':                    
+            case '3011':
                 $msg = $this->l('La tarjeta fue rechazada.');
                 break;
             case '3002':
@@ -1307,7 +1421,7 @@ class OpenpayPrestashop extends PaymentModule
                 break;
         }
 
-        $error = 'ERROR '.$e->getErrorCode().'. '.$msg;
+        $error = 'ERROR ' . $e->getErrorCode() . '. ' . $msg;
         $this->context->cookie->__set('openpay_error', $error);
         $this->context->cookie->__set('openpay_error_code', $e->getErrorCode());
 
@@ -1315,25 +1429,27 @@ class OpenpayPrestashop extends PaymentModule
             return Tools::jsonDecode(Tools::jsonEncode(array('error' => $e->getErrorCode(), 'msg' => $error)), false);
         } else {
             if (class_exists('Logger')) {
-                Logger::addLog($this->l('#Openpay - Payment transaction failed').' '.$error, 1, null, 'Cart', (int) $this->context->cart->id, true);
+                Logger::addLog($this->l('#Openpay - Payment transaction failed') . ' ' . $error, 1, null, 'Cart', (int)$this->context->cart->id, true);
             }
             return false;
-            //Tools::redirect('index.php?controller=order&step=1');      
+            //Tools::redirect('index.php?controller=order&step=1');
         }
     }
 
-    public function isNullOrEmpty($string) {
+    public function isNullOrEmpty($string)
+    {
         return (!isset($string) || trim($string) === '');
     }
-    
-    protected function getOpenpayInstance() {
-        $country = Configuration::get('OPENPAY_COUNTRY'); 
+
+    protected function getOpenpayInstance()
+    {
+        $country = Configuration::get('OPENPAY_COUNTRY');
         $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
         $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
 
         $openpay = Openpay::getInstance($id, $pk, $country);
         Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
-        
+
         return $openpay;
     }
 }

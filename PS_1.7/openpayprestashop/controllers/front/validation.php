@@ -34,30 +34,49 @@ class OpenpayPrestashopValidationModuleFrontController extends ModuleFrontContro
     /**
      * @see FrontController::postProcess()
      */
-    public function postProcess() {
+    public function postProcess()
+    {
         $cart = $this->context->cart;
-        if ($cart->id_customer == 0 || $cart->id_address_delivery == 0 || $cart->id_address_invoice == 0 || !$this->module->active)
+        if ($cart->id_customer == 0 ||
+            $cart->id_address_delivery == 0 ||
+            $cart->id_address_invoice == 0 ||
+            !$this->module->active) {
             Tools::redirect('index.php?controller=order&step=1');
-
-        // Check that this payment option is still available in case the customer changed his address just before the end of the checkout process
+        }
+        // Check that this payment option is still available in case the customer changed his
+        // address just before the end of the checkout process
         $authorized = false;
-        foreach (Module::getPaymentModules() as $module)
+        foreach (Module::getPaymentModules() as $module) {
             if ($module['name'] == 'openpayprestashop') {
                 $authorized = true;
                 break;
             }
-        if (!$authorized)
-            die($this->module->getTranslator()->trans('This payment method is not available.', array(), 'Modules.OpenpayPrestashop.Shop'));
+        }
+
+        if (!$authorized) {
+            die($this->module->getTranslator()->trans(
+                'This payment method is not available.',
+                array(),
+                'Modules.OpenpayPrestashop.Shop'
+            ));
+        }
 
         $customer = new Customer($cart->id_customer);
         if (!Validate::isLoadedObject($customer)) {
             Tools::redirect('index.php?controller=order&step=1');
-        }                    
-        
-        $country = Tools::getValue('country'); 
+        }
+
+        $country = Tools::getValue('country');
         $save_cc = Tools::getValue('save_cc') ? true : false;
         $installments = ($country === 'MX') ? Tools::getValue('interest_free') : Tools::getValue('installment');
-        $openpay = new OpenpayPrestashop();        
-        $openpay->processPayment(Tools::getValue('openpay_token'), Tools::getValue('device_session_id'), $installments , Tools::getValue('use_card_points'), Tools::getValue('openpay_cc'), $save_cc);        
+        $openpay = new OpenpayPrestashop();
+        $openpay->processPayment(
+            Tools::getValue('openpay_token'),
+            Tools::getValue('device_session_id'),
+            $installments,
+            Tools::getValue('use_card_points'),
+            Tools::getValue('openpay_cc'),
+            $save_cc
+        );
     }
 }
