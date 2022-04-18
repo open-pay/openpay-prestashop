@@ -57,8 +57,8 @@ class OpenpayStores extends PaymentModule
         $this->description = $this->l('Acepta pagos en efectivo con Openpay');
         $this->confirmUninstall = $this->l($warning);
         $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);  
-        $this->max_amount_allowed_mx = 9999;
-        $this->max_amount_allowed_co = 720000;
+        $this->max_amount_allowed_mx = 720000;
+        $this->max_amount_allowed_co = 1000000;
     }
 
     /**
