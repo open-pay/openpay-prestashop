@@ -49,9 +49,25 @@ class OpenpayPrestashopConfirmModuleFrontController extends ModuleFrontControlle
         }
 
         $openpay_prestashop = new OpenpayPrestashop();
-        $openpay_customer = $openpay_prestashop->getOpenpayCustomer($this->context->cookie->id_customer);
-        $charge = $openpay_prestashop->getOpenpayCharge($openpay_customer, Tools::getValue('id'));
 
+        $customer_id = $this->context->cookie->id_customer;
+        $openpay_customer_id = $this->getOpenpayCustomerId($customer_id);
+
+        try {
+            if ($openpay_customer_id) {
+                $openpay_customer = $openpay_prestashop->getCustomer($openpay_customer_id);
+                $charge = $openpay_prestashop->getOpenpayCharge(Tools::getValue('id'), $openpay_customer,);
+            } else {
+                $charge = $openpay_prestashop->getOpenpayCharge(Tools::getValue('id'));
+            }
+        } catch(Exception $e) {
+            if (class_exists('Logger')) {
+                Logger::addLog($e->getMessage(), 1, null, null, null, true);
+            }
+            $this->setTemplate('module:openpayprestashop/views/templates/front/3d_secure_confirm_error.tpl');
+            return;
+        }
+        
         // Ocurrió un error
         if ($charge->status !== 'completed') {
             $this->setTemplate('module:openpayprestashop/views/templates/front/3d_secure_confirm_error.tpl');
@@ -140,5 +156,15 @@ class OpenpayPrestashopConfirmModuleFrontController extends ModuleFrontControlle
             '&key=' . $this->context->customer->secure_key;
 
         Tools::redirect($redirect);
+    }
+
+    private function getOpenpayCustomerId($customer_id)
+    {
+        $openpay_customer = Db::getInstance()->getRow('
+            SELECT openpay_customer_id
+            FROM ' . _DB_PREFIX_ . 'openpay_customer
+            WHERE id_customer = ' . (int)$customer_id . ' AND (mode = "' . $mode . '" OR mode IS NULL)');
+        
+        return $openpay_customer['openpay_customer_id'];
     }
 }
