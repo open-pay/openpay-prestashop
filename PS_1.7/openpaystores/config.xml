@@ -2,7 +2,7 @@
 <module>
     <name>openpaystores</name>
     <displayName><![CDATA[Openpay]]></displayName>
-    <version><![CDATA[4.2.0]]></version>
+    <version><![CDATA[4.2.1]]></version>
     <description><![CDATA[Acepta pagos en efectivo con Openpay]]></description>
     <author><![CDATA[Openpay SA de CV]]></author>
     <tab><![CDATA[payments_gateways]]></tab>
