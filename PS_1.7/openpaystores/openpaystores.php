@@ -56,9 +56,7 @@ class OpenpayStores extends PaymentModule
         $this->displayName = $this->l('Openpay Offline');
         $this->description = $this->l('Acepta pagos en efectivo con Openpay');
         $this->confirmUninstall = $this->l($warning);
-        $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);  
-        $this->max_amount_allowed_mx = 720000;
-        $this->max_amount_allowed_co = 1000000;
+        $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);
     }
 
     /**
@@ -323,9 +321,9 @@ class OpenpayStores extends PaymentModule
         }
 
         $country = Configuration::get('OPENPAY_COUNTRY');
-        $max_amount_allowed = ($country === 'MX') ? $this->max_amount_allowed_mx : $this->max_amount_allowed_co;
+        $max_amount_allowed = ($country === 'MX') ? 720000 : 1000000;
         //floatval
-        if($cart->getOrderTotal() > $max_amount_allowed) {
+        if($cart->getOrderTotal() > $max_amount_allowed && $country != 'PE') {
             return false;
         }
 
