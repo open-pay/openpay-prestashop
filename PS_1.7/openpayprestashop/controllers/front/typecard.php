@@ -66,17 +66,21 @@ class OpenpayPrestashopTypeCardModuleFrontController extends ModuleFrontControll
         Logger::addLog('#getTypeCard() => '.$cardBin, 1, null, 'Cart', (int) $this->context->cart->id, true);
 
         $country = Configuration::get('OPENPAY_COUNTRY');
+        $sk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
+        $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
+
         if ($country == 'MX') {
-            $openpay_prestashop = new OpenpayPrestashop();
-            $cardInfo = $openpay_prestashop->getTypeCardByBine($cardBin);
-            return ($cardBin != null) ? $cardInfo->type : false;
+            $path = sprintf('/%s/bines/man/%s', $id, $cardBin);
+            $cardInfo = $this->requestOpenpay(null,$path,"GET",['sk' => $sk]);
+            return ($cardBin != null) ? $cardInfo['type'] : false;
         } else {
             $cardInfo = $this->requestOpenpay(null,'/cards/validate-bin?bin='.$cardBin);
             return $cardInfo['card_type'];
         }
     }
 
-    private function requestOpenpay($params, $api, $method = 'GET') {
+    private function requestOpenpay($params, $api, $method = 'GET', $auth = null) {
+        $country = Configuration::get('OPENPAY_COUNTRY');
         $url = $country === 'MX' ? $this->url_mx : $this->url_co;
         $sandbox_url = $country === 'MX' ? $this->sandbox_url_mx : $this->sandbox_url_co;
 
@@ -84,6 +88,9 @@ class OpenpayPrestashopTypeCardModuleFrontController extends ModuleFrontControll
         $absUrl .= $api;
 
         $ch = curl_init();
+        if ($auth != null) {
+            curl_setopt($ch, CURLOPT_USERPWD, $auth['sk'].':'.'');
+        }
         curl_setopt($ch, CURLOPT_URL, $absUrl);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
