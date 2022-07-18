@@ -399,7 +399,7 @@ $(document).ready(function() {
             $("#use_card_points").closest("tr").hide();
             $("#months_interest_free").closest("tr").hide();
             $("#openpay_charge_type").closest("tr").hide();
-            $("#capture").closest("tr").hide();
+            $("#capture").closest("tr").show();
         } else if (country === 'MX') {
             $("#openpay_iva").closest("tr").hide();
 
