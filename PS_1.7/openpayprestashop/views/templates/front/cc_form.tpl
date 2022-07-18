@@ -293,12 +293,14 @@
             let country = "{$country}";
             let show_months_interest_free = "{$show_months_interest_free}";
             let card_without_space = card.replace(/\s+/g, '')
-            if (card_without_space.length >= 6) {
+            let lng = country == 'PE' ? 6 : 8;
+
+            if (card_without_space.length >= lng) {
                 if(country == "PE") return;
                 if(country == "MX" && !show_months_interest_free) {
                     return;
                 }
-                var card_bin = card_without_space.substring(0, 6);
+                var card_bin = card_without_space.substring(0, lng);
                 if(card_bin != card_old) {
                     getTypeCard(card_bin, country);
                     card_old = card_bin; 
