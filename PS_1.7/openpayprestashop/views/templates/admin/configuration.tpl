@@ -305,7 +305,17 @@
                         </select>
                         <div><small>Permite a los usuarios registrados guardar sus tarjetas de crédito para agilizar sus futuras compras.</small></div>                        
                     </td>
-                </tr>                 
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <label style="">{l s="Activar Cuotas" mod='openpayprestashop'}</label>
+                        <select name="cuotas_pe" id="cuotas_pe" style="width: 100%; margin: 10px 0 0 0;">
+                            <option value="0" {if $openpay_configuration.OPENPAY_CUOTAS_PE == '0'} selected="selected"{/if}>NO</option>
+                            <option value="1" {if $openpay_configuration.OPENPAY_CUOTAS_PE == '1'} selected="selected"{/if}>SI</option>
+                        </select>
+                        <div><small>Permite a los usuarios pagar con cuotas.</small></div>
+                    </td>
+                </tr>
                 <tr>
                     <td colspan="2">
                         <h3>{l s='Meses sin intereses' mod='openpayprestashop'}</h3>
@@ -390,7 +400,8 @@ $(document).ready(function() {
             
             $("#openpay_affiliation_bbva").closest("tr").hide();
             $("#use_card_points").closest("tr").hide();
-            $("#months_interest_free").closest("tr").hide(); 
+            $("#months_interest_free").closest("tr").hide();
+            $("#cuotas_pe").closest("tr").hide();
             $("#openpay_charge_type").closest("tr").hide();
             $("#capture").closest("tr").hide();        
         } else if(country === 'PE'){
@@ -400,11 +411,13 @@ $(document).ready(function() {
             $("#months_interest_free").closest("tr").hide();
             $("#openpay_charge_type").closest("tr").hide();
             $("#capture").closest("tr").show();
+            $("#cuotas_pe").closest("tr").show();
         } else if (country === 'MX') {
             $("#openpay_iva").closest("tr").hide();
-
+            $("#cuotas_pe").closest("tr").hide();
             $("#use_card_points").closest("tr").show();
-            $("#months_interest_free").closest("tr").show();      
+            $("#months_interest_free").closest("tr").show();
+
 
             if(merchantClassification === 'eglobal'){
                 $("#openpay_affiliation_bbva").closest("tr").show();

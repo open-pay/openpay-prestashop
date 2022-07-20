@@ -170,6 +170,18 @@
                     </div>
                 </div>
             {/if}
+            {if $cuotas_pe }
+            <div class="row installments">
+                <div class="col-md-6">
+                    <label id="installments_title">{l s='Cuotas' mod='openpayprestashop'}</label>
+                    <select name="openpay_installments_pe" id="openpay_installments_pe" style="width: 100%;"></select>
+                </div>
+                <div id="total-monthly-payment" class="col-md-6 hidden">
+                    <label>{l s="Pago mensual" mod='openpayprestashop'}</label>
+                    <p class="openpay-total">$<span id="monthly-payment">{$total}</span> MXN</p>
+                </div>
+            {/if}
+            </div>
         </form>
     </div>
 </div>
@@ -295,12 +307,12 @@
             let card_without_space = card.replace(/\s+/g, '')
             let lng = country == 'PE' ? 6 : 8;
 
-            if (card_without_space.length >= lng) {
-                if(country == "PE") return;
+            if (card_without_space.length == lng) {
                 if(country == "MX" && !show_months_interest_free) {
                     return;
                 }
                 var card_bin = card_without_space.substring(0, lng);
+
                 if(card_bin != card_old) {
                     getTypeCard(card_bin, country);
                     card_old = card_bin; 
@@ -327,11 +339,42 @@
             },
             success: function(response) {
                 let data = JSON.parse(response);
-                console.log(data);
                 if(data.status == 'success'){
                     if (data.card_type == 'CREDIT') {
-                        if (country == 'MX') jQuery("#interest-free").closest(".row").show(); else jQuery('#installment').closest(".row").show();
-                    } else {
+                        if (country == 'MX'){
+                            jQuery("#interest-free").closest(".row").show();
+                        }else {
+                            jQuery('#installment').closest(".row").show();
+                        }
+                    }
+                    else if(data.installments && data.installments.length > 0 && 1 == "{$cuotas_pe}") {
+                        jQuery('#openpay_installments_pe').closest(".row").show();
+                        jQuery('#openpay_installments_pe').empty();
+
+                        jQuery('#openpay_installments_pe').append(jQuery('<option>', {
+                            value: 1,
+                            text : 'Solo una cuota'
+                        }));
+
+                        jQuery("#installments_title").text("Cuotas con Interés");
+                        /*if (data.withInterest){
+                            jQuery("#installments_title").text("Cuotas con Interés");
+                        }else{
+                            jQuery("#installments_title").text("Cuotas sin Interés");
+                        }*/
+                        jQuery('#openpay_installments_pe').closest(".form-row").show();
+                        jQuery('#withInterest').val(data.withInterest);
+
+                        jQuery.each( data.installments, function( i, val ) {
+                            if (val != 1) {
+                                jQuery('#openpay_installments_pe').append(jQuery('<option>', {
+                                    value: val,
+                                    text: val + ' coutas'
+                                }));
+                            }
+                        });
+                    }
+                    else {
                         if (country == 'MX') {
                             jQuery("#interest-free").closest(".row").hide();
                             jQuery('#interest-free option[value="1"]').attr("selected",true);
