@@ -55,7 +55,7 @@ class OpenpayPrestashop extends PaymentModule
 
         $this->name = 'openpayprestashop';
         $this->tab = 'payments_gateways';
-        $this->version = '4.5.1';
+        $this->version = '4.5.2';
         $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';               
 
@@ -102,7 +102,8 @@ class OpenpayPrestashop extends PaymentModule
                 Configuration::updateValue('OPENPAY_CHARGE_TYPE', 'direct') &&      
                 Configuration::updateValue('USE_CARD_POINTS', '0') &&                      
                 Configuration::updateValue('OPENPAY_CAPTURE', 'true') &&                      
-                Configuration::updateValue('OPENPAY_SAVE_CC', '0') &&                      
+                Configuration::updateValue('OPENPAY_SAVE_CC', '0') &&
+                Configuration::updateValue('OPENPAY_CUOTAS_PE', '0') &&
                 $this->installDb();
 
         return $ret;
@@ -451,6 +452,7 @@ class OpenpayPrestashop extends PaymentModule
             'show_installments' => $show_installments,
             'use_card_points' => Configuration::get('USE_CARD_POINTS'),
             'can_save_cc' => Configuration::get('OPENPAY_SAVE_CC') == '1' && (bool)$this->context->customer->isLogged() ? true : false,
+            'cuotas_pe' => Configuration::get('OPENPAY_CUOTAS_PE'),
             'cc_options' => $this->getCreditCardList(),
             'url_ajax' => Tools::getHttpHost(true).__PS_BASE_URI__.'module/openpayprestashop/typecard',
             'action' => $this->context->link->getModuleLink($this->name, 'validation', array(), Tools::usingSecureMode()),
@@ -804,6 +806,7 @@ class OpenpayPrestashop extends PaymentModule
                 'OPENPAY_CHARGE_TYPE' => Tools::getValue('openpay_charge_type'),
                 'USE_CARD_POINTS' => Tools::getValue('use_card_points'),
                 'OPENPAY_SAVE_CC' => Tools::getValue('save_cc'),
+                'OPENPAY_CUOTAS_PE' => Tools::getValue('cuotas_pe'),
                 'OPENPAY_CAPTURE' => Tools::getValue('capture')
             );
 
@@ -908,6 +911,7 @@ class OpenpayPrestashop extends PaymentModule
                         'USE_CARD_POINTS',
                         'OPENPAY_CAPTURE',
                         'OPENPAY_SAVE_CC',
+                        'OPENPAY_CUOTAS_PE',
                         'OPENPAY_IVA',
                         'OPENPAY_CLASSIFICATION',
                         'OPENPAY_AFFILIATION'

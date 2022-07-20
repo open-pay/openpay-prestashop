@@ -27,12 +27,6 @@
 class OpenpayPrestashopTypeCardModuleFrontController extends ModuleFrontController
 {
 
-    private $sandbox_url_mx = 'https://sandbox-api.openpay.mx/v1';
-    private $url_mx = 'https://api.openpay.mx/v1';
-
-    private $sandbox_url_co = 'https://sandbox-api.openpay.co/v1';
-    private $url_co = 'https://api.openpay.co/v1';
-
     public function initContent()
     {
         parent::initContent();
@@ -43,23 +37,18 @@ class OpenpayPrestashopTypeCardModuleFrontController extends ModuleFrontControll
     {
         
         $cardBin = Tools::getValue('card_bin');
-        $cardType = $this->getTypeCard($cardBin);
+        $binRequestResponse = $this->getTypeCard($cardBin);
 
-        Logger::addLog('#cardType => '.$cardType, 1, null, 'Cart', (int) $this->context->cart->id, true);
+        Logger::addLog('#cardType => '.$binRequestResponse, 1, null, 'Cart', (int) $this->context->cart->id, true);
         
-        if ($cardType) {
-            $json = array(
-                'status' => 'success',
-                'card_type' => $cardType
-            );
-        } else {
-            $json = array(
+        if (!$binRequestResponse){
+            $binRequestResponse = array(
                 'status' => 'error',
                 'message' => "credit card not found"
             );
         }
 
-        die(Tools::jsonEncode($json));
+        die(Tools::jsonEncode($binRequestResponse));
     }
 
     private function getTypeCard($cardBin) {
@@ -71,21 +60,44 @@ class OpenpayPrestashopTypeCardModuleFrontController extends ModuleFrontControll
 
         if ($country == 'MX') {
             $path = sprintf('/%s/bines/man/%s', $id, $cardBin);
-            $cardInfo = $this->requestOpenpay(null,$path,"GET",['sk' => $sk]);
-            return ($cardBin != null) ? $cardInfo['type'] : false;
+            $cardInfo = $this->requestOpenpay($path,"GET",null,['sk' => $sk]);
+            $binRequestResponse = array(
+                'status' => 'success',
+                'card_type' => $cardInfo['type'],
+            );
+            return ($cardBin != null) ? $binRequestResponse : false;
+
+        }elseif ($country == 'PE'){
+            $path = sprintf('/%s/bines/%s/promotions', $id, $cardBin);
+            $cart = $this->context->cart;
+            $amount = number_format(floatval($cart->getOrderTotal()), 2, '.', '');
+            $params = array('amount' => $amount, 'currency' => $this->context->currency->iso_code);
+            $cardInfo = $this->requestOpenpay($path,"POST",$params);
+            $binRequestResponse = array(
+                'status' => 'success',
+                'card_type' => $cardInfo['cardType'],
+                'installments'  => $cardInfo['installments'],
+                'withInterest' => $cardInfo['withInterest']
+            );
+            return ($cardBin != null) ? $binRequestResponse : false;
+
         } else {
-            $cardInfo = $this->requestOpenpay(null,'/cards/validate-bin?bin='.$cardBin);
-            return $cardInfo['card_type'];
+            $cardInfo = $this->requestOpenpay('/cards/validate-bin?bin='.$cardBin,'POST',null);
+            $binRequestResponse = array(
+                'status' => 'success',
+                'card_type' => $cardInfo['card_type'],
+            );
+            return ($cardBin != null) ? $binRequestResponse : false;
         }
     }
 
-    private function requestOpenpay($params, $api, $method = 'GET', $auth = null) {
+    private function requestOpenpay($api, $method = 'GET', $params=[] , $auth = null) {
         $country = Configuration::get('OPENPAY_COUNTRY');
-        $url = $country === 'MX' ? $this->url_mx : $this->url_co;
-        $sandbox_url = $country === 'MX' ? $this->sandbox_url_mx : $this->sandbox_url_co;
-
-        $absUrl = (Configuration::get('OPENPAY_MODE') ? $url : $sandbox_url);
-        $absUrl .= $api;
+        $country_tld    = strtolower($country);
+        $sandbox_url    = 'https://sandbox-api.openpay.'.$country_tld.'/v1';
+        $url            = 'https://api.openpay.'.$country_tld.'/v1';
+        $absUrl         = Configuration::get('OPENPAY_MODE') ? $url : $sandbox_url;
+        $absUrl        .= $api;
 
         $ch = curl_init();
         if ($auth != null) {
@@ -94,6 +106,16 @@ class OpenpayPrestashopTypeCardModuleFrontController extends ModuleFrontControll
         curl_setopt($ch, CURLOPT_URL, $absUrl);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+
+        if(!empty($params)){
+            $data = json_encode($params);
+            Logger::addLog('PARAMS: ' . $data, 1, null, null, null, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+            $headers[] = 'Content-Type:application/json';
+        }
+
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
         $result = curl_exec($ch);
 
         if (curl_exec($ch) === false) {
