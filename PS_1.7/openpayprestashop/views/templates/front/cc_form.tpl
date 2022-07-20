@@ -375,6 +375,9 @@
                         });
                     }
                     else {
+                        jQuery('#openpay_installments_pe').closest(".row").hide();
+                        jQuery('#openpay_installments_pe option[value="1"]').attr("selected",true);
+
                         if (country == 'MX') {
                             jQuery("#interest-free").closest(".row").hide();
                             jQuery('#interest-free option[value="1"]').attr("selected",true);
