@@ -55,68 +55,84 @@ class OpenpayPrestashopTypeCardModuleFrontController extends ModuleFrontControll
         Logger::addLog('#getTypeCard() => '.$cardBin, 1, null, 'Cart', (int) $this->context->cart->id, true);
 
         $country = Configuration::get('OPENPAY_COUNTRY');
-        $sk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
+        $is_sandbox = Configuration::get('OPENPAY_MODE');
         $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
+        $auth = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
 
-        if ($country == 'MX') {
-            $path = sprintf('/%s/bines/man/%s', $id, $cardBin);
-            $cardInfo = $this->requestOpenpay($path,"GET",null,['sk' => $sk]);
-            $binRequestResponse = array(
-                'status' => 'success',
-                'card_type' => $cardInfo['type'],
-            );
-            return ($cardBin != null) ? $binRequestResponse : false;
+        Logger::addLog('(444d) $is_sandbox => '.$is_sandbox , 1);
 
-        }elseif ($country == 'PE'){
-            $path = sprintf('/%s/bines/%s/promotions', $id, $cardBin);
-            $cart = $this->context->cart;
-            $amount = number_format(floatval($cart->getOrderTotal()), 2, '.', '');
-            $params = array('amount' => $amount, 'currency' => $this->context->currency->iso_code);
-            $cardInfo = $this->requestOpenpay($path,"POST",$params);
-            $binRequestResponse = array(
-                'status' => 'success',
-                'card_type' => $cardInfo['cardType'],
-                'installments'  => $cardInfo['installments'],
-                'withInterest' => $cardInfo['withInterest']
-            );
-            return ($cardBin != null) ? $binRequestResponse : false;
+        switch ($country) {
+            case 'MX':
+                $path = sprintf('/%s/bines/man/%s', $id, $cardBin);
+                $cardInfo = $this->requestOpenpay($path, $country, $is_sandbox, "GET",null,$auth);
+                $binRequestResponse = array(
+                    'status' => 'success',
+                    'card_type' => $cardInfo['type'],
+                );
+                return ($cardBin != null) ? $binRequestResponse : false;
 
-        } else {
-            $cardInfo = $this->requestOpenpay('/cards/validate-bin?bin='.$cardBin,'POST',null);
-            $binRequestResponse = array(
-                'status' => 'success',
-                'card_type' => $cardInfo['card_type'],
-            );
-            return ($cardBin != null) ? $binRequestResponse : false;
+            case 'PE':
+                $path = sprintf('/%s/bines/%s/promotions', $id, $cardBin);
+                $cart = $this->context->cart;
+                $amount = number_format(floatval($cart->getOrderTotal()), 2, '.', '');
+                $params = array('amount' => $amount, 'currency' => $this->context->currency->iso_code);
+
+                $cardInfo = $this->requestOpenpay($path, $country, $is_sandbox, 'GET', $params);
+                $binRequestResponse = array(
+                    'status' => 'success',
+                    'card_type' => $cardInfo['cardType'],
+                    'installments'  => $cardInfo['installments'],
+                    'withInterest' => $cardInfo['withInterest']
+                );
+                return ($cardBin != null) ? $binRequestResponse : false;
+
+            default:
+                $path = sprintf('/cards/validate-bin?bin=%s', $cardBin);
+                $cardInfo = $this->requestOpenpay($path, $country, $is_sandbox);
+                $binRequestResponse = array(
+                    'status' => 'success',
+                    'card_type' => $cardInfo['card_type'],
+                );
+                return ($cardBin != null) ? $binRequestResponse : false;
         }
     }
 
-    private function requestOpenpay($api, $method = 'GET', $params=[] , $auth = null) {
-        $country = Configuration::get('OPENPAY_COUNTRY');
+    private function requestOpenpay($api, $country, $is_sandbox, $method = 'GET', $params = [], $auth = null){
+
         $country_tld    = strtolower($country);
         $sandbox_url    = 'https://sandbox-api.openpay.'.$country_tld.'/v1';
         $url            = 'https://api.openpay.'.$country_tld.'/v1';
-        $absUrl         = Configuration::get('OPENPAY_MODE') ? $url : $sandbox_url;
+        $absUrl         = $is_sandbox == 0 ? $sandbox_url : $url;
         $absUrl        .= $api;
+        $headers        = Array();
+        $ch             = curl_init();
 
-        $ch = curl_init();
-        if ($auth != null) {
-            curl_setopt($ch, CURLOPT_USERPWD, $auth['sk'].':'.'');
-        }
-        curl_setopt($ch, CURLOPT_URL, $absUrl);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-
-        if(!empty($params)){
+        if(!empty($params) && $method == 'POST'){
             $data = json_encode($params);
             Logger::addLog('PARAMS: ' . $data, 1, null, null, null, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
             $headers[] = 'Content-Type:application/json';
         }
 
+        if (!empty($params) && $method == 'GET') {
+            $info = http_build_query($params);
+            $absUrl = $absUrl."?".$info;
+        }
+
+        if(!empty($auth)){
+            $auth = base64_encode($auth.":");
+            $headers[] = 'Authorization: Basic '.$auth;
+        }
+
+
+        curl_setopt($ch, CURLOPT_URL, $absUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
         $result = curl_exec($ch);
+        Logger::addLog('(444d) $result => '.$result , 1);
 
         if (curl_exec($ch) === false) {
             Logger::addLog('Curl error '.curl_errno($ch).': '.curl_error($ch), 1, null, null, null, true);

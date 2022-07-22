@@ -59,13 +59,15 @@ class OpenpayPrestashopValidationModuleFrontController extends ModuleFrontContro
 
         switch ($country){
             case "MX":
-                $installments =  Tools::getValue('interest_free');
+                $installments["val"] =  Tools::getValue('interest_free');
                 break;
             case "CO":
-                $installments = Tools::getValue('installment');
+                $installments["val"] = Tools::getValue('installment');
                 break;
             case "PE":
-                $installments = Tools::getValue('openpay_installments_pe');
+                $installments["val"] = Tools::getValue('openpay_installments_pe');
+                $installments["withInterest"] = Tools::getValue('withInterest');
+                Logger::addLog('(444d) $withInterest => '.$installments["withInterest"] , 1);
                 break;
         }
 

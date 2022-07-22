@@ -55,7 +55,7 @@ class OpenpayPrestashop extends PaymentModule
 
         $this->name = 'openpayprestashop';
         $this->tab = 'payments_gateways';
-        $this->version = '4.5.2';
+        $this->version = '4.5.3';
         $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';               
 
@@ -518,6 +518,21 @@ class OpenpayPrestashop extends PaymentModule
             if ($installments > 1) {
                 $charge_request['payment_plan'] = array('payments' => (int) $installments);
             }
+
+            Logger::addLog('(444d) $installments["val"] => '.$installments["val"] , 1);
+            Logger::addLog('(444d) $installments["withInterest"] => '.$installments["withInterest"] , 1);
+
+            if ($installments["val"] > 1) {
+                switch ($installments["withInterest"]){
+                    case "false":
+                        $charge_request['payment_plan'] = array('payments' => (int)$installments["val"],'payments_type' => 'WITHOUT_INTEREST');
+                        break;
+                    case "true":
+                        $charge_request['payment_plan'] = array('payments' => (int)$installments["val"],'payments_type' => 'WITH_INTEREST');
+                        break;
+                }
+            }
+
             if ($country === 'MX' && $charge_type == '3d') {
                 $charge_request['use_3d_secure'] = true;
                 $charge_request['redirect_url'] = _PS_BASE_URL_.__PS_BASE_URI__.'module/openpayprestashop/confirm';

@@ -175,6 +175,7 @@
                 <div class="col-md-6">
                     <label id="installments_title">{l s='Cuotas' mod='openpayprestashop'}</label>
                     <select name="openpay_installments_pe" id="openpay_installments_pe" style="width: 100%;"></select>
+                    <input type="hidden" name="withInterest" id="withInterest"/>
                 </div>
                 <div id="total-monthly-payment" class="col-md-6 hidden">
                     <label>{l s="Pago mensual" mod='openpayprestashop'}</label>
@@ -356,13 +357,11 @@
                             text : 'Solo una cuota'
                         }));
 
-                        jQuery("#installments_title").text("Cuotas con Interés");
-                        /*if (data.withInterest){
+                        if (data.withInterest){
                             jQuery("#installments_title").text("Cuotas con Interés");
                         }else{
                             jQuery("#installments_title").text("Cuotas sin Interés");
-                        }*/
-                        jQuery('#openpay_installments_pe').closest(".form-row").show();
+                        }
                         jQuery('#withInterest').val(data.withInterest);
 
                         jQuery.each( data.installments, function( i, val ) {
