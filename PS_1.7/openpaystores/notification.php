@@ -57,6 +57,8 @@ if($json->transaction->method == 'store'){
 
     $charge = $openpay->charges->get($json->transaction->id);
     $order = new Order((int) $charge->order_id);
+
+    Logger::addLog('#Webhook Order ID: '.var_dump($order), 1, null, null, null, true);
                      
     if ($order) {
         Logger::addLog('#Webhook Order ID: '.$charge->order_id, 1, null, null, null, true);
@@ -64,18 +66,19 @@ if($json->transaction->method == 'store'){
         if ($json->type == 'charge.succeeded' && $charge->status == 'completed') {    
             $order_history = new OrderHistory();
             $order_history->id_order = (int) $order->id;
-            $order_history->changeIdOrderState(Configuration::get('PS_OS_PAYMENT'), (int) $order->id);
+            $order_history->changeIdOrderState(Configuration::get('PS_OS_PAYMENT'), (int) $order->id,true);
             $order_history->addWithemail();
 
             Db::getInstance()->Execute(
                 'UPDATE '._DB_PREFIX_.'openpay_transaction SET status = "paid" WHERE id_transaction = "'.pSQL($charge->id).'"'
             );
+            Logger::addLog('#TRX PAID', 1, null, null, null, true);
         }else if($json->type == 'transaction.expired'){
-
             $order_history = new OrderHistory();
             $order_history->id_order = (int) $order->id;
-            $order_history->changeIdOrderState(Configuration::get('PS_OS_CANCELED'), (int) $order->id);
+            $order_history->changeIdOrderState(Configuration::get('PS_OS_CANCELED'), (int) $order->id,true);
             $order_history->addWithemail();
+            Logger::addLog('#TRX CANCELED ', 1, null, null, null, true);
         }
     } else {
         Logger::addLog('#Webhook NO ORDER', 1, null, null, null, true);

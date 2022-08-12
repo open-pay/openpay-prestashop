@@ -47,7 +47,7 @@ class OpenpayStores extends PaymentModule
 
         $this->name = 'openpaystores';
         $this->tab = 'payments_gateways';
-        $this->version = '4.2.1';
+        $this->version = '4.2.2';
         $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';
 
@@ -429,7 +429,7 @@ class OpenpayStores extends PaymentModule
         $payment_method = 'store';
 
         try {
-            $display_name = $this->l('Openpay cash payment');            
+            $display_name = $this->l('Openpay cash payment');
             $result_json = $this->offlinePayment($payment_method);
             $order_status = (int) Configuration::get('PS_OS_WAITING_CASH_PAYMENT');
 
@@ -463,9 +463,9 @@ class OpenpayStores extends PaymentModule
                 false,
                 $this->context->customer->secure_key
             );
-
             
             $new_order = new Order((int) $this->currentOrder);
+
             if (Validate::isLoadedObject($new_order)) {
                 $payment = $new_order->getOrderPaymentCollection();
                 if (isset($payment[0])) {
@@ -473,7 +473,6 @@ class OpenpayStores extends PaymentModule
                     $payment[0]->save();
                 }
             }
-            
 
             $fee = 0;            
             if($result_json->due_date){
