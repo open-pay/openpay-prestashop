@@ -175,6 +175,7 @@
                 <div class="col-md-6">
                     <label id="installments_title">{l s='Cuotas' mod='openpayprestashop'}</label>
                     <select name="openpay_installments_pe" id="openpay_installments_pe" style="width: 100%;"></select>
+                    <input type="hidden" name="withInterest" id="withInterest"/>
                 </div>
                 <div id="total-monthly-payment" class="col-md-6 hidden">
                     <label>{l s="Pago mensual" mod='openpayprestashop'}</label>
@@ -300,15 +301,16 @@
         });
 
         var card_old;
-        $('body').on("keypress focusout", "#card_number", function() {
+        $('body').on("keyup", "#card_number", function() {
             let card = jQuery(this).val()
             let country = "{$country}";
-            let show_months_interest_free = "{$show_months_interest_free}";
+            let show_months_interest_free = ("{$show_months_interest_free}" === '1');
+            let show_installments_pe = ("{$cuotas_pe}" === '1');
             let card_without_space = card.replace(/\s+/g, '')
             let lng = country == 'PE' ? 6 : 8;
 
             if (card_without_space.length == lng) {
-                if(country == "MX" && !show_months_interest_free) {
+                if(country == "MX" && !show_months_interest_free || (country == 'PE' && !show_installments_pe)) {
                     return;
                 }
                 var card_bin = card_without_space.substring(0, lng);
@@ -356,20 +358,19 @@
                             text : 'Solo una cuota'
                         }));
 
-                        jQuery("#installments_title").text("Cuotas con Interés");
-                        /*if (data.withInterest){
+                        if (data.withInterest || data.withInterest === null ){
                             jQuery("#installments_title").text("Cuotas con Interés");
+                            jQuery('#withInterest').val(true);
                         }else{
                             jQuery("#installments_title").text("Cuotas sin Interés");
-                        }*/
-                        jQuery('#openpay_installments_pe').closest(".form-row").show();
-                        jQuery('#withInterest').val(data.withInterest);
+                            jQuery('#withInterest').val(false);
+                        }
 
                         jQuery.each( data.installments, function( i, val ) {
                             if (val != 1) {
                                 jQuery('#openpay_installments_pe').append(jQuery('<option>', {
                                     value: val,
-                                    text: val + ' coutas'
+                                    text: val + ' cuotas'
                                 }));
                             }
                         });

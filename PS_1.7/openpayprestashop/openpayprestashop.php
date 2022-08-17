@@ -55,7 +55,7 @@ class OpenpayPrestashop extends PaymentModule
 
         $this->name = 'openpayprestashop';
         $this->tab = 'payments_gateways';
-        $this->version = '4.5.2';
+        $this->version = '4.5.3';
         $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';               
 
@@ -509,15 +509,29 @@ class OpenpayPrestashop extends PaymentModule
                 'use_card_points' => $use_card_points,
                 'capture' => $capture
             );
+
             if($country === 'MX' && $merchant_classification == 'eglobal'){
                 $charge_request['affiliation_bbva'] = Configuration::get('OPENPAY_AFFILIATION');
             }
             if ($country === 'CO') {
                 $charge_request['iva'] = Configuration::get('OPENPAY_IVA');
             }
-            if ($installments > 1) {
-                $charge_request['payment_plan'] = array('payments' => (int) $installments);
+
+            Logger::addLog('(444d) $installments["val"] => '.$installments["val"] , 1);
+            Logger::addLog('(444d) $installments["withInterest"] => '.$installments["withInterest"] , 1);
+
+            if ($installments["val"] > 1) {
+                $charge_request['payment_plan'] = array('payments' => (int)$installments["val"]);
+                switch ($installments["withInterest"]){
+                    case "false":
+                        $charge_request['payment_plan']['payments_type'] = 'WITHOUT_INTEREST';
+                        break;
+                    case "true":
+                        $charge_request['payment_plan']['payments_type'] = 'WITH_INTEREST';
+                        break;
+                }
             }
+
             if ($country === 'MX' && $charge_type == '3d') {
                 $charge_request['use_3d_secure'] = true;
                 $charge_request['redirect_url'] = _PS_BASE_URL_.__PS_BASE_URI__.'module/openpayprestashop/confirm';
