@@ -73,11 +73,7 @@ class OpenpayPrestashopTypeCardModuleFrontController extends ModuleFrontControll
 
             case 'PE':
                 $path = sprintf('/%s/bines/%s/promotions', $id, $cardBin);
-                $cart = $this->context->cart;
-                $amount = number_format(floatval($cart->getOrderTotal()), 2, '.', '');
-                $params = array('amount' => $amount, 'currency' => $this->context->currency->iso_code);
-
-                $cardInfo = $this->requestOpenpay($path, $country, $is_sandbox, 'GET', $params);
+                $cardInfo = $this->requestOpenpay($path, $country, $is_sandbox);
                 $binRequestResponse = array(
                     'status' => 'success',
                     'card_type' => $cardInfo['cardType'],
@@ -101,6 +97,7 @@ class OpenpayPrestashopTypeCardModuleFrontController extends ModuleFrontControll
 
         $country_tld    = strtolower($country);
         $sandbox_url    = 'https://sandbox-api.openpay.'.$country_tld.'/v1';
+
         $url            = 'https://api.openpay.'.$country_tld.'/v1';
         $absUrl         = $is_sandbox == 0 ? $sandbox_url : $url;
         $absUrl        .= $api;

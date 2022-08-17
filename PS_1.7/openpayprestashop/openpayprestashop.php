@@ -509,26 +509,25 @@ class OpenpayPrestashop extends PaymentModule
                 'use_card_points' => $use_card_points,
                 'capture' => $capture
             );
+
             if($country === 'MX' && $merchant_classification == 'eglobal'){
                 $charge_request['affiliation_bbva'] = Configuration::get('OPENPAY_AFFILIATION');
             }
             if ($country === 'CO') {
                 $charge_request['iva'] = Configuration::get('OPENPAY_IVA');
             }
-            if ($installments > 1) {
-                $charge_request['payment_plan'] = array('payments' => (int) $installments);
-            }
 
             Logger::addLog('(444d) $installments["val"] => '.$installments["val"] , 1);
             Logger::addLog('(444d) $installments["withInterest"] => '.$installments["withInterest"] , 1);
 
             if ($installments["val"] > 1) {
+                $charge_request['payment_plan'] = array('payments' => (int)$installments["val"]);
                 switch ($installments["withInterest"]){
                     case "false":
-                        $charge_request['payment_plan'] = array('payments' => (int)$installments["val"],'payments_type' => 'WITHOUT_INTEREST');
+                        $charge_request['payment_plan']['payments_type'] = 'WITHOUT_INTEREST';
                         break;
                     case "true":
-                        $charge_request['payment_plan'] = array('payments' => (int)$installments["val"],'payments_type' => 'WITH_INTEREST');
+                        $charge_request['payment_plan']['payments_type'] = 'WITH_INTEREST';
                         break;
                 }
             }
