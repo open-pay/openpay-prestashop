@@ -301,7 +301,8 @@
                         <label style="">{l s="Guardar tarjetas" mod='openpayprestashop'}</label>                                          
                         <select name="save_cc" id="openpay_save_cc" style="width: 100%; margin: 10px 0 0 0;">
                             <option value="0" {if $openpay_configuration.OPENPAY_SAVE_CC == '0'} selected="selected"{/if}>NO</option>
-                            <option value="1" {if $openpay_configuration.OPENPAY_SAVE_CC == '1'} selected="selected"{/if}>SI</option>                            
+                            <option value="1" {if $openpay_configuration.OPENPAY_SAVE_CC == '1'} selected="selected"{/if}>SI</option>
+                            <option value="2" {if $openpay_configuration.OPENPAY_SAVE_CC == '2' && $openpay_configuration.OPENPAY_COUNTRY == 'PE'} selected="selected"{/if}>Guardar y no solicitar CVV para futuras compras</option>                            
                         </select>
                         <div><small>Permite a los usuarios registrados guardar sus tarjetas de crédito para agilizar sus futuras compras.</small></div>                        
                     </td>
@@ -403,7 +404,11 @@ $(document).ready(function() {
             $("#months_interest_free").closest("tr").hide();
             $("#cuotas_pe").closest("tr").hide();
             $("#openpay_charge_type").closest("tr").hide();
-            $("#capture").closest("tr").hide();        
+            $("#capture").closest("tr").hide();
+            $("#openpay_save_cc option[value = 2]").hide();
+            if ($("#openpay_save_cc").val() == "2"){
+                $("#openpay_save_cc").val("0");
+            }       
         } else if(country === 'PE'){
             $("#openpay_iva").closest("tr").hide();
             $("#openpay_affiliation_bbva").closest("tr").hide();

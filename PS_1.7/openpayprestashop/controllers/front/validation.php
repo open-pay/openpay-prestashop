@@ -72,6 +72,6 @@ class OpenpayPrestashopValidationModuleFrontController extends ModuleFrontContro
         }
 
         $openpay = new OpenpayPrestashop();        
-        $openpay->processPayment(Tools::getValue('openpay_token'), Tools::getValue('device_session_id'), $installments , Tools::getValue('use_card_points'), Tools::getValue('openpay_cc'), $save_cc);        
+        $openpay->processPayment(Tools::getValue('openpay_token'), Tools::getValue('device_session_id'), $installments , Tools::getValue('use_card_points'), Tools::getValue('openpay_cc'), $save_cc, Tools::getValue('hidden_card_number'), Tools::getValue('hidden_cvv'));        
     }
 }
