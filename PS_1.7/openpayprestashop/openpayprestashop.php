@@ -731,7 +731,7 @@ class OpenpayPrestashop extends PaymentModule
                 Logger::addLog($this->l('Openpay - Payment transaction failed').' '.$e->getTraceAsString(), 4, $e->getCode(), 'Cart', (int) $this->context->cart->id, true);
             }
 
-            $this->error($e);
+            if(isset($e->getErrorCode)) $this->error($e);
             //$this->context->cookie->__set('openpay_error', $e->getMessage());
             
             Tools::redirect('index.php?controller=order&step=1');

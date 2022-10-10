@@ -301,7 +301,7 @@
                         <label style="">{l s="Guardar tarjetas" mod='openpayprestashop'}</label>                                          
                         <select name="save_cc" id="openpay_save_cc" style="width: 100%; margin: 10px 0 0 0;">
                             <option value="0" {if $openpay_configuration.OPENPAY_SAVE_CC == '0'} selected="selected"{/if}>NO</option>
-                            <option value="1" {if $openpay_configuration.OPENPAY_SAVE_CC == '1'} selected="selected"{/if}>SI</option>
+                            <option value="1" {if $openpay_configuration.OPENPAY_SAVE_CC == '1'} selected="selected"{/if}>Guardar y solicitar CVV para futuras compras</option>
                             <option value="2" {if $openpay_configuration.OPENPAY_SAVE_CC == '2' && $openpay_configuration.OPENPAY_COUNTRY == 'PE'} selected="selected"{/if}>Guardar y no solicitar CVV para futuras compras</option>                            
                         </select>
                         <div><small>Permite a los usuarios registrados guardar sus tarjetas de crédito para agilizar sus futuras compras.</small></div>                        
@@ -380,6 +380,12 @@ $(document).ready(function() {
         updateOpenpaySettings();
     });
 
+    if(country != 'PE') {
+        $("#openpay_save_cc option[value = 2]").hide();
+    } else {
+        $("#openpay_save_cc option[value = 2]").show();
+    }
+
     $('#country').change(function () {
         var country = $(this).val();
         console.log('openpay_cards_country', country);        
@@ -417,9 +423,11 @@ $(document).ready(function() {
             $("#openpay_charge_type").closest("tr").hide();
             $("#capture").closest("tr").show();
             $("#cuotas_pe").closest("tr").show();
+            $("#openpay_save_cc option[value = 2]").show();
         } else if (country === 'MX') {
             $("#openpay_iva").closest("tr").hide();
             $("#cuotas_pe").closest("tr").hide();
+            $("#openpay_save_cc option[value = 2]").hide();
             $("#use_card_points").closest("tr").show();
             $("#months_interest_free").closest("tr").show();
 
@@ -436,7 +444,10 @@ $(document).ready(function() {
                 $("#openpay_charge_type").closest("tr").show();
                 $("#capture").closest("tr").show();
                 $("#country").closest("tr").show();
-            }                          
+            }             
+            if ($("#openpay_save_cc").val() == "2"){
+                $("#openpay_save_cc").val("0");
+            }             
         }
     }
 });
