@@ -650,3 +650,40 @@ hr {
 .openpay-prestashop-partner {
     text-align: center;
 }
+
+/*Diseño tooltip configuracion guardado de tarjetas*/
+.tooltip_text {
+    visibility: hidden;
+    position: absolute;
+    z-index: 1;
+    width: 250px;
+    color: rgb(44, 44, 44);
+    font-size: 12px;
+    background-color: #cfcfd3;
+    border-radius: 10px;
+    padding: 5px;
+    text-align: center;
+    font-weight: lighter;
+  }
+
+  .hover_text:hover .tooltip_text {
+    visibility: visible;
+  }
+
+  #right {
+    top: -8px;
+    left: 120%;
+  }
+
+  .hover_text .symbol-circle {
+    background-color: #5f5f60;
+    color: #f6f6f6 !important;
+    font-size: 9px;
+    padding: 0px 3.9px !important;
+    border-radius: 50%;
+  }
+  .hover_text {
+    bottom:2px;
+    position: relative;
+    margin-left: 5px;
+  }

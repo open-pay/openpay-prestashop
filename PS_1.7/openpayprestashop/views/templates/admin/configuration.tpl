@@ -298,7 +298,15 @@
                 </tr> 
                 <tr>
                     <td colspan="2">                        
-                        <label style="">{l s="Guardar tarjetas" mod='openpayprestashop'}</label>                                          
+                        <label style="">
+                            {l s="Guardar tarjetas" mod='openpayprestashop'}
+                            <span class="hover_text"><span class="symbol-circle">?</span>
+                                <span class="tooltip_text" id="right">
+                                    Permite a los usuarios registrar tarjetas para agilizar futuras compras. </br></br>
+                                    La opción “Guardar y no solicitar cvv” requiere una configuración adicional de Openpay contacte a nuestro equipo de soporte para activarlo.
+                                </span>
+                            </span>
+                        </label>                                          
                         <select name="save_cc" id="openpay_save_cc" style="width: 100%; margin: 10px 0 0 0;">
                             <option value="0" {if $openpay_configuration.OPENPAY_SAVE_CC == '0'} selected="selected"{/if}>NO</option>
                             <option value="1" {if $openpay_configuration.OPENPAY_SAVE_CC == '1'} selected="selected"{/if}>Guardar y solicitar CVV para futuras compras</option>
