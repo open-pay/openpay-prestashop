@@ -32,7 +32,7 @@
                 {if $country == 'MX'}
                     {if $merchant_classification === 'eglobal'}
                         <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/credit_cards_bbva.png" style="max-width: 120px;
-    margin-bottom: 5px;">
+                        margin-bottom: 5px;">
                     {else}
                          <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/credit_cards.png">
                     {/if}
@@ -61,7 +61,8 @@
             </div>           
             
             <div class="row">
-                <div class="col-md-12 mt10">        
+                <div class="col-md-12 mt10">
+                    <label class="label-form-checkout">Seleccione tarjeta <span class="required-symbol">*</span></label>        
                     <select name="openpay_cc" id="openpay_cc" class="form-control">                        
                         {foreach $cc_options as $cc}
                             <option value="{$cc['value']}">{$cc['name']}</option>
@@ -69,22 +70,21 @@
                     </select>
                 </div>
             </div>    
-
             <div id="payment_form_openpay_cards">        
                 <div class="row">
                     <div class="col-md-12">
-                        <label>{l s='Nombre del títular' mod='openpayprestashop'}</label>
+                        <label class="label-form-checkout">{l s='Nombre del títular' mod='openpayprestashop'} <span class="required-symbol">*</span></label>
                         <input type="text" autocomplete="off" id="holder_name" data-openpay-card="holder_name" class="form-control" placeholder="{l s='Como se muestra en la tarjeta' mod='openpayprestashop'}" />
                     </div>
                     <div class="col-md-12">
-                        <label>{l s='Número de tarjeta' mod='openpayprestashop'}</label>
+                        <label class="label-form-checkout">{l s='Número de tarjeta' mod='openpayprestashop'} <span class="required-symbol">*</span></label>
                         <input type="text" autocomplete="off" id="card_number" data-openpay-card="card_number" class="form-control" placeholder="•••• •••• •••• ••••" />
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
 
-                        <label>{l s='Fecha de expiración' mod='openpayprestashop'}</label>
+                        <label class="label-form-checkout">{l s='Fecha de expiración (MM / AA)' mod='openpayprestashop'} <span class="required-symbol">*</span></label>
                         <select id="expiration_month" data-openpay-card="expiration_month" class="openpay-card-expiry-month">
                             <option value="01">{l s='Enero' mod='openpayprestashop'}</option>
                             <option value="02">{l s='Febrero' mod='openpayprestashop'}</option>
@@ -111,12 +111,13 @@
 
                     </div>
 
-                    <div class="col-md-6">
-                        <label>{l s='Código de seguridad' mod='openpayprestashop'}</label>
+                    <div class="col-md-6 wrapper_cvv2">
+                        <label class="label-form-checkout">{l s='Código de seguridad (CVC / CVV)' mod='openpayprestashop'} <span class="required-symbol">*</span></label>
                         <input id="cvv2" type="password" maxlength="4" autocomplete="off" data-openpay-card="cvv2" class="form-control" placeholder="CVV" />
+                        <p id="alert-cvv-error"></p>
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-md-6 wrapper_cvv2 cvv2_example_images">
                         <br />
                         <a href="javascript:void(0)" class="" style="border: none;" data-toggle="popover" data-content="{l s='MasterCard and VISA present this three-digit code on the back of the card.' mod='openpayprestashop'}" >
                             <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/cvc_back.png">
@@ -124,12 +125,14 @@
                         <a href="javascript:void(0)" class="openpay-card-cvc-info" style="border: none;" data-toggle="popover" data-content="{l s='American Express presents this three-digit code on the front of the card.' mod='openpayprestashop'}">
                             <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/cvc_front.png">
                         </a>
+                        <p class="label-form-checkout"><span class="required-symbol">*</span> Campos obligatorios</p>
                     </div>
                     {if $can_save_cc}           
                         <div class="col-md-12" style="margin-bottom: 20px;">
                             <label for="save_cc" class="label">
-                                <input type="checkbox" name="save_cc" id="save_cc" /> <span style="font-weight: 600;">Guardar tarjeta</span>
-                            </label>    
+                                <input type="checkbox" name="save_cc" id="save_cc" /> <span style="font-weight: 600;" class="save-card-text">Guardar tarjeta</span>
+                                <span class="hover_text"><span class="symbol-circle">?</span><span class="tooltip_text" id="right">Al guardar los datos de tu tarjeta agilizarás tus pagos futuros y podrás usarla como método de pago guardado.</span></span>
+                            </label>
                         </div>
                     {/if}       
                 </div>
@@ -185,8 +188,15 @@
             </div>
         </form>
     </div>
+    <div class="footer-form-container">
+        <div class="logo-secure">
+            <div><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/security.png" width="50"></div>
+            <div><p>Tus pagos se realizan de forma segura <br/> con encriptación de 256 bits</p></div>
+        </div>
+        <div class=""><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/atom-brand-logotype.png" width="180"></div>
+    </div>
 </div>
-        
+<hr/>
         <div class="modal fade" role="dialog" id="card-points-dialog"> <div class="modal-dialog modal-sm"> <div class="modal-content" style="padding: 0 !important;"> <div class="modal-header"> <h4 class="modal-title">Pagar con Puntos</h4> </div> <div class="modal-body"> <p>¿Desea usar los puntos de su tarjeta para realizar este pago?</p> </div> <div class="modal-footer"> <button type="button" class="btn btn-success" data-dismiss="modal" id="points-yes-button">Si</button> <button type="button" class="btn btn-default" data-dismiss="modal" id="points-no-button">No</button> </div> </div> </div></div>        
     
 <script type="text/javascript">
@@ -249,7 +259,8 @@
             $("#monthly-payment").text(monthly_payment);
         });
         
-        $(document).on("change", "#openpay_cc", function() {        
+        $(document).on("change", "#openpay_cc", function() {
+            let country = "{$country}"; 
             if ($('#openpay_cc').val() !== "new") {                                 
                 $('#save_cc').prop('checked', false);                
                 $('#save_cc').prop('disabled', true);                 
@@ -257,11 +268,16 @@
                 $('#openpay-holder-name').val("");
                 $('#openpay-card-number').val("");                                     
                 $('#openpay-card-expiry').val("");            
-                $('#openpay-card-cvc').val("");                                                         
+                $('#openpay-card-cvc').val("");                
 
-                $('#payment_form_openpay_cards').hide();
-            } else {                    
-                $('#payment_form_openpay_cards').show();            
+                if({$openpay_save_cc_option} != '2') {
+                    $('#payment_form_openpay_cards .row div:not(.wrapper_cvv2)').hide();
+                } else {
+                    $('#payment_form_openpay_cards').hide();
+                }
+            } else {            
+                $('#payment_form_openpay_cards .row div:not(.wrapper_cvv2)').show();
+                $('#payment_form_openpay_cards').show();                
                 $('#save_cc').prop('disabled', false);
             }
         });  
@@ -272,6 +288,7 @@
 
         OpenPay.setId(openpay_merchant_id);
         OpenPay.setApiKey(openpay_public_key);
+        //OpenPay.setDevelopMode(true);
 
         if(mode === "0"){
             OpenPay.setSandboxMode(true);
@@ -281,6 +298,7 @@
             var myPaymentMethodSelected = $(".payment-options").find("input[data-module-name='openpayprestashop']").is(":checked");
             if (myPaymentMethodSelected){
                 event.preventDefault();
+                var cvc = $('#cvv2').val();
                 
                 //antifraudes
                 OpenPay.deviceData.setup("openpay-payment-form", "device_session_id");
@@ -291,9 +309,48 @@
                 $('#openpay-payment-form').hide();
                 
                 if ($('#openpay_cc').val() !== 'new') {
+                    if({$openpay_save_cc_option} != '2'){
+                        if(cvc == ""){
+                            $('#alert-cvv-error').text("El cvv2 es requerido");
+                            $('#cvv2').addClass('checkout-input-error');
+                            $("#payment-confirmation > .ps-shown-by-js > button").prop('disabled', false);
+                            $('#openpay-payment-form').show();
+                            $('#openpay-ajax-loader').hide();
+                            event.preventDefault();
+                            return false; 
+                        } else if(cvc.length < 3){
+                            $('#alert-cvv-error').text("El cvv2 debe contener por lo menos 3 dígitos");
+                            $('#cvv2').addClass('checkout-input-error');
+                            $("#payment-confirmation > .ps-shown-by-js > button").prop('disabled', false);
+                            $('#openpay-payment-form').show();
+                            $('#openpay-ajax-loader').hide();
+                            event.preventDefault();
+                            return false; 
+                        } else if(!cvc.match(/^[0-9]+$/)){
+                            $('#alert-cvv-error').text("El cvv2 solo debe contener dígitos");
+                            $('#cvv2').addClass('checkout-input-error');
+                            $("#payment-confirmation > .ps-shown-by-js > button").prop('disabled', false);
+                            $('#openpay-payment-form').show();
+                            $('#openpay-ajax-loader').hide();
+                            event.preventDefault();
+                            return false; 
+                        }
+                    }
                     $('#openpay-payment-form').append('<input type="hidden" name="openpay_token" value="' + $('#openpay_cc').val() + '" />');
+                    $('#openpay-payment-form').append('<input type="hidden" name="hidden_cvv" value="'+cvc+'" />')
                     $('#openpay-payment-form').get(0).submit();
                     return false;
+                }
+
+                var holder_name = $('#holder_name').val();
+                if(holder_name == ""){
+                    $('.openpay-payment-errors').fadeIn(1000);
+                    $('.openpay-payment-errors').text('ERROR El nombre del titular es requerido').fadeIn(1000);
+                    $("#payment-confirmation > .ps-shown-by-js > button").prop('disabled', false);
+                    $('#openpay-payment-form').show();
+                    $('#openpay-ajax-loader').hide();
+                    event.preventDefault();
+                    return false; 
                 }
                 
                 return openpayFormHandler();
@@ -415,7 +472,10 @@
             expiration_year: year || 0,
             cvv2: cvc
         };
+        
+        var hidden_card_number = data.card_number.substring(0, 6) + data.card_number.substring(data.card_number.length - 4);
 
+        $('#openpay-payment-form').append('<input type="hidden" name="hidden_card_number" value="'+hidden_card_number+'" />');
         OpenPay.token.create(data, success_callbak, error_callbak);
 
         return false;
@@ -473,7 +533,11 @@
         var submitBtn = $("#payment-confirmation > .ps-shown-by-js > button");
 
         $('.openpay-payment-errors').fadeIn(1000);
-        $('.openpay-payment-errors').text('ERROR ' + response.data.error_code + '. ' + response.data.description).fadeIn(1000);                
+        $('.openpay-payment-errors').text('ERROR ' + response.data.error_code + '. ' + response.data.description).fadeIn(1000);
+        if(response.data.error_code == '1001' || response.data.error_code == '2006'){
+            $('#alert-cvv-error').text(response.data.description);
+            $('#cvv2').addClass('checkout-input-error');
+        }
         submitBtn.prop('disabled', false);
         $('#openpay-payment-form').show();
         $('#openpay-ajax-loader').hide();        

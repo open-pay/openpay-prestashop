@@ -67,7 +67,7 @@ div.payment_module{
 }
 
 .openpay_title img { float: none; margin-right: 8px; margin-top: -2px; vertical-align: middle; }
-.openpay-form-container label { display: inline-block; margin-bottom: 4px; text-transform: uppercase; }
+.openpay-form-container label { display: inline-block; margin-bottom: 4px; text-transform: none !important;}
 .openpay-form-container label.lowercase { text-transform: none; }
 .openpay-form-container input[type="text"], .openpay-form-container select, .openpay-form-container input[type="password"]{
     border: #CCCCCC solid 1px; margin-bottom: 15px;
@@ -85,10 +85,116 @@ div.openpay-payment-errors {
 	display: none;
 }
 
+.tooltip_text {
+    visibility: hidden;
+    position: absolute;
+    z-index: 1;
+    width: 200px;
+    color: white;
+    font-size: 11px;
+    background-color: #0b2246;
+    border-radius: 10px;
+    padding: 5px;
+    text-align: center;
+    text-transform: lowercase;
+  }
+  .tooltip_text:first-letter {
+    text-transform: uppercase
+}
+
+  .hover_text:hover .tooltip_text {
+    visibility: visible;
+  }
+
+  #right {
+    top: -8px;
+    left: 120%;
+  }
+
+  .hover_text .symbol-circle {
+    background-color: #1c4481;
+    color: #f6f6f6 !important;
+    font-size: 8px;
+    font-weight: 1000 !important;
+    padding: 0px 3.8px !important;
+    border-radius: 50%;
+  }
+  .hover_text {
+    bottom:2px;
+    position: relative;
+    margin-left: 10px;
+  }
+
+  .footer-form-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+  }
+  .footer-form-container p {
+    font-size: 11px;
+  }
+  .logo-secure {
+    display: flex;
+  }
+
+  .savecc-alert {
+    width: 70%;
+    margin: 8px;
+    padding: 15px 20px;
+    border-radius: 2px;
+    border-left: solid 6px #1464a5;
+    background-color: #d4edfc;
+  }
+  .savecc-alert p {
+    display: inline;
+    color: black;
+    font-weight: bold;
+    font-size: 15px;
+    margin-left: 10px;
+  }
+  
+  .label-form-checkout {
+    padding-bottom: 15px;
+    color: rgb(129, 129, 129) !important;
+  }
+  .required-symbol{
+    color: red;
+  }
+  .save-card-text {
+    margin-left: 8px;
+  }
+
+  .cvv2_example_images{
+    margin-top: 25px;
+  }
+  .cvv2_example_images p{
+    margin-left: 10px;
+    display: inline;
+  }
+  
+  .checkout-input-error{
+    outline: none !important;
+    border:2px solid red;
+    box-shadow: 0 0 10px red
+  }
+  #alert-cvv-error{
+    font-size: 10px;
+    color: red;
+  }
+
+  .footer-msg {
+    margin-top: 25px;
+  }
+
 #openpay-translations, #openpay-ajax-loader { display: none; }
 a#openpay_error { display: none; }
 
+.store-image {
+    text-align: center;
+}
 .store-image img{
+    margin-top: 30px;
     max-width: 100%;
 }
 
