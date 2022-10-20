@@ -341,11 +341,57 @@ class OpenpayPrestashop extends PaymentModule
         $country = Configuration::get('OPENPAY_COUNTRY');
 
         if (Tools::getValue('module') === 'onepagecheckoutps' ||
-                Tools::getValue('controller') === 'order-opc' ||
-                Tools::getValue('controller') === 'orderopc' ||
-                Tools::getValue('controller') === 'order') {
-
+        Tools::getValue('controller') === 'order-opc' ||
+        Tools::getValue('controller') === 'orderopc' ||
+        Tools::getValue('controller') === 'order'
+        ) {
             $this->context->controller->addCSS($this->_path.'views/css/openpay-prestashop.css');
+
+            $this->context->controller->registerJavascript(
+                'openpay-js',
+                '/modules/'.$this->name.'/views/js/openpay-prestashop.js',
+                array('position' => 'bottom')
+            );
+
+            $total = (Validate::isLoadedObject($this->context->cart)) ? $this->context->cart->getOrderTotal() : 0;
+
+            $country = Configuration::get('OPENPAY_COUNTRY');
+            $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PUBLIC_KEY_LIVE') : Configuration::get('OPENPAY_PUBLIC_KEY_TEST');
+            $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
+
+            $selected_months_interest_free = array();
+            if (Configuration::get('OPENPAY_MONTHS_INTEREST_FREE') != null) {
+                $selected_months_interest_free = explode(',', Configuration::get('OPENPAY_MONTHS_INTEREST_FREE'));
+                $selected_months_interest_free = array_diff($selected_months_interest_free, array(1));
+            }
+
+            $show_months_interest_free = false;
+            if (count($selected_months_interest_free) > 0 && $country == 'MX') {
+                $show_months_interest_free = true;
+            }
+
+            Media::addJsDef(array( $this->name => array(
+                'use_card_points' => Configuration::get('USE_CARD_POINTS'),
+                'total' => $total,
+                'country' => $country,
+                'openpay_save_cc_option' => Configuration::get('OPENPAY_SAVE_CC'),
+                'pk' => $pk,
+                'id' => $id,
+                'mode' => Configuration::get('OPENPAY_MODE'),
+                'show_months_interest_free' => $show_months_interest_free,
+                'months_interest_free' => $selected_months_interest_free,
+                'cuotas_pe' => Configuration::get('OPENPAY_CUOTAS_PE'),
+                'url_ajax' => Tools::getHttpHost(true).__PS_BASE_URI__.'module/openpayprestashop/typecard',
+                'action' => $this->context->link->getModuleLink($this->name, 'validation', array(), Tools::usingSecureMode()),
+                'Msg' => array(
+                    'service_available' => $this->l('Service not available.'),
+                    'incorrect_format' => $this->l('The fields do not have the correct format, or the request does not have fields are required.'),
+                    'incorrect_expiration_date' => $this->l('The expiration date has already passed.'),
+                    'cvv2_required' => $this->l('The CVV2 security code is required.'),
+                    'unprocessed_request' => $this->l('The request could not be processed.')
+                )
+            )));
+
             if($country == 'MX'){
                 $this->context->controller->registerJavascript(
                     'remote-openpay-js', 'https://openpay.s3.amazonaws.com/openpay.v1.min.js', ['position' => 'bottom', 'server' => 'remote']
@@ -402,8 +448,7 @@ class OpenpayPrestashop extends PaymentModule
         $externalOption->setCallToActionText($this->l('Tarjeta de crédito-débito'))                    
                 ->setForm($this->generateForm($cart))
                 ->setModuleName($this->name)
-                ->setLogo('https://img.openpay.mx/plugins/openpay_logo.svg')
-                ->setAdditionalInformation($this->context->smarty->fetch('module:openpayprestashop/views/templates/front/payment_infos.tpl'));
+                ->setLogo('https://img.openpay.mx/plugins/openpay_logo.svg');
 
         return array($externalOption);
     }
@@ -450,9 +495,7 @@ class OpenpayPrestashop extends PaymentModule
     protected function generateForm($cart) {
         $country = Configuration::get('OPENPAY_COUNTRY');
         $merchant_classification = Configuration::get('OPENPAY_CLASSIFICATION');
-        $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PUBLIC_KEY_LIVE') : Configuration::get('OPENPAY_PUBLIC_KEY_TEST');
-        $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
-
+        
         $selected_months_interest_free = array();
         if (Configuration::get('OPENPAY_MONTHS_INTEREST_FREE') != null) {
             $selected_months_interest_free = explode(',', Configuration::get('OPENPAY_MONTHS_INTEREST_FREE'));
@@ -480,11 +523,8 @@ class OpenpayPrestashop extends PaymentModule
 
         $this->context->smarty->assign(array(
             'js_dir' => _PS_JS_DIR_,
-            'pk' => $pk,
-            'id' => $id,
             'country' => $country,
             'merchant_classification' => $merchant_classification,
-            'mode' => Configuration::get('OPENPAY_MODE'),
             'nbProducts' => $cart->nbProducts(),
             'total' => $cart->getOrderTotal(),
             'module_dir' => $this->_path,
@@ -494,10 +534,8 @@ class OpenpayPrestashop extends PaymentModule
             'show_installments' => $show_installments,
             'use_card_points' => Configuration::get('USE_CARD_POINTS'),
             'can_save_cc' => (Configuration::get('OPENPAY_SAVE_CC') == '1' || Configuration::get('OPENPAY_SAVE_CC') == '2') && (bool)$this->context->customer->isLogged() ? true : false,
-            'openpay_save_cc_option' => Configuration::get('OPENPAY_SAVE_CC'),
             'cuotas_pe' => Configuration::get('OPENPAY_CUOTAS_PE'),
             'cc_options' => $this->getCreditCardList(),
-            'url_ajax' => Tools::getHttpHost(true).__PS_BASE_URI__.'module/openpayprestashop/typecard',
             'action' => $this->context->link->getModuleLink($this->name, 'validation', array(), Tools::usingSecureMode()),
         ));
 
@@ -567,17 +605,20 @@ class OpenpayPrestashop extends PaymentModule
             }
 
             Logger::addLog('(444d) $installments["val"] => '.$installments["val"] , 1);
-            Logger::addLog('(444d) $installments["withInterest"] => '.$installments["withInterest"] , 1);
-
+            
             if ($installments["val"] > 1) {
                 $charge_request['payment_plan'] = array('payments' => (int)$installments["val"]);
-                switch ($installments["withInterest"]){
-                    case "false":
-                        $charge_request['payment_plan']['payments_type'] = 'WITHOUT_INTEREST';
-                        break;
-                    case "true":
-                        $charge_request['payment_plan']['payments_type'] = 'WITH_INTEREST';
-                        break;
+
+                if (isset($installments["withInterest"])) {
+                    Logger::addLog('(444d) $installments["withInterest"] => '.$installments["withInterest"] , 1);
+                    switch ($installments["withInterest"]){
+                        case "false":
+                            $charge_request['payment_plan']['payments_type'] = 'WITHOUT_INTEREST';
+                            break;
+                        case "true":
+                            $charge_request['payment_plan']['payments_type'] = 'WITH_INTEREST';
+                            break;
+                    }
                 }
             }
 
@@ -731,10 +772,13 @@ class OpenpayPrestashop extends PaymentModule
                 Logger::addLog($this->l('Openpay - Payment transaction failed').' '.$e->getTraceAsString(), 4, $e->getCode(), 'Cart', (int) $this->context->cart->id, true);
             }
 
-            if(isset($e->getErrorCode)) $this->error($e);
+            if ($e->getErrorCode()) { 
+                $this->error($e);
+            }
             //$this->context->cookie->__set('openpay_error', $e->getMessage());
-            
-            Tools::redirect('index.php?controller=order&step=1');
+
+            $this->context->controller->errors[] = $this->context->cookie->__get('openpay_error');
+            $this->context->controller->redirectWithNotifications('index.php?controller=order&step=1');            
         }
     }
 
@@ -1435,12 +1479,16 @@ class OpenpayPrestashop extends PaymentModule
             case '3012':
                 $msg = $this->l('Se requiere solicitar al banco autorización para realizar este pago.');
                 break;
+            case '3204':
+                $msg = $this->l('The transaction amount is less than the minimum allowed for this promotion.');
+                break;
             default: /* Demás errores 400 */
                 $msg = $this->l('La petición no pudo ser procesada');
                 break;
         }
 
         $error = 'ERROR '.$e->getErrorCode().'. '.$msg;
+
         $this->context->cookie->__set('openpay_error', $error);
         $this->context->cookie->__set('openpay_error_code', $e->getErrorCode());
 
