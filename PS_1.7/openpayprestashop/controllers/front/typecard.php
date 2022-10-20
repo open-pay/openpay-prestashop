@@ -26,7 +26,6 @@
 
 class OpenpayPrestashopTypeCardModuleFrontController extends ModuleFrontController
 {
-
     public function initContent()
     {
         parent::initContent();
@@ -39,7 +38,7 @@ class OpenpayPrestashopTypeCardModuleFrontController extends ModuleFrontControll
         $cardBin = Tools::getValue('card_bin');
         $binRequestResponse = $this->getTypeCard($cardBin);
 
-        Logger::addLog('#cardType => '.$binRequestResponse, 1, null, 'Cart', (int) $this->context->cart->id, true);
+        Logger::addLog('#cardType => '.json_encode($binRequestResponse), 1, null, 'Cart', (int) $this->context->cart->id, true);
         
         if (!$binRequestResponse){
             $binRequestResponse = array(
