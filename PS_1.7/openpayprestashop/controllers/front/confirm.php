@@ -38,6 +38,7 @@ class OpenpayPrestashopConfirmModuleFrontController extends ModuleFrontControlle
         parent::initContent();
         
         $charge_type = Configuration::get('OPENPAY_CHARGE_TYPE');
+        $capture = Configuration::get('OPENPAY_CAPTURE');
         
         if (!$this->module->checkCurrency()) {
             Tools::redirect('index.php?controller=order');
@@ -53,13 +54,17 @@ class OpenpayPrestashopConfirmModuleFrontController extends ModuleFrontControlle
         $charge = $openpay_prestashop->getOpenpayCharge($openpay_customer, Tools::getValue('id'));
 
         // Ocurrió un error
-        if ($charge->status !== 'completed') {           
+        if ($charge->status !== 'completed' && $capture == 'true') {           
             $this->setTemplate('module:openpayprestashop/views/templates/front/3d_secure_confirm_error.tpl');
             return;
         }
 
         //$order_status = (int) Configuration::get('pending_payment');
         $order_status = (int) Configuration::get('PS_OS_PAYMENT');
+
+        if($charge->status == 'in_progress' && $capture == 'false') {
+            $order_status = Configuration::get('OPENPAY_OS_HOLD');
+        }
 
         $message_aux = $this->l(Tools::ucfirst($charge->card->type).' card:').' '.
                 Tools::ucfirst($charge->card->brand).' (Exp: '.$charge->card->expiration_month.'/'.$charge->card->expiration_year.')'."\n".

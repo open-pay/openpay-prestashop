@@ -55,7 +55,7 @@ class OpenpayPrestashop extends PaymentModule
 
         $this->name = 'openpayprestashop';
         $this->tab = 'payments_gateways';
-        $this->version = '4.5.3';
+        $this->version = '4.6.1';
         $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';               
 
@@ -283,6 +283,8 @@ class OpenpayPrestashop extends PaymentModule
     
     public function hookDisplayAdminOrder($params) {        
         Logger::addLog('hookDisplayAdminOrder', 1, null, null, null, true);
+
+        $country = Configuration::get('OPENPAY_COUNTRY');
         
         $refund_url = (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://') . htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8') . __PS_BASE_URI__ . 'modules/openpayprestashop/refund.php';
         $order = new Order((int) $params['id_order']);
@@ -302,6 +304,7 @@ class OpenpayPrestashop extends PaymentModule
             'show_refund' => $show_refund,
             'order_id' => $params['id_order'],            
             'transaction_id' => $order_state[0]['id_transaction'],
+            'country'  => $country,
             'form_action' => '',
             'error' => ''
         ));
@@ -405,6 +408,45 @@ class OpenpayPrestashop extends PaymentModule
         return array($externalOption);
     }
 
+    /**
+     * Display a confirmation message after an order has been placed
+     *
+     * @param array Hook parameters
+     */
+    public function hookPaymentReturn($params)
+    {   
+        if (!isset($params['order']) || ($params['order']->module != $this->name)) {
+            Logger::addLog('orden no existe', 1, null, null, null, true);
+            return false;
+        }
+        
+        /** @var Order $order */
+        $order = $params['order'];
+
+        $id_order = (int) $order->id;
+        $reference = isset($order->reference) ? $order->reference : '#'.sprintf('%06d', $id_order);                         
+
+        $this->smarty->assign('openpay_order', array('reference' => $reference, 'valid' => $order->valid));
+        $this->context->controller->addCSS($this->_path.'views/css/openpay-prestashop.css');
+        $this->smarty->assign('order_pending', false);
+
+        $country = Configuration::get('OPENPAY_COUNTRY');
+
+        $save_cc = $this->context->cookie->save_cc;
+        $card_number_complement = '';
+        if(isset($this->context->cookie->card_number_complement)) $card_number_complement = $this->context->cookie->card_number_complement;
+        $data = array(
+            'save_cc' => $save_cc,
+            'card_number_complement' => $card_number_complement    
+        );
+        $this->smarty->assign('openpay_order', $data);
+
+        $template = './views/templates/hook/confirmation_save_cc.tpl';
+      
+        Logger::addLog($template, 1, null, null, null, true);
+        return $this->display(__FILE__, $template);
+    }
+
     protected function generateForm($cart) {
         $country = Configuration::get('OPENPAY_COUNTRY');
         $merchant_classification = Configuration::get('OPENPAY_CLASSIFICATION');
@@ -451,7 +493,8 @@ class OpenpayPrestashop extends PaymentModule
             'installments' => $select_installments,
             'show_installments' => $show_installments,
             'use_card_points' => Configuration::get('USE_CARD_POINTS'),
-            'can_save_cc' => Configuration::get('OPENPAY_SAVE_CC') == '1' && (bool)$this->context->customer->isLogged() ? true : false,
+            'can_save_cc' => (Configuration::get('OPENPAY_SAVE_CC') == '1' || Configuration::get('OPENPAY_SAVE_CC') == '2') && (bool)$this->context->customer->isLogged() ? true : false,
+            'openpay_save_cc_option' => Configuration::get('OPENPAY_SAVE_CC'),
             'cuotas_pe' => Configuration::get('OPENPAY_CUOTAS_PE'),
             'cc_options' => $this->getCreditCardList(),
             'url_ajax' => Tools::getHttpHost(true).__PS_BASE_URI__.'module/openpayprestashop/typecard',
@@ -466,9 +509,15 @@ class OpenpayPrestashop extends PaymentModule
      *
      * @param string $token Openpay Transaction ID (token)
      */
-    public function processPayment($token = null, $device_session_id = null, $installments = null, $use_card_points = null, $openpay_cc = null, $save_cc = false) {
+    public function processPayment($token = null, $device_session_id = null, $installments = null, $use_card_points = null, $openpay_cc = null, $save_cc = false, $hidden_card_number = null, $hidden_cvv = null) {
         if (!$this->active) {
             return;
+        }
+
+        $this->context->cookie->__set('save_cc', $save_cc);
+        if(isset($hidden_card_number)) {
+            $card_number_complement = substr($hidden_card_number, -4);
+            $this->context->cookie->__set('card_number_complement', $card_number_complement);
         }
         
         $mail_detail = '';
@@ -539,14 +588,52 @@ class OpenpayPrestashop extends PaymentModule
 
             // Si desea guardar la TC se crea y se asigna a los parámetros de la transacción
             if ($save_cc === true && $openpay_cc == 'new') {
-                $card_data = array(            
-                    'token_id' => $token,            
-                    'device_session_id' => $device_session_id
-                );
-                $card = $this->createCreditCard($openpay_customer, $card_data);
-
+                $card_id = $this->validateNewCard($openpay_customer, $token, $device_session_id, $hidden_card_number);
                 // Se reemplaza el "source_id" por el ID de la tarjeta
-                $charge_request['source_id'] = $card->id;                                                            
+                $charge_request['source_id'] = $card_id;                                                
+            } else if($save_cc == false && $openpay_cc != 'false') {
+                switch ($country){
+                    case 'MX':
+                        $url = $this->url_mx;
+                        $sandbox_url = $this->sandbox_url_mx;
+                        break;
+                    case 'CO':
+                        $url = $this->url_co;
+                        $sandbox_url = $this->sandbox_url_co;
+                        break;
+                    case 'PE':
+                        $url = $this->url_pe;
+                        $sandbox_url = $this->sandbox_url_pe;
+                }
+                
+                if(Configuration::get('OPENPAY_SAVE_CC') != '2') {
+                    $url = (Configuration::get('OPENPAY_MODE') ? $url : $sandbox_url) . '/' . $id . '/customers/' . $openpay_customer->id . '/cards/' . $openpay_cc;
+                    $sk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
+                    $username = $sk;
+                    $password = '';
+                    $payload = json_encode(array("cvv2" => $hidden_cvv));
+
+                    $ch = curl_init();
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+                    curl_setopt($ch, CURLOPT_URL, $url);
+                    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+                    curl_setopt($ch, CURLOPT_USERPWD, "$username:$password");
+                    $result = curl_exec($ch);
+
+                    if ($result === false) {
+                        Logger::addLog("Error de la peticion?");
+                        Logger::addLog('Curl error '.curl_errno($ch).': '.curl_error($ch), 1, null, null, null, true);
+                    } else {
+                        $info = curl_getinfo($ch);
+                        Logger::addLog('HTTP code '.$info['http_code'].' on request to '.$info['url'], 1, null, null, null, true);
+                    }
+
+                    curl_close($ch);
+                }
             }
 
             $charge_request = $this->chargebackGuarantee($charge_request);
@@ -644,7 +731,7 @@ class OpenpayPrestashop extends PaymentModule
                 Logger::addLog($this->l('Openpay - Payment transaction failed').' '.$e->getTraceAsString(), 4, $e->getCode(), 'Cart', (int) $this->context->cart->id, true);
             }
 
-            $this->error($e);
+            if(isset($e->getErrorCode)) $this->error($e);
             //$this->context->cookie->__set('openpay_error', $e->getMessage());
             
             Tools::redirect('index.php?controller=order&step=1');
@@ -1285,6 +1372,34 @@ class OpenpayPrestashop extends PaymentModule
             Logger::addLog('#createCreditCard() => '.$e->getMessage(), 3, null, 'Cart', (int) $this->context->cart->id, true);                    
             throw $e;
         }        
+    }
+
+    private function validateNewCard($customer, $token, $device_session_id, $hidden_card_number) {
+        $cards = $this->getCreditCards($customer);
+        $card_number_bin = substr($hidden_card_number, 0, 6);
+        $card_number_complement = substr($hidden_card_number, -4);
+
+        foreach($cards as $card) {
+            if($card_number_bin == substr($card->card_number, 0, 6) && $card_number_complement == substr($card->card_number, -4)){
+                $this->context->cookie->__set('openpay_error', 'La tarjeta ya se encuentra registrada, seleccionala de la lista de tarjetas.');
+                $this->context->smarty->assign('openpay_error', $this->context->cookie->openpay_error);
+                throw new Exception("La tarjeta ya se encuentra registrada, seleccionala de la lista de tarjetas.");
+            }
+        }
+
+        $country = Configuration::get('OPENPAY_COUNTRY');
+        $openpay_option_save_cc =  Configuration::get('OPENPAY_SAVE_CC');
+
+        $data = array(
+            'token_id' => $token,
+            'device_session_id' => $device_session_id
+        );
+
+        if($country == 'PE' && $openpay_option_save_cc == '2') $data['register_frequent'] = true;
+    
+        $card = $this->createCreditCard($customer, $data);
+
+        return $card->id;
     }
 
     public function error($e, $backend = false) {

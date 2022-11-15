@@ -4,7 +4,12 @@
             
             {if !empty({$error})} <div class="alert alert-danger">{$error}</div> {/if}
             
-            <div class="panel">
+            <div class="panel bg-white p-2">
+                {if $country != 'MX'}
+                <div class="alert alert-info">
+                    {l s='NO ES POSIBLE REALIZAR REEMBOLSOS' mod='openpayprestashop'}
+                </div>
+                {else}
                 <div class="panel-heading">
                     <i class="icon-credit-card"></i>
                     {l s='Reembolso en Openpay' mod='openpayprestashop'}
@@ -44,15 +49,17 @@
                         </div>    
                     </div>                        
 
-                </div>       
+                </div>      
+                {/if} 
             </div>
         </div>
     </div>
 {/if}                
 
-
 <script type="text/javascript">
     $( document ).ready(function() {
+        $("#refund_error").hide();
+        $("#refund_success").hide();
         $("#openpay-refund-btn").click(function () {
             $("#refund_error").addClass('hidden');
             $("#refund_success").addClass('hidden');            
@@ -76,12 +83,12 @@
                     var message = JSON.parse(result);
                     if (message['msg'] === 'fail') {
                         $("#refund_error").html(message['response']);
-                        $("#refund_error").removeClass('hidden');
+                        $("#refund_error").show();
                         return false;
                     } else {
                         //location.reload();                        
                         $("#refund_success").html(message['response']);
-                        $("#refund_success").removeClass('hidden');
+                        $("#refund_success").show();
                         return false;
                     }
                 }
