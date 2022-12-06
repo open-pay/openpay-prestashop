@@ -184,8 +184,8 @@
                     <label>{l s="Pago mensual" mod='openpayprestashop'}</label>
                     <p class="openpay-total">$<span id="monthly-payment">{$total}</span> MXN</p>
                 </div>
-            {/if}
             </div>
+            {/if}
         </form>
     </div>
     <div class="footer-form-container">
