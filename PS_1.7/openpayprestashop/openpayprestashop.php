@@ -55,7 +55,7 @@ class OpenpayPrestashop extends PaymentModule
 
         $this->name = 'openpayprestashop';
         $this->tab = 'payments_gateways';
-        $this->version = '4.6.1';
+        $this->version = '4.6.2';
         $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';               
 
@@ -473,9 +473,11 @@ class OpenpayPrestashop extends PaymentModule
 
         Logger::addLog('generateForm => '.$this->context->cookie->openpay_error, 1, null, null, null, true);
 
+        $showForm = "false";
         if (!empty($this->context->cookie->openpay_error)) {
             $this->context->smarty->assign('openpay_error', $this->context->cookie->openpay_error);
             $this->context->cookie->__set('openpay_error', null);
+            $showForm = "true";
         }
 
         $this->context->smarty->assign(array(
@@ -499,6 +501,7 @@ class OpenpayPrestashop extends PaymentModule
             'cc_options' => $this->getCreditCardList(),
             'url_ajax' => Tools::getHttpHost(true).__PS_BASE_URI__.'module/openpayprestashop/typecard',
             'action' => $this->context->link->getModuleLink($this->name, 'validation', array(), Tools::usingSecureMode()),
+            'showForm' => $showForm
         ));
 
         return $this->context->smarty->fetch('module:openpayprestashop/views/templates/front/cc_form.tpl');
@@ -732,7 +735,7 @@ class OpenpayPrestashop extends PaymentModule
             }
 
             if(isset($e->getErrorCode)) $this->error($e);
-            //$this->context->cookie->__set('openpay_error', $e->getMessage());
+            $this->context->cookie->__set('openpay_error', $e->getMessage());
             
             Tools::redirect('index.php?controller=order&step=1');
         }

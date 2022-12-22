@@ -381,6 +381,14 @@
         })
     });
 
+    //Cargar el formulario cuando existe un error
+    var showForm = "{$showForm}";
+    if(showForm == "true"){
+        setTimeout(() => {
+            $(".payment-options").find("input[data-module-name='openpayprestashop']").click();
+        }, 1000);
+    } 
+
     function getTypeCard(cardBin, country) {
         let url_ajax = "{$url_ajax}";
         $.ajax({
