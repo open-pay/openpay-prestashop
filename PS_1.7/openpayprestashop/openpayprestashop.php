@@ -55,7 +55,7 @@ class OpenpayPrestashop extends PaymentModule
 
         $this->name = 'openpayprestashop';
         $this->tab = 'payments_gateways';
-        $this->version = '4.6.2';
+        $this->version = '4.6.3';
         $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';               
 
@@ -609,7 +609,7 @@ class OpenpayPrestashop extends PaymentModule
                         $sandbox_url = $this->sandbox_url_pe;
                 }
                 
-                if(Configuration::get('OPENPAY_SAVE_CC') != '2') {
+                if(Configuration::get('OPENPAY_SAVE_CC') != '2' && $openpay_cc != 'new') {
                     $url = (Configuration::get('OPENPAY_MODE') ? $url : $sandbox_url) . '/' . $id . '/customers/' . $openpay_customer->id . '/cards/' . $openpay_cc;
                     $sk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
                     $username = $sk;
