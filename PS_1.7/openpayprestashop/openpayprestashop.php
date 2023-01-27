@@ -55,7 +55,7 @@ class OpenpayPrestashop extends PaymentModule
 
         $this->name = 'openpayprestashop';
         $this->tab = 'payments_gateways';
-        $this->version = '4.6.3';
+        $this->version = '4.6.4';
         $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';               
 
@@ -586,7 +586,7 @@ class OpenpayPrestashop extends PaymentModule
 
             if ($country === 'MX' && $charge_type == '3d') {
                 $charge_request['use_3d_secure'] = true;
-                $charge_request['redirect_url'] = _PS_BASE_URL_.__PS_BASE_URI__.'module/openpayprestashop/confirm';
+                $charge_request['redirect_url'] = Tools::getHttpHost(true).__PS_BASE_URI__.'module/openpayprestashop/confirm';
             }
 
             // Si desea guardar la TC se crea y se asigna a los parámetros de la transacción
@@ -721,7 +721,7 @@ class OpenpayPrestashop extends PaymentModule
             // Si tiene habilitada la autenticación selectiva
             if ($charge_type == 'auth' && $e->getCode() == '3005') {
                 $charge_request['use_3d_secure'] = true;
-                $charge_request['redirect_url'] = _PS_BASE_URL_.__PS_BASE_URI__.'module/openpayprestashop/confirm';
+                $charge_request['redirect_url'] = Tools::getHttpHost(true).__PS_BASE_URI__.'module/openpayprestashop/confirm';
                 
                 $openpay_customer = $this->getOpenpayCustomer($this->context->cookie->id_customer);
                 $charge = $openpay_customer->charges->create($charge_request);
