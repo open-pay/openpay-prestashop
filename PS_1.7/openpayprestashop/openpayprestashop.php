@@ -55,7 +55,7 @@ class OpenpayPrestashop extends PaymentModule
 
         $this->name = 'openpayprestashop';
         $this->tab = 'payments_gateways';
-        $this->version = '4.6.4';
+        $this->version = '4.6.5';
         $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';               
 
@@ -734,8 +734,11 @@ class OpenpayPrestashop extends PaymentModule
                 Logger::addLog($this->l('Openpay - Payment transaction failed').' '.$e->getTraceAsString(), 4, $e->getCode(), 'Cart', (int) $this->context->cart->id, true);
             }
 
-            if(isset($e->getErrorCode)) $this->error($e);
-            $this->context->cookie->__set('openpay_error', $e->getMessage());
+            if($e->getCode()){
+                $this->error($e);
+            } else {
+                $this->context->cookie->__set('openpay_error', $e->getMessage());
+            }
             
             Tools::redirect('index.php?controller=order&step=1');
         }
@@ -1417,7 +1420,11 @@ class OpenpayPrestashop extends PaymentModule
             /* ERRORES TARJETA */
             case '3001':
             case '3004':
+                $msg = $this->l('La tarjeta fue rechazada.');
+                break;
             case '3005':
+                $msg = $this->l('La tarjeta fue rechazada.');
+                break;
             case '3009':
             case '3010':
             case '3011':                    
