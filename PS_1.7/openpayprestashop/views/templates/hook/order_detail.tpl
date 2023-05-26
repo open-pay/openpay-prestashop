@@ -5,7 +5,7 @@
             {if !empty({$error})} <div class="alert alert-danger">{$error}</div> {/if}
             
             <div class="panel bg-white p-2">
-                {if $country != 'MX'}
+                {if $country == 'CO'}
                 <div class="alert alert-info">
                     {l s='NO ES POSIBLE REALIZAR REEMBOLSOS' mod='openpayprestashop'}
                 </div>
