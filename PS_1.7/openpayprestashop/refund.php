@@ -43,7 +43,7 @@ try {
 
     $country = Configuration::get('OPENPAY_COUNTRY');
 
-    if($country != 'MX'){
+    if($country == 'CO'){
         $message = array(
             'msg' => 'fail',
             'response' => 'Openpay plugin does not support refunds.'
