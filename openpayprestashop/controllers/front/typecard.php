@@ -39,7 +39,7 @@ class OpenpayPrestashopTypeCardModuleFrontController extends ModuleFrontControll
         $cardBin = Tools::getValue('card_bin');
         $binRequestResponse = $this->getTypeCard($cardBin);
 
-        Logger::addLog('#cardType => '.$binRequestResponse, 1, null, 'Cart', (int) $this->context->cart->id, true);
+        // Logger::addLog('#cardType => '.$binRequestResponse, 1, null, 'Cart', (int) $this->context->cart->id, true);
         
         if (!$binRequestResponse){
             $binRequestResponse = array(
@@ -48,7 +48,7 @@ class OpenpayPrestashopTypeCardModuleFrontController extends ModuleFrontControll
             );
         }
 
-        die(Tools::jsonEncode($binRequestResponse));
+        die(json_encode($binRequestResponse));
     }
 
     private function getTypeCard($cardBin) {
@@ -140,7 +140,7 @@ class OpenpayPrestashopTypeCardModuleFrontController extends ModuleFrontControll
 
         curl_close($ch);
 
-        return Tools::jsonDecode($result, true);
+        return json_decode($result, true);
     }
 }
- ?>
+?>

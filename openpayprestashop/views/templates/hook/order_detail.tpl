@@ -22,8 +22,9 @@
                 <div class="well hidden-print">
                     
                     <div id="openpay-refund" class="form-horizontal">
-                        <input type="hidden" id="openpay_refund_order_id" name='openpay_refund_order_id' value="{$order_id|escape:'intval'}">     
+                        <input type="hidden" id="openpay_refund_order_id" name='openpay_refund_order_id' value="{$order_id}">     
                         <input type="hidden" id="openpay_refund_transaction_id" name='openpay_refund_transaction_id' value="{$transaction_id|escape:htmlall}">     
+                        <input type="hidden" id="url_refund" name='url_refund' value="{$refund_url}">     
                         
                         <div id="refund_error" class="alert alert-danger hidden"></div>
                         <div id="refund_success" class="alert alert-success hidden"></div>
@@ -54,45 +55,57 @@
             </div>
         </div>
     </div>
-{/if}                
 
-<script type="text/javascript">
-    $( document ).ready(function() {
-        $("#refund_error").hide();
-        $("#refund_success").hide();
-        $("#openpay-refund-btn").click(function () {
-            $("#refund_error").addClass('hidden');
-            $("#refund_success").addClass('hidden');            
-            
-            var r = confirm("¿Estás seguro que deseas realizar un reembolso?");
-            if (r === false) {
-                return false;
-            }
-            
-            var amount = $("#openpay_refund_amount").val();
-            var order_id = $("#openpay_refund_order_id").val();
-            var transaction_id = $("#openpay_refund_transaction_id").val();
-            var reason = $("#openpay_refund_reason").val();
+    {literal}
+        <script type="text/javascript">
+            var refund_url = '{/literal} {$refund_url}' {literal}
+        </script>
+    {/literal}
 
-            $.ajax({
-                url: "{$refund_url}",
-                type: "POST",
-                data: { order_id: order_id, amount: amount, transaction_id: transaction_id, reason: reason },
-                success: function (result) {
-                    console.log('result', result);
-                    var message = JSON.parse(result);
-                    if (message['msg'] === 'fail') {
-                        $("#refund_error").html(message['response']);
-                        $("#refund_error").show();
-                        return false;
-                    } else {
-                        //location.reload();                        
-                        $("#refund_success").html(message['response']);
-                        $("#refund_success").show();
+    {literal}
+        <script type="text/javascript">
+
+            $(document).ready(function() {
+                $("#refund_error").hide();
+                $("#refund_success").hide();
+                $("#openpay-refund-btn").click(function () {
+                    $("#refund_error").addClass('hidden');
+                    $("#refund_success").addClass('hidden');            
+                    
+                    var r = confirm("¿Estás seguro que deseas realizar un reembolso?");
+                    if (r === false) {
                         return false;
                     }
-                }
+                    
+                    var amount = $("#openpay_refund_amount").val();
+                    var order_id = $("#openpay_refund_order_id").val();
+                    var transaction_id = $("#openpay_refund_transaction_id").val();
+                    var reason = $("#openpay_refund_reason").val();
+
+                    $.ajax({
+                        url: refund_url,
+                        type: "POST",
+                        data: { order_id: order_id, amount: amount, transaction_id: transaction_id, reason: reason },
+                        success: function (result) {
+                            console.log('result', result);
+                            var message = JSON.parse(result);
+                            if (message['msg'] === 'fail') {
+                                $("#refund_error").html(message['response']);
+                                $("#refund_error").show();
+                                return false;
+                            } else {
+                                //location.reload();                        
+                                $("#refund_success").html(message['response']);
+                                $("#refund_success").show();
+                                return false;
+                            }
+                        }
+                    });
+
+                });
             });
-        });
-    });        
-</script>
+
+        </script>
+    {/literal}
+
+{/if}
