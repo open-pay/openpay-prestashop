@@ -84,14 +84,14 @@ class OpenpayPrestashop extends PaymentModule
      */
     public function install() {
         $ret = parent::install() && $this->createPendingState() && 
-                $this->registerHook('payment') &&
+                //$this->registerHook('payment') &&
                 $this->registerHook('paymentOptions') &&
                 $this->registerHook('displayHeader') &&
                 $this->registerHook('displayPaymentTop') &&
                 $this->registerHook('paymentReturn') &&
                 $this->registerHook('displayMobileHeader') &&
                 $this->registerHook('displayAdminOrder') &&
-                $this->registerHook('actionOrderStatusPostUpdate') &&
+                $this->registerHook('actionOrderStatusPostUpdate') && 
                 Configuration::updateValue('OPENPAY_MODE', 0) &&
                 Configuration::updateValue('OPENPAY_COUNTRY', 'MX') &&
                 Configuration::updateValue('OPENPAY_MONTHS_INTEREST_FREE', 1) &&                
@@ -287,7 +287,10 @@ class OpenpayPrestashop extends PaymentModule
         $country = Configuration::get('OPENPAY_COUNTRY');
         
         $refund_url = (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://') . htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8') . __PS_BASE_URI__ . 'modules/openpayprestashop/refund.php';
+        Logger::addLog('refund_url => '. $refund_url, 1, null, null, null, true);
+        
         $order = new Order((int) $params['id_order']);
+        Logger::addLog('order_id => '. $params['id_order'], 1, null, null, null, true);
         
         $order_state_query = 'SELECT * FROM `' . _DB_PREFIX_ . 'openpay_transaction` WHERE `id_order`= "' . $params['id_order'] . '"';
         $order_state = Db::getInstance()->ExecuteS($order_state_query);
@@ -385,13 +388,11 @@ class OpenpayPrestashop extends PaymentModule
      */
     public function hookPaymentOptions($params) {
 
-        if (version_compare(_PS_VERSION_, '1.7.0.0', '<')) {
-            return false;
-        }
         /** @var Cart $cart */
         $cart = $params['cart'];
         if (!$this->active) {
             return false;
+
         }
 
         if (!$this->checkCurrency()) {
@@ -1288,9 +1289,9 @@ class OpenpayPrestashop extends PaymentModule
 
         curl_close($ch);
 
-        $array = Tools::jsonDecode($result, true);
+        $array = json_decode($result, true);
 
-        if (array_key_exists('id', $array)) {
+        if (is_array($array) && array_key_exists('id', $array)) {
             Configuration::updateValue('OPENPAY_CLASSIFICATION', $array['classification']);
             return true;
         } else {
@@ -1455,7 +1456,7 @@ class OpenpayPrestashop extends PaymentModule
         $this->context->cookie->__set('openpay_error_code', $e->getErrorCode());
 
         if ($backend) {
-            return Tools::jsonDecode(Tools::jsonEncode(array('error' => $e->getErrorCode(), 'msg' => $error)), false);
+            return json_decode(json_encode(array('error' => $e->getErrorCode(), 'msg' => $error)), false);
         } else {
             if (class_exists('Logger')) {
                 Logger::addLog($this->l('#Openpay - Payment transaction failed').' '.$error, 1, null, 'Cart', (int) $this->context->cart->id, true);
