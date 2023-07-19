@@ -92,7 +92,7 @@ class OpenpayStores extends PaymentModule
         }
 
         $ret = parent::install() && $this->createPendingState() &&
-                $this->registerHook('payment') &&
+                //$this->registerHook('payment') &&
                 $this->registerHook('paymentOptions') &&                
                 $this->registerHook('displayHeader') &&
                 $this->registerHook('displayPaymentTop') &&                
@@ -1031,7 +1031,7 @@ class OpenpayStores extends PaymentModule
 
         curl_close($ch);
 
-        $array = Tools::jsonDecode($result, true);
+        $array = json_decode($result, true);
 
         
         $isValidPeruConfiguration = $country == 'PE' && $info['http_code'] == 412;
@@ -1061,7 +1061,7 @@ class OpenpayStores extends PaymentModule
         $error = 'ERROR '.$e->getErrorCode().'. '.$msg;
 
         if ($backend) {
-            return Tools::jsonDecode(Tools::jsonEncode(array('error' => $e->getErrorCode(), 'msg' => $error)), false);
+            return json_decode(json_encode(array('error' => $e->getErrorCode(), 'msg' => $error)), false);
         } else {
             throw new Exception($error);
         }
@@ -1098,7 +1098,7 @@ class OpenpayStores extends PaymentModule
         $error = 'ERROR '.$e->getErrorCode().'. '.$msg;
         
         if($e->getErrorCode() != '6001'){
-            return Tools::jsonDecode(Tools::jsonEncode(array('error' => $e->getErrorCode(), 'msg' => $error)), false);
+            return json_decode(json_encode(array('error' => $e->getErrorCode(), 'msg' => $error)), false);
         }
 
         return;

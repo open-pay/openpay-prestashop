@@ -38,7 +38,7 @@ if (!class_exists('Openpay', false)) {
 
 /* To configure, add webhook in account storename.com/modules/openpaystores/notification.php */
 $objeto = Tools::file_get_contents('php://input');
-$json = Tools::jsonDecode($objeto);
+$json = json_decode($objeto);
 
 if(empty($json->type)){
     header('HTTP/1.1 200 OK');
