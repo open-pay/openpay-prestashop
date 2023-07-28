@@ -107,7 +107,7 @@ class Webhook
         }
         $error = 'ERROR ' . $e->getErrorCode() . '. ' . $msg;
         if ($e->getErrorCode() != '6001') {
-            return Tools::jsonDecode(Tools::jsonEncode(array('error' => $e->getErrorCode(), 'msg' => $error)), false);
+            return json_decode(json_encode(array('error' => $e->getErrorCode(), 'msg' => $error)), false);
         }
     }
 
