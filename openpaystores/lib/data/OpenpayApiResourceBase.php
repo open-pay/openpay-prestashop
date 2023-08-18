@@ -15,7 +15,7 @@ abstract class OpenpayApiResourceBase
     protected $resourceName = '';
     protected $serializableData;
     protected $noSerializableData;
-    protected $derivedResources;
+    protected $derivedResources = array();
 
     protected function __construct($resourceName, $params = array()) {
         $this->resourceName = $resourceName;

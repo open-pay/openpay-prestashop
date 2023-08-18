@@ -47,7 +47,7 @@ class OpenpayStores extends PaymentModule
 
         $this->name = 'openpaystores';
         $this->tab = 'payments_gateways';
-        $this->version = '4.2.2';
+        $this->version = '4.3.0';
         $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';
 
@@ -92,7 +92,7 @@ class OpenpayStores extends PaymentModule
         }
 
         $ret = parent::install() && $this->createPendingState() &&
-                $this->registerHook('payment') &&
+                //$this->registerHook('payment') &&
                 $this->registerHook('paymentOptions') &&                
                 $this->registerHook('displayHeader') &&
                 $this->registerHook('displayPaymentTop') &&                
@@ -310,19 +310,24 @@ class OpenpayStores extends PaymentModule
         if (version_compare(_PS_VERSION_, '1.7.0.0', '<')) {
             return false;
         }
+
+        if (empty($params['cart'])) {
+            return [];
+        }
+
         /** @var Cart $cart */
         $cart = $params['cart'];
         if (!$this->active) {
             return false;
         }
-        
+
         if (!$this->checkCurrency()) {
             return false;
         }
 
         $country = Configuration::get('OPENPAY_COUNTRY');
         $max_amount_allowed = ($country === 'MX') ? 720000 : 1000000;
-        //floatval
+
         if($cart->getOrderTotal() > $max_amount_allowed && $country != 'PE') {
             return false;
         }
@@ -696,8 +701,13 @@ class OpenpayStores extends PaymentModule
 
 
         $mode = Configuration::get('OPENPAY_MODE') ? 'LIVE' : 'TEST';
-        $dashboard_openpay = ($mode == 'LIVE') ? Url::getDashboardUrlByCountryCode(Configuration::get('OPENPAY_COUNTRY'))['production'] : Url::getDashboardUrlByCountryCode(Configuration::get('OPENPAY_COUNTRY'))['sandbox'];
-        
+        $openpay_country = Configuration::get('OPENPAY_COUNTRY');
+
+        if(empty($openpay_country)) $openpay_country = 'MX';
+
+        $dashboard_openpay = ($mode == 'LIVE') ? Url::getDashboardUrlByCountryCode($openpay_country)['production'] : Url::getDashboardUrlByCountryCode($openpay_country)['sandbox'];
+
+        //empty(Configuration::get('OPENPAY_MODE')) ? Logger::addLog("Hay pais", $openpay_country) : Logger::addLog("No hay pais");
         $this->context->smarty->assign(array(
             'receipt' => $this->_path.'views/img/recibo.png',
             'openpay_form_link' => $_SERVER['REQUEST_URI'],
@@ -1002,6 +1012,7 @@ class OpenpayStores extends PaymentModule
     public function getMerchantInfo()
     {
         $country = Configuration::get('OPENPAY_COUNTRY');
+        if(empty($country)) $country = 'MX';
         $sk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
         $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
 
@@ -1031,12 +1042,12 @@ class OpenpayStores extends PaymentModule
 
         curl_close($ch);
 
-        $array = Tools::jsonDecode($result, true);
+        $array = json_decode($result, true);
 
         
         $isValidPeruConfiguration = $country == 'PE' && $info['http_code'] == 412;
         /** The or operator is temporally until Peru Team develop the service */
-        if (array_key_exists('id', $array) || $isValidPeruConfiguration) {
+        if ((is_array($array) && array_key_exists('id', $array)) || $isValidPeruConfiguration) {
             return true;
         } else {
             return false;
@@ -1061,7 +1072,7 @@ class OpenpayStores extends PaymentModule
         $error = 'ERROR '.$e->getErrorCode().'. '.$msg;
 
         if ($backend) {
-            return Tools::jsonDecode(Tools::jsonEncode(array('error' => $e->getErrorCode(), 'msg' => $error)), false);
+            return json_decode(json_encode(array('error' => $e->getErrorCode(), 'msg' => $error)), false);
         } else {
             throw new Exception($error);
         }
@@ -1098,7 +1109,7 @@ class OpenpayStores extends PaymentModule
         $error = 'ERROR '.$e->getErrorCode().'. '.$msg;
         
         if($e->getErrorCode() != '6001'){
-            return Tools::jsonDecode(Tools::jsonEncode(array('error' => $e->getErrorCode(), 'msg' => $error)), false);
+            return json_decode(json_encode(array('error' => $e->getErrorCode(), 'msg' => $error)), false);
         }
 
         return;
