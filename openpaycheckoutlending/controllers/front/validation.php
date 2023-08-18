@@ -54,7 +54,7 @@ class OpenpayCheckoutLendingValidationModuleFrontController extends ModuleFrontC
             Tools::redirect('index.php?controller=order&step=1');
 
         $openpay = new OpenpayCheckoutLending();
-        $openpay->processPayment();        
+        $openpay->processPayment();
     }
 
 }
