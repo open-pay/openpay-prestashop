@@ -40,7 +40,7 @@ class OpenpayCheckoutLending extends PaymentModule {
         /* Module configuration data  */
         $this->name = 'openpaycheckoutlending';
         $this->displayName = $this->l('Openpay Checkout Lending');
-        $this->version = '1.1.0';
+        $this->version = '1.2.0';
         $this->author = 'Openpay SA de CV';
         $this->tab = 'payments_gateways';
         $this->description = $this->l('Compra ahora, paga después');
@@ -393,9 +393,9 @@ class OpenpayCheckoutLending extends PaymentModule {
 
         curl_close($ch);
 
-        $array = Tools::jsonDecode($result, true);
+        $array = json_decode($result, true);
 
-        if (array_key_exists('id', $array)) {
+        if (is_array($array) && array_key_exists('id', $array)) {
             return true;
         } else {
             return false;
@@ -560,7 +560,7 @@ class OpenpayCheckoutLending extends PaymentModule {
         $error = 'ERROR '.$e->getCode().'. '.$msg;
 
         if($e->getCode() != '6001'){
-            return Tools::jsonDecode(Tools::jsonEncode(array('error' => $e->getCode(), 'msg' => $error)), false);
+            return json_decode(json_encode(array('error' => $e->getCode(), 'msg' => $error)), false);
         }
 
         return;
@@ -764,9 +764,11 @@ class OpenpayCheckoutLending extends PaymentModule {
         $shipping_address = new Address($this->context->cart->id_address_delivery);
         $billing_address = new Address($this->context->cart->id_address_invoice);
         $cart = $this->context->cart;
-        $amount = number_format(floatval($cart->getOrderTotal()), 2, '.', '');
+        $amount = number_format(floatval($cart->getOrderTotal()), 2, '.', '');   
+        $ps_language_default = Configuration::get('PS_LANG_DEFAULT');
+        $language_iso_code = Language::getIsoById( (int)$ps_language_default);
 
-        $on_success_callback = _PS_BASE_URL_.'/mx/confirmacion-pedido?id_cart='.(int) $this->context->cart->id.
+        $on_success_callback = _PS_BASE_URL_ . '/' . $language_iso_code .'/confirmacion-pedido?id_cart='.(int) $this->context->cart->id.
             '&id_module='.(int) $this->id.
             '&id_order='.(int) $this->currentOrder.
             '&key='.$this->context->customer->secure_key;
@@ -839,7 +841,7 @@ class OpenpayCheckoutLending extends PaymentModule {
         //$this->error[] = $error;
 
         if ($backend) {
-            return Tools::jsonDecode(Tools::jsonEncode(array('error' => $e->getCode(), 'msg' => $error)), false);
+            return json_decode(json_encode(array('error' => $e->getCode(), 'msg' => $error)), false);
         } else {
 
             if (class_exists('Logger')) {
