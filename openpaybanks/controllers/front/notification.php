@@ -35,7 +35,7 @@ class OpenpayBanksNotificationModuleFrontController extends ModuleFrontControlle
     public function initContent()
     {
         $objeto = Tools::file_get_contents('php://input');
-        $json = Tools::jsonDecode($objeto);
+        $json = json_decode($objeto);
 
         if (empty($json->type)) {
             http_response_code(200);

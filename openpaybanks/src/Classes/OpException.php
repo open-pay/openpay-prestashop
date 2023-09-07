@@ -59,7 +59,7 @@ class OpException
         $error = 'Openpay API error - code:' . $e->getCode() . ' - desc:' . $msg;
 
         if ($backend) {
-            return Tools::jsonDecode(Tools::jsonEncode(array('error' => $e->getErrorCode(), 'msg' => $error)), false);
+            return json_decode(json_encode(array('error' => $e->getErrorCode(), 'msg' => $error)), false);
         } else {
             throw new Exception($error);
         }

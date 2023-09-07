@@ -198,6 +198,7 @@ class OpenpayBanks extends PaymentModule
                 $webhookResponse = $webhook->createWebhook();
                 // 6. If webhookResponse has an error msg, add the error message to show in Admin Config page
                 if ($webhookResponse->msg) {
+                    Logger::addLog('#WebHook Response => ' . $webhookResponse->msg, 1, null, null, null, true);
                     $this->error[] = $webhookResponse->msg;
                 }
             } else {
@@ -762,7 +763,7 @@ class OpenpayBanks extends PaymentModule
 
         curl_close($ch);
 
-        $array = Tools::jsonDecode($result, true);
+        $array = json_decode($result, true);
 
         if (array_key_exists('id', $array)) {
             return true;
