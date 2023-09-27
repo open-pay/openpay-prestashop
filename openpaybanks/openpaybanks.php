@@ -765,7 +765,7 @@ class OpenpayBanks extends PaymentModule
 
         $array = json_decode($result, true);
 
-        if (array_key_exists('id', $array)) {
+        if (is_array($array) && array_key_exists('id', $array)) {
             return true;
         } else {
             return false;
