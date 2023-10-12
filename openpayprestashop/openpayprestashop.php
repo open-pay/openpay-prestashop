@@ -55,7 +55,7 @@ class OpenpayPrestashop extends PaymentModule
 
         $this->name = 'openpayprestashop';
         $this->tab = 'payments_gateways';
-        $this->version = '4.7.1';
+        $this->version = '4.7.2';
         $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';               
 
@@ -213,38 +213,32 @@ class OpenpayPrestashop extends PaymentModule
      * @return type
      */
     public function hookActionOrderStatusPostUpdate($params) {
-        Logger::addLog('hookActionOrderStatusPostUpdate => '.$params['id_order'], 1, null, null, null, true);
-        
         $order_id =  $params['id_order'];
-        
-        $order = new Order((int) $order_id);        
-        
-        $openpay_transaction = Db::getInstance()->getRow('
-            SELECT *
-            FROM '._DB_PREFIX_.'openpay_transaction
-            WHERE id_order = '. (int) $order_id
-        );
+        $this->isCaptureRequest($order_id);
+    }
 
-        if (!$openpay_transaction) {
-            Logger::addLog('There is no Openpay transaction for Order ID => '.$order_id, 2, null, null, null, true);  
-            return;
-        }
-        
-        $openpay_customer = Db::getInstance()->getRow('
-            SELECT openpay_customer_id
-            FROM '._DB_PREFIX_.'openpay_customer
-            WHERE id_customer = '.(int) $order->id_customer
-        );               
-        
-        Logger::addLog('amount_capture => '.$order->total_paid, 1, null, null, null, true);
-        Logger::addLog('order_estatus => '.$order->getCurrentState(), 1, null, null, null, true);
-        Logger::addLog('PS_OS_PAYMENT => '.Configuration::get('PS_OS_PAYMENT'), 1, null, null, null, true);
-        Logger::addLog('id_transaction => '.$openpay_transaction['id_transaction'], 1, null, null, null, true);        
-        
+    private function isCaptureRequest($order_id){
         try {
+            $order = new Order((int) $order_id);
+            $sql = "SELECT * FROM "._DB_PREFIX_."openpay_transaction WHERE id_order = ". (int) $order_id;
+            $openpay_transaction = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
+
+            if (!$openpay_transaction) {
+                Logger::addLog('There is no Openpay transaction for Order ID => '.$order_id, 2, null, null, null, true);
+                return;
+            }
+
             if (Configuration::get('PS_OS_PAYMENT') == $order->getCurrentState() && $openpay_transaction['status'] == 'unpaid' && $openpay_transaction['type'] == 'card') {
-                $charge = $this->capture($order->total_paid, $openpay_transaction['id_transaction'], $openpay_customer['openpay_customer_id']);                             
-                
+
+                Logger::addLog('**CAPTURING PAYMENT** [OPENPAY_TRANSACTION => '. $openpay_transaction['id_transaction'] . " -- ORDER_ID => ".$order_id . '-- CAPTURE_AMOUNT => '.$order->total_paid . "]", 1, null, null, null, true);
+                // Logger::addLog('order_estatus => '.$order->getCurrentState(), 1, null, null, null, true); // check current state id
+                // Logger::addLog('PS_OS_PAYMENT => '.Configuration::get('PS_OS_PAYMENT'), 1, null, null, null, true); // check payment accepted id
+
+                $sql = 'SELECT openpay_customer_id FROM '._DB_PREFIX_.'openpay_customer WHERE id_customer = '.(int) $order->id_customer ;
+                $openpay_customer = Db::getInstance()->getRow($sql);
+
+                $charge = $this->capture($order->total_paid, $openpay_transaction['id_transaction'], $openpay_customer['openpay_customer_id']);
+
                 $payment = $order->getOrderPaymentCollection();
                 if (isset($payment[0])) {
                     $payment[0]->transaction_id = pSQL($charge->id);
@@ -261,8 +255,6 @@ class OpenpayPrestashop extends PaymentModule
                 Logger::addLog($this->l('Openpay - Capture failed').' '.$e->getTraceAsString(), 4, $e->getCode(), 'Cart', (int) $this->context->cart->id, true);
             }
         }
-                
-        return;
     }
     
     private function capture($amount, $transaction_id, $customer_id) {
@@ -281,23 +273,21 @@ class OpenpayPrestashop extends PaymentModule
         }
     }
     
-    public function hookDisplayAdminOrder($params) {        
-        Logger::addLog('hookDisplayAdminOrder', 1, null, null, null, true);
-
+    public function hookDisplayAdminOrder($params) {
         $country = Configuration::get('OPENPAY_COUNTRY');
         
         $refund_url = (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://') . htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8') . __PS_BASE_URI__ . 'modules/openpayprestashop/refund.php';
-        Logger::addLog('refund_url => '. $refund_url, 1, null, null, null, true);
+        //Logger::addLog('refund_url => '. $refund_url, 1, null, null, null, true);
         
         $order = new Order((int) $params['id_order']);
-        Logger::addLog('order_id => '. $params['id_order'], 1, null, null, null, true);
+        //Logger::addLog('order_id => '. $params['id_order'], 1, null, null, null, true);
         
         $order_state_query = 'SELECT * FROM `' . _DB_PREFIX_ . 'openpay_transaction` WHERE `id_order`= "' . $params['id_order'] . '"';
         $order_state = Db::getInstance()->ExecuteS($order_state_query);
         
-        Logger::addLog('order_estatus => '.$order->getCurrentState(), 1, null, null, null, true);
-        Logger::addLog('PS_OS_REFUND => '.Configuration::get('PS_OS_REFUND'), 1, null, null, null, true);
-        Logger::addLog('id_transaction => '.$order_state[0]['id_transaction'], 1, null, null, null, true);
+        //Logger::addLog('order_estatus => '.$order->getCurrentState(), 1, null, null, null, true);
+        //Logger::addLog('PS_OS_REFUND => '.Configuration::get('PS_OS_REFUND'), 1, null, null, null, true);
+        //Logger::addLog('id_transaction => '.$order_state[0]['id_transaction'], 1, null, null, null, true);
         
         
         $show_refund = Configuration::get('PS_OS_REFUND') == $order->getCurrentState();
@@ -453,6 +443,11 @@ class OpenpayPrestashop extends PaymentModule
         $merchant_classification = Configuration::get('OPENPAY_CLASSIFICATION');
         $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PUBLIC_KEY_LIVE') : Configuration::get('OPENPAY_PUBLIC_KEY_TEST');
         $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
+        $is_sandbox = Configuration::get('OPENPAY_MODE');
+
+        $country_tld    = strtolower($country);
+        $sandbox_url    = 'https://sandbox-api.openpay.'.$country_tld.'/v1';
+        $prod_url            = 'https://api.openpay.'.$country_tld.'/v1';
 
         $selected_months_interest_free = array();
         if (Configuration::get('OPENPAY_MONTHS_INTEREST_FREE') != null) {
@@ -487,7 +482,7 @@ class OpenpayPrestashop extends PaymentModule
             'id' => $id,
             'country' => $country,
             'merchant_classification' => $merchant_classification,
-            'mode' => Configuration::get('OPENPAY_MODE'),
+            'mode' => $is_sandbox,
             'nbProducts' => $cart->nbProducts(),
             'total' => $cart->getOrderTotal(),
             'module_dir' => $this->_path,
@@ -501,6 +496,7 @@ class OpenpayPrestashop extends PaymentModule
             'cuotas_pe' => Configuration::get('OPENPAY_CUOTAS_PE'),
             'cc_options' => $this->getCreditCardList(),
             'url_ajax' => Tools::getHttpHost(true).__PS_BASE_URI__.'module/openpayprestashop/typecard',
+            'url_api' => $is_sandbox == 0 ? $sandbox_url : $prod_url,
             'action' => $this->context->link->getModuleLink($this->name, 'validation', array(), Tools::usingSecureMode()),
             'showForm' => $showForm
         ));
@@ -570,18 +566,19 @@ class OpenpayPrestashop extends PaymentModule
                 $charge_request['iva'] = Configuration::get('OPENPAY_IVA');
             }
 
-            Logger::addLog('(444d) $installments["val"] => '.$installments["val"] , 1);
-            Logger::addLog('(444d) $installments["withInterest"] => '.$installments["withInterest"] , 1);
-
-            if ($installments["val"] > 1) {
-                $charge_request['payment_plan'] = array('payments' => (int)$installments["val"]);
-                switch ($installments["withInterest"]){
-                    case "false":
-                        $charge_request['payment_plan']['payments_type'] = 'WITHOUT_INTEREST';
-                        break;
-                    case "true":
-                        $charge_request['payment_plan']['payments_type'] = 'WITH_INTEREST';
-                        break;
+            if ($country === 'PE') {
+                //Logger::addLog('(444d) $installments["val"] => '.$installments["val"] , 1);
+                //Logger::addLog('(444d) $installments["withInterest"] => '.$installments["withInterest"] , 1);
+                if ($installments["val"] > 1) {
+                    $charge_request['payment_plan'] = array('payments' => (int)$installments["val"]);
+                    switch ($installments["withInterest"]) {
+                        case "false":
+                            $charge_request['payment_plan']['payments_type'] = 'WITHOUT_INTEREST';
+                            break;
+                        case "true":
+                            $charge_request['payment_plan']['payments_type'] = 'WITH_INTEREST';
+                            break;
+                    }
                 }
             }
 
@@ -643,6 +640,7 @@ class OpenpayPrestashop extends PaymentModule
             $charge_request = $this->chargebackGuarantee($charge_request);
 
             $charge = $openpay_customer->charges->create($charge_request);
+            Logger::addLog('CHARGE_ID => '.$charge->id . ' -- CHARGE_AMOUNT=> '.$charge->amount . ' -- CHARGE_FEE_AMOUNT=> '.$charge->fee->amount, 1, null, null, null, true);
 
             // Si tiene habilitado el 3D SECURE 
             if ($charge->payment_method && $charge->payment_method->type == 'redirect') {
@@ -670,7 +668,7 @@ class OpenpayPrestashop extends PaymentModule
             Logger::addLog('OrderStatus => '.$order_status, 1, null, null, null, true);
 
             $this->validateOrder(
-                    (int) $this->context->cart->id, (int) $order_status, $charge->amount, $display_name, $message, $detail, null, false, $this->context->customer->secure_key
+                    (int) $this->context->cart->id, (int) $order_status, $amount, $display_name, $message, $detail, null, false, $this->context->customer->secure_key
             );
             $new_order = new Order((int) $this->currentOrder);
             if (Validate::isLoadedObject($new_order)) {
@@ -687,12 +685,13 @@ class OpenpayPrestashop extends PaymentModule
 
             /** Store the transaction details */            
             $fee = $charge->fee ? ($charge->fee->amount + $charge->fee->tax) : 0;
-            Db::getInstance()->insert('openpay_transaction', array(
+            try{
+            $result = Db::getInstance()->insert('openpay_transaction', array(
                 'type' => pSQL($payment_method),
                 'id_cart' => (int) $this->context->cart->id,
                 'id_order' => (int) $this->currentOrder,
                 'id_transaction' => pSQL($charge->id),
-                'amount' => (float) $charge->amount,
+                'amount' => (float) $amount,
                 'status' => pSQL($charge->status == 'completed' ? 'paid' : 'unpaid'),
                 'fee' => (float) $fee,
                 'currency' => pSQL($charge->currency),
@@ -703,7 +702,13 @@ class OpenpayPrestashop extends PaymentModule
                 'reference' => null,
                 'clabe' => null
             ));
-            
+            Logger::addLog("OPENPAY_TRANSACTION_INSERT - " . $result, 1, null, null, null, true);
+            } catch (Exception $e) {
+                if (class_exists('Logger')) {
+                    Logger::addLog($e->getMessage(), 1, null, null, null, true);
+                }
+            }
+
             // Update order_id from Openpay Charge
             $this->updateOpenpayCharge($charge->id, $this->currentOrder, $new_order->reference);
 
