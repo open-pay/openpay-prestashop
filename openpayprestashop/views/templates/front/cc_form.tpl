@@ -163,7 +163,7 @@
                         <select name="installment" id="installment" style="width: 100%;">
                             <option value="1">{l s="Pago de contado" mod='openpayprestashop'}</option>
                             {foreach $installments as $installment}
-                                <option value="{$installment}">{$installment} cuotas</option>
+                                <option value="{$installment}">{$installment}</option>
                             {/foreach}
                         </select>
                     </div>
@@ -380,10 +380,13 @@
                     var card_bin = card_without_space.substring(0, lng);
 
                     if(card_bin != card_old) {
-                        getTypeCard(card_bin, country);
+                        if (country == 'PE'){
+                            getTypeCardFront(card_bin, country);
+                        }else{
+                            getTypeCard(card_bin, country);
+                        }
                         card_old = card_bin; 
                     }
-                    
                 }
             })
         });
@@ -395,7 +398,100 @@
             setTimeout(() => {
                 $(".payment-options").find("input[data-module-name='openpayprestashop']").click();
             }, 1000);
-        } 
+        }
+
+        function getTypeCardFront(cardBin, country) {
+            let id = '{/literal}{$id}' {literal};
+            let url_api = '{/literal}{$url_api}' {literal};
+            let path = `${url_api}/${id}/bines/${cardBin}/promotions`;
+
+            /*switch (country) {
+                case "MX":
+                    path = `${url_api}/${id}/bines/man/${cardBin}`;
+                    break;
+                case "PE":
+                    path = `${url_api}/${id}/bines/${cardBin}/promotions`;
+                    break;
+                default:
+                    path = `${url_api}/cards/validate-bin?bin=${cardBin}`;
+                    break;
+            }*/
+            console.log(path);
+
+            $.ajax({
+                type : "get",
+                url : path,
+                error: function(response){
+                    console.log(response);
+                },
+                beforeSend: function () {
+                    jQuery("#card-container").addClass("opacity");
+                    jQuery(".ajax-loader").addClass("is-active");
+                },
+                success: function(response) {
+                    let data = response;
+                    console.log(data);
+                    if(data.cardType && typeof data.cardType !== "undefined"){
+                        let cuotas_pe = '{/literal}{$cuotas_pe}' {literal}
+                        console.debug("CUOTAS_PE => ", cuotas_pe);
+                        if (data.card_type == 'CREDIT') {
+                            if (country == 'MX'){
+                                jQuery("#interest-free").closest(".row").show();
+                            }else {
+                                jQuery('#installment').closest(".row").show();
+                            }
+                        }
+                        else if(data.installments && data.installments.length > 0 && 1 == cuotas_pe) {
+                            jQuery('#openpay_installments_pe').closest(".row").show();
+                            jQuery('#openpay_installments_pe').empty();
+
+                            jQuery('#openpay_installments_pe').append(jQuery('<option>', {
+                                value: 1,
+                                text : 'Solo una cuota'
+                            }));
+
+                            if (data.withInterest || data.withInterest === null ){
+                                jQuery("#installments_title").text("Cuotas con Interés");
+                                jQuery('#withInterest').val(true);
+                            }else{
+                                jQuery("#installments_title").text("Cuotas sin Interés");
+                                jQuery('#withInterest').val(false);
+                            }
+
+                            jQuery.each( data.installments, function( i, val ) {
+                                if (val != 1) {
+                                    jQuery('#openpay_installments_pe').append(jQuery('<option>', {
+                                        value: val,
+                                        text: val + ' cuotas'
+                                    }));
+                                }
+                            });
+                        }
+                        else {
+                            jQuery('#openpay_installments_pe').closest(".row").hide();
+                            jQuery('#openpay_installments_pe option[value="1"]').attr("selected",true);
+
+                            if (country == 'MX') {
+                                jQuery("#interest-free").closest(".row").hide();
+                                jQuery('#interest-free option[value="1"]').attr("selected",true);
+                                $("#total-monthly-payment").addClass('hidden');
+                            } else {
+                                jQuery("#installment").closest(".row").hide();
+                                jQuery('#installment option[value="1"]').attr("selected",true);
+                            }
+                        }
+                    } else {
+                        jQuery("#installment").closest(".installments").hide();
+                        jQuery("#interest-free").closest(".installments").hide();
+                        $("#total-monthly-payment").addClass('hidden');
+                    }
+                },
+                complete: function () {
+                    jQuery("#card-container").removeClass("opacity");
+                    jQuery(".ajax-loader").removeClass("is-active");
+                }
+            })
+        }
 
         function getTypeCard(cardBin, country) {
             let url_ajax = '{/literal}{$url_ajax}' {literal};
@@ -413,8 +509,10 @@
                     jQuery(".ajax-loader").addClass("is-active");
                 },
                 success: function(response) {
+                    console.log(response);
                     let data = JSON.parse(response);
                     if(data.status == 'success'){
+                        console.log("STATUS SUCCESS");
                         let cuotas_pe = '{/literal}{$cuotas_pe}' {literal}
                         console.debug("CUOTAS_PE => ", cuotas_pe)
                         if (data.card_type == 'CREDIT') {
@@ -464,6 +562,7 @@
                             }
                         }
                     } else {
+                        console.log("ALGO FALLO");
                         jQuery("#installment").closest(".installments").hide();
                         jQuery("#interest-free").closest(".installments").hide();
                         $("#total-monthly-payment").addClass('hidden');
