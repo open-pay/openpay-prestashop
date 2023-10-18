@@ -2,7 +2,7 @@
 <module>
     <name>openpaycheckoutlending</name>
     <displayName><![CDATA[Openpay Checkout Lending]]></displayName>
-    <version><![CDATA[1.2.0]]></version>
+    <version><![CDATA[1.2.1]]></version>
     <description><![CDATA[Compra ahora, paga despu&eacute;s]]></description>
     <author><![CDATA[Openpay SA de CV]]></author>
     <tab><![CDATA[payments_gateways]]></tab>
