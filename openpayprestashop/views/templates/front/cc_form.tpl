@@ -234,7 +234,6 @@
             $('#card_number').cardNumberInput();
             
             var total = '{/literal}{$total}' {literal};
-            console.debug("TOTAL => ", total)
             var months = parseInt($("#interest-free").val());
             var monthly_payment = 0;       
             monthly_payment = total/months;
