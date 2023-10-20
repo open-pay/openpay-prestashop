@@ -55,7 +55,7 @@ class OpenpayPrestashop extends PaymentModule
 
         $this->name = 'openpayprestashop';
         $this->tab = 'payments_gateways';
-        $this->version = '4.7.2';
+        $this->version = '4.7.3';
         $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';               
 
@@ -640,7 +640,11 @@ class OpenpayPrestashop extends PaymentModule
             $charge_request = $this->chargebackGuarantee($charge_request);
 
             $charge = $openpay_customer->charges->create($charge_request);
-            Logger::addLog('CHARGE_ID => '.$charge->id . ' -- CHARGE_AMOUNT=> '.$charge->amount . ' -- CHARGE_FEE_AMOUNT=> '.$charge->fee->amount, 1, null, null, null, true);
+
+
+            if (is_object($charge) && is_object($charge->fee)){
+                Logger::addLog('CHARGE_ID => '.$charge->id . ' -- CHARGE_AMOUNT=> '.$charge->amount . ' -- CHARGE_FEE_AMOUNT=> '.$charge->fee->amount, 1, null, null, null, true);
+            }
 
             // Si tiene habilitado el 3D SECURE 
             if ($charge->payment_method && $charge->payment_method->type == 'redirect') {
