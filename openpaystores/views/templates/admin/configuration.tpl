@@ -197,16 +197,6 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2">                        
-                        <label style="">{l s="Mostrar mapa" mod='openpaystores'}</label>                                          
-                        <select name="show_map" id="show_map" style="width: 100%; margin: 10px 0 0 0;">
-                            <option value="0" {if $openpay_configuration.OPENPAY_SHOW_MAP == '0'} selected="selected"{/if}>NO</option>
-                            <option value="1" {if $openpay_configuration.OPENPAY_SHOW_MAP == '1'} selected="selected"{/if}>SI</option>                            
-                        </select>
-                        <div><small>Al selccionar esta opción, un mapa se desplegará mostrando las tiendas más cercanas al momento mostrar el recipo de pago.</small></div>                        
-                    </td>
-                </tr>
-                <tr>
                     <td>                        
                         <label style="">{l s="IVA" mod='openpaystores'}</label>                                          
                         <input type="text" autocomplete="off" type="text" name="openpay_store_iva" id="openpay_store_iva" value="{if $openpay_configuration.OPENPAY_STORE_IVA}{$openpay_configuration.OPENPAY_STORE_IVA|escape:'htmlall':'UTF-8'}{/if}" style="width: 100%; margin: 5px 0 0 0;">
