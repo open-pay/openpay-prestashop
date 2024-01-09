@@ -24,16 +24,10 @@
 *}
 
 <div style="text-align: center">
+    <div class="mt20 mb20">
+        <h2 style="font-weight:600;">Localiza tu tienda más cercana dando click
+            <a target="_blank" href="https://www.paynet.com.mx/mapa-tiendas/index.html" style="font-weight:600;">aqui</a>
+        </h2>
+    </div>
     <iframe id="pdf" src="{$openpay_order.pdf_url|escape:'htmlall':'UTF-8'}" style="width:70%; height:1000px;" frameborder="0"></iframe>
-    
-    {if ($openpay_order.show_map)}
-        <div class="mt20 mb20">
-            <h2>Mapa de tiendas</h2>
-            {if $openpay_order.country == MX}
-                <iframe src="https://www.paynet.com.mx/mapa-tiendas/index.html?locationNotAllowed=true&postalCode={$openpay_order.postal_code}" style="border: 1px solid #000; width:70%; height:300px;" frameborder="0"></iframe>                
-            {else}
-                <iframe src="https://docs.openpay.co/docs/mapa-de-tiendas.html?locationNotAllowed=true&address={$openpay_order.address}" style="border: 1px solid #000; width:70%; height:300px;" frameborder="0"></iframe>
-            {/if}
-        </div>    
-    {/if}    
 </div>

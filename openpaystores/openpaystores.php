@@ -47,7 +47,7 @@ class OpenpayStores extends PaymentModule
 
         $this->name = 'openpaystores';
         $this->tab = 'payments_gateways';
-        $this->version = '4.3.1';
+        $this->version = '4.3.2';
         $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';
 
@@ -388,7 +388,6 @@ class OpenpayStores extends PaymentModule
         if($country == 'MX'){
             $data = array(
                 'pdf_url' => $pdf_url,
-                'show_map' => Configuration::get('OPENPAY_SHOW_MAP') == '1' ? true : false,
                 'postal_code' => $address['postcode'],
                 'country' => $country
             );
@@ -396,7 +395,6 @@ class OpenpayStores extends PaymentModule
             $address = $address['address1'].' '.$address['address2'].', '.$address['city'];
             $data = array(
                 'pdf_url' => $pdf_url,
-                'show_map' => Configuration::get('OPENPAY_SHOW_MAP') == '1' ? true : false,
                 'address' => $address,
                 'country' => $country
             );
@@ -649,7 +647,6 @@ class OpenpayStores extends PaymentModule
                 'OPENPAY_PRIVATE_KEY_LIVE' => trim(Tools::getValue('openpay_private_key_live')),
                 'OPENPAY_DEADLINE_STORES' => trim(Tools::getValue('openpay_deadline_stores')),                
                 'OPENPAY_WEBHOOK_URL' => trim(Tools::getValue('openpay_webhook_url')),
-                'OPENPAY_SHOW_MAP' => Tools::getValue('show_map'),
                 'OPENPAY_STORE_IVA' => Tools::getValue('openpay_store_iva')
             );           
             
@@ -674,8 +671,7 @@ class OpenpayStores extends PaymentModule
                 Configuration::deleteByName('OPENPAY_MERCHANT_ID_'.$mode);
                 Configuration::deleteByName('OPENPAY_PRIVATE_KEY_'.$mode);
                 Configuration::deleteByName('OPENPAY_WEBHOOK_ID_'.$mode);
-                Configuration::deleteByName('OPENPAY_DEADLINE_STORES');                
-                Configuration::deleteByName('OPENPAY_SHOW_MAP');                
+                Configuration::deleteByName('OPENPAY_DEADLINE_STORES');
             }
         }
 
@@ -721,7 +717,6 @@ class OpenpayStores extends PaymentModule
                     'OPENPAY_PRIVATE_KEY_LIVE',
                     'OPENPAY_DEADLINE_STORES',                                        
                     'OPENPAY_WEBHOOK_URL',
-                    'OPENPAY_SHOW_MAP',
                     'OPENPAY_STORE_IVA'
                 )
             ),
