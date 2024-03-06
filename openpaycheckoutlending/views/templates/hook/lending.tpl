@@ -21,7 +21,7 @@
                 {if isset($smarty.get.error_msg)}{$smarty.get.error_msg|escape:'htmlall':'UTF-8'}{/if}
             </div>
             <div class="col-md-4">
-                <img style="width:100%" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/kueskipay.png">
+                <img style="width:100%" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/kueskipay.svg">
             </div>
         </div>
     </div>
