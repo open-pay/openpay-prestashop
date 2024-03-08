@@ -82,8 +82,8 @@
                     <div class="col-md-4">
                         <h3>{l s='Vende más y mejor' mod='openpaycheckoutlending'}</h3>
                         <div class="extras">
-                            <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/Kueskipay.png">
-                            <p>{l s='Con Kueski Pay tus clientes pueden pagar a crédito, sin tarjetas y sin comisión.' mod='openpaycheckoutlending'}</p>
+                            <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/kueskipay.svg">
+                            <p>{l s='Con Kueskipay tus clientes pueden pagar a crédito, sin tarjetas y sin comisión.' mod='openpaycheckoutlending'}</p>
                         </div>
                     </div>
                 </div>
