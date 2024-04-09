@@ -75,11 +75,13 @@ class ChargeTransaction
     {
         $cart = $this->context->cart;
         $amount = number_format((float)$cart->getOrderTotal(), 2, '.', '');
+        $origin_channel = 'PLUGIN_PRESTASHOP';
 
         $charge_request = array(
             'method' => $payment_method,
             'amount' => $amount,
             'description' => $this->module->l('PrestaShop Cart ID:') . ' ' . (int)$cart->id,
+            'origin_channel' => $origin_channel
         );
 
         if ($this->adminConfig->getCountry() == 'MX') {

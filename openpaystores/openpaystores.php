@@ -47,7 +47,7 @@ class OpenpayStores extends PaymentModule
 
         $this->name = 'openpaystores';
         $this->tab = 'payments_gateways';
-        $this->version = '4.3.2';
+        $this->version = '4.3.3';
         $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';
 
@@ -556,13 +556,15 @@ class OpenpayStores extends PaymentModule
 
         $due_date = date('Y-m-d\TH:i:s', strtotime('+ '.$deadline.' hours'));
         $amount = number_format(floatval($cart->getOrderTotal()), 2, '.', '');
+        $origin_channel = 'PLUGIN_PRESTASHOP';
 
         $charge_request = array(
             'method' => $payment_method,
             'currency' => $this->context->currency->iso_code,
             'amount' => $amount,
             'description' => $this->l('PrestaShop Cart ID:').' '.(int) $cart->id,            
-            'due_date' => $due_date
+            'due_date' => $due_date,
+            'origin_channel' => $origin_channel
         );
 
         if ($country === 'CO') {
