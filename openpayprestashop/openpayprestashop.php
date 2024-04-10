@@ -55,7 +55,7 @@ class OpenpayPrestashop extends PaymentModule
 
         $this->name = 'openpayprestashop';
         $this->tab = 'payments_gateways';
-        $this->version = '4.7.3';
+        $this->version = '4.7.4';
         $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';               
 
@@ -531,6 +531,7 @@ class OpenpayPrestashop extends PaymentModule
         $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
         $capture = Configuration::get('OPENPAY_CAPTURE') == 'true' ? true : false;
         $merchant_classification = Configuration::get('OPENPAY_CLASSIFICATION');
+        $origin_channel = 'PLUGIN_PRESTASHOP';
 
 
         Openpay::setClassificationMerchant($merchant_classification);
@@ -556,7 +557,8 @@ class OpenpayPrestashop extends PaymentModule
                 'amount' => $amount,
                 'description' => $this->l('PrestaShop Cart ID:').' '.(int) $cart->id,
                 'use_card_points' => $use_card_points,
-                'capture' => $capture
+                'capture' => $capture,
+                'origin_channel' => $origin_channel
             );
 
             if($country === 'MX' && $merchant_classification == 'eglobal'){

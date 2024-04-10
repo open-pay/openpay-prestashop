@@ -55,7 +55,7 @@ class OpenpayBanks extends PaymentModule
 
         $this->name = 'openpaybanks';
         $this->tab = 'payments_gateways';
-        $this->version = '4.0.0';
+        $this->version = '4.1.1';
         $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';
 
@@ -340,6 +340,7 @@ class OpenpayBanks extends PaymentModule
         if ($chargeResponse->due_date) {
             $due_date = date('Y-m-d H:i:s', strtotime($chargeResponse->due_date));
         }
+
 
         /** Store the transaction details */
         try {
