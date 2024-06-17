@@ -11,6 +11,8 @@
 3. Agregar las llaves, ir al panel de administración de Openpay (https://sandbox-dashboard.openpay.mx/login), copiar y pegar las llaves, dentro de las configuraciones del módulo en el panel de administración de PrestaShop (backoffice).
 
 ## Changelog
+**1.2.2**
+-
 **1.2.1**
 - Actualización de Logos Kueskipay
 **1.2.0**
