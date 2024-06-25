@@ -2,10 +2,10 @@
 
 include_once(dirname(__FILE__).'/../../config/config.inc.php');
 include_once(dirname(__FILE__) . '/openpayprestashop.php');
-
-if (!class_exists('Openpay', false)) {
-    include_once(dirname(__FILE__).'/lib/Openpay.php');
+if (file_exists(dirname(__FILE__) . '/lib/openpay/Openpay.php')) {
+    require_once(dirname(__FILE__) . '/lib/openpay/Openpay.php');
 }
+use Openpay\Data\Openpay as Openpay;
 
 try {    
     $cookie = new Cookie('psAdmin');
@@ -55,7 +55,7 @@ try {
     $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
     $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
            
-    $openpay = Openpay::getInstance($id, $pk, $country);
+    $openpay = Openpay::getInstance($id, $pk, $country, getClientIp());
     Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
     
     $customer = $openpay->customers->get($openpay_customer['openpay_customer_id']);
