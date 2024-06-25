@@ -1,5 +1,7 @@
 <?php
-
+ if (file_exists(dirname(__FILE__) . '/lib/openpay/Openpay.php')) {
+    require_once(dirname(__FILE__) . '/lib/openpay/Openpay.php');
+}
 /**
  * 2007-2015 PrestaShop
  *
@@ -26,6 +28,7 @@
  */
 
 use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
+use Openpay\Data\Openpay as Openpay;
 
 if (!defined('_PS_VERSION_')) {
     exit;
@@ -40,10 +43,6 @@ class OpenpayPrestashop extends PaymentModule
     private $limited_currencies_pe = array('PEN', 'USD');
 
     public function __construct() {
-        if (!class_exists('Openpay', false)) {
-            include_once(dirname(__FILE__).'/lib/Openpay.php');
-        }
-
         $this->sandbox_url_mx = 'https://sandbox-api.openpay.mx/v1';
         $this->url_mx = 'https://api.openpay.mx/v1';
 
@@ -55,7 +54,7 @@ class OpenpayPrestashop extends PaymentModule
 
         $this->name = 'openpayprestashop';
         $this->tab = 'payments_gateways';
-        $this->version = '4.7.4';
+        $this->version = '4.7.5';
         $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';               
 
@@ -535,7 +534,7 @@ class OpenpayPrestashop extends PaymentModule
 
 
         Openpay::setClassificationMerchant($merchant_classification);
-        Openpay::getInstance($id, $pk, $country);
+        $openpay = Openpay::getInstance($id, $pk, $country, $this->getClientIp());
         Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
 
         if($merchant_classification === 'eglobal')
@@ -1156,7 +1155,7 @@ class OpenpayPrestashop extends PaymentModule
         $country = Configuration::get('OPENPAY_COUNTRY');
         $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
         $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
-        $openpay = Openpay::getInstance($id, $pk, $country);
+        $openpay = Openpay::getInstance($id, $pk, $country, $this->getClientIp());
         Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
         $customer = $openpay->customers->get($customer_id);
         return $customer;
@@ -1167,8 +1166,7 @@ class OpenpayPrestashop extends PaymentModule
         $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
         $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
         $merchant_classification = Configuration::get('OPENPAY_CLASSIFICATION');
-
-        $openpay = Openpay::getInstance($id, $pk, $country);
+        $openpay = Openpay::getInstance($id, $pk, $country, $this->getClientIp());
         Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
 
         if($merchant_classification === 'eglobal')
@@ -1211,8 +1209,7 @@ class OpenpayPrestashop extends PaymentModule
         $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
         $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
         $merchant_classification = Configuration::get('OPENPAY_CLASSIFICATION');
-
-        Openpay::getInstance($id, $pk, $country);
+        $openpay = Openpay::getInstance($id, $pk, $country, $this->getClientIp());
         Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
 
         if($merchant_classification === 'eglobal')
@@ -1235,7 +1232,6 @@ class OpenpayPrestashop extends PaymentModule
         $country = Configuration::get('OPENPAY_COUNTRY');
         $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
         $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
-
         Openpay::getInstance($id, $pk, $country);
         Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
 
@@ -1284,7 +1280,7 @@ class OpenpayPrestashop extends PaymentModule
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-        curl_setopt($ch, CURLOPT_CAINFO, _PS_MODULE_DIR_.$this->name.'/lib/data/cacert.pem');
+        curl_setopt($ch, CURLOPT_CAINFO, _PS_MODULE_DIR_.$this->name.'/lib/openpay/Openpay/Data/cacert.pem');
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
@@ -1316,7 +1312,7 @@ class OpenpayPrestashop extends PaymentModule
 
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-            curl_setopt($ch, CURLOPT_CAINFO, _PS_MODULE_DIR_.$this->name.'/lib/data/cacert.pem');
+            curl_setopt($ch, CURLOPT_CAINFO, _PS_MODULE_DIR_.$this->name.'/lib/openpay/Openpay/Data/cacert.pem');
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
@@ -1485,10 +1481,30 @@ class OpenpayPrestashop extends PaymentModule
         $country = Configuration::get('OPENPAY_COUNTRY'); 
         $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
         $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
-
-        $openpay = Openpay::getInstance($id, $pk, $country);
+        $openpay = Openpay::getInstance($id, $pk, $country, $this->getClientIp());
         Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
         
         return $openpay;
     }
+
+    protected function getClientIp() {
+        // Recogemos la IP de la cabecera de la conexión
+        if (!empty($_SERVER['HTTP_CLIENT_IP']))   
+        {
+          $ipAdress = $_SERVER['HTTP_CLIENT_IP'];
+        }
+        // Caso en que la IP llega a través de un Proxy
+        elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))  
+        {
+          $ipAdress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        }
+        // Caso en que la IP lleva a través de la cabecera de conexión remota
+        else
+        {
+          $ipAdress = $_SERVER['REMOTE_ADDR'];
+        }
+        return $ipAdress;
+      }
+
+
 }
