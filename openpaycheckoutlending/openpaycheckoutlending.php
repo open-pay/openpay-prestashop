@@ -40,7 +40,7 @@ class OpenpayCheckoutLending extends PaymentModule {
         /* Module configuration data  */
         $this->name = 'openpaycheckoutlending';
         $this->displayName = $this->l('Openpay Checkout Lending');
-        $this->version = '1.2.1';
+        $this->version = '1.2.2';
         $this->author = 'Openpay SA de CV';
         $this->tab = 'payments_gateways';
         $this->description = $this->l('Compra ahora, paga después');
@@ -767,6 +767,7 @@ class OpenpayCheckoutLending extends PaymentModule {
         $amount = number_format(floatval($cart->getOrderTotal()), 2, '.', '');   
         $ps_language_default = Configuration::get('PS_LANG_DEFAULT');
         $language_iso_code = Language::getIsoById( (int)$ps_language_default);
+        $origin_channel = 'PLUGIN_PRESTASHOP';
 
         $on_success_callback = _PS_BASE_URL_ . '/' . $language_iso_code .'/confirmacion-pedido?id_cart='.(int) $this->context->cart->id.
             '&id_module='.(int) $this->id.
@@ -780,6 +781,7 @@ class OpenpayCheckoutLending extends PaymentModule {
             "amount" => $amount,
             "description" => $this->l('PrestaShop Cart ID:').' '.(int) $cart->id,
             "order_id" => $order_id+$this->test_order_id,
+            "origin_channel" => $origin_channel,
             "lending_data" => Array(
                 "is_privacy_terms_accepted" => (bool)Configuration::get('PS_CONDITIONS') ,   //$this->is_privacy_terms_accepted,
                 "callbacks" => Array(
