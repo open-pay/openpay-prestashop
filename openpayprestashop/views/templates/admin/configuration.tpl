@@ -268,7 +268,7 @@
                         <label style="">{l s="¿Cómo procesar el cargo?" mod='openpayprestashop'}</label>                                          
                         <select name="openpay_charge_type" id="openpay_charge_type" style="width: 100%; margin: 10px 0 0 0;">
                             <option value="direct" {if $openpay_configuration.OPENPAY_CHARGE_TYPE == 'direct'} selected="selected"{/if}>Directo</option>
-                            <option value="auth" {if $openpay_configuration.OPENPAY_CHARGE_TYPE == 'auth'} selected="selected"{/if}>Autenticación Selectiva</option>
+                            <option value="auth" {if $openpay_configuration.OPENPAY_CHARGE_TYPE == 'auth' && $openpay_configuration.OPENPAY_COUNTRY == 'MX'} selected="selected"{/if}>Autenticación Selectiva</option>
                             <option value="3d" {if $openpay_configuration.OPENPAY_CHARGE_TYPE == '3d'} selected="selected"{/if}>3D Secure</option>
                         </select>
                         <div><small>* ¿Qué es cargo directo? Openpay se encarga de validar la operación y recharzarla cuando detecta riesgo.</small></div>
@@ -417,8 +417,9 @@ $(document).ready(function() {
             $("#use_card_points").closest("tr").hide();
             $("#months_interest_free").closest("tr").hide();
             $("#cuotas_pe").closest("tr").hide();
-            $("#openpay_charge_type").closest("tr").hide();
+            $("#openpay_charge_type").closest("tr").show();
             $("#capture").closest("tr").hide();
+            $("#openpay_charge_type option[value = auth]").hide();
             $("#openpay_save_cc option[value = 2]").hide();
             if ($("#openpay_save_cc").val() == "2"){
                 $("#openpay_save_cc").val("0");
@@ -431,6 +432,7 @@ $(document).ready(function() {
             $("#openpay_charge_type").closest("tr").hide();
             $("#capture").closest("tr").show();
             $("#cuotas_pe").closest("tr").show();
+            $("#openpay_charge_type option[value = auth]").show();
             $("#openpay_save_cc option[value = 2]").show();
         } else if (country === 'MX') {
             $("#openpay_iva").closest("tr").hide();
@@ -438,6 +440,7 @@ $(document).ready(function() {
             $("#openpay_save_cc option[value = 2]").hide();
             $("#use_card_points").closest("tr").show();
             $("#months_interest_free").closest("tr").show();
+            $("#openpay_charge_type option[value = auth]").show();
 
 
             if(merchantClassification === 'eglobal'){

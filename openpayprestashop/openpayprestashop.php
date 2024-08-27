@@ -583,7 +583,7 @@ class OpenpayPrestashop extends PaymentModule
                 }
             }
 
-            if ($country === 'MX' && $charge_type == '3d') {
+            if (($country === 'MX' || $country === 'CO') && $charge_type == '3d') {
                 $charge_request['use_3d_secure'] = true;
                 $charge_request['redirect_url'] = Tools::getHttpHost(true).__PS_BASE_URI__.'module/openpayprestashop/confirm';
             }
@@ -1232,7 +1232,7 @@ class OpenpayPrestashop extends PaymentModule
         $country = Configuration::get('OPENPAY_COUNTRY');
         $pk = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_PRIVATE_KEY_LIVE') : Configuration::get('OPENPAY_PRIVATE_KEY_TEST');
         $id = Configuration::get('OPENPAY_MODE') ? Configuration::get('OPENPAY_MERCHANT_ID_LIVE') : Configuration::get('OPENPAY_MERCHANT_ID_TEST');
-        Openpay::getInstance($id, $pk, $country);
+        Openpay::getInstance($id, $pk, $country, $this->getClientIp());
         Openpay::setProductionMode(Configuration::get('OPENPAY_MODE'));
 
         try {
@@ -1503,6 +1503,8 @@ class OpenpayPrestashop extends PaymentModule
         {
           $ipAdress = $_SERVER['REMOTE_ADDR'];
         }
+
+        $ipAdress = explode(",", $ipAdress)[0];
         return $ipAdress;
       }
 
