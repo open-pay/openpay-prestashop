@@ -1,6 +1,7 @@
 <?php
  if (file_exists(dirname(__FILE__) . '/lib/openpay/Openpay.php')) {
     require_once(dirname(__FILE__) . '/lib/openpay/Openpay.php');
+    require_once(dirname(__FILE__) . '/lib/openpay/Openpay/Data/OpenpayApiError.php');
 }
 /**
  * 2007-2015 PrestaShop
@@ -29,6 +30,7 @@
 
 use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 use Openpay\Data\Openpay as Openpay;
+use Openpay\Data\OpenpayApiError;
 
 if (!defined('_PS_VERSION_')) {
     exit;
@@ -54,7 +56,7 @@ class OpenpayPrestashop extends PaymentModule
 
         $this->name = 'openpayprestashop';
         $this->tab = 'payments_gateways';
-        $this->version = '4.7.6';
+        $this->version = '4.7.7';
         $this->author = 'Openpay SA de CV';
         $this->module_key = '23c1a97b2718ec0aec28bb9b3b2fc6d5';               
 
@@ -86,6 +88,7 @@ class OpenpayPrestashop extends PaymentModule
                 //$this->registerHook('payment') &&
                 $this->registerHook('paymentOptions') &&
                 $this->registerHook('displayHeader') &&
+                $this->registerHook('displayBeforeBodyClosingTag') &&
                 $this->registerHook('displayPaymentTop') &&
                 $this->registerHook('paymentReturn') &&
                 $this->registerHook('displayMobileHeader') &&
@@ -339,33 +342,79 @@ class OpenpayPrestashop extends PaymentModule
 
             $this->context->controller->addCSS($this->_path.'views/css/openpay-prestashop.css');
             if($country == 'MX'){
-                $this->context->controller->registerJavascript(
-                    'remote-openpay-js', 'https://openpay.s3.amazonaws.com/openpay.v1.min.js', ['position' => 'bottom', 'server' => 'remote']
-                );
 
-                $this->context->controller->registerJavascript(
-                        'remote-openpaydata-js', 'https://openpay.s3.amazonaws.com/openpay-data.v1.min.js', ['position' => 'bottom', 'server' => 'remote']
-                );
+                     //***** OLD IMPLEMENTATION WITHOUT INTEGRITY *****
+                     /* $this->context->controller->registerJavascript(
+                        'remote-openpay-js', 'https://openpay.s3.amazonaws.com/openpay.v1.min.js', ['position' => 'bottom', 'server' => 'remote']
+                    );
+                    $this->context->controller->registerJavascript(
+                            'remote-openpaydata-js', 'https://openpay.s3.amazonaws.com/openpay-data.v1.min.js', ['position' => 'bottom', 'server' => 'remote']
+                    );*/
+
             }elseif($country == 'CO'){
-                $this->context->controller->registerJavascript(
-                    'remote-openpay-js', 'https://resources.openpay.co/openpay.v1.min.js', ['position' => 'bottom', 'server' => 'remote']
-                );
+                    //*** OLD IMPLENETATION WITHOUT INTEGRITY ***
+                    /*$this->context->controller->registerJavascript(
+                        'remote-openpay-js', $this->_path.'lib/openpaytokenize/co/openpay.v1.min.js', ['position' => 'bottom', 'integrity' => 'sha256-OK9qfWKqHJYnsxWiqczAt8TTIOYYZbx30krm/wE6EmI=', 'server' => 'local']
+                    );
+                    $this->context->controller->registerJavascript(
+                            'remote-openpaydata-js', 'https://resources.openpay.co/openpay-data.v1.min.js', ['position' => 'bottom', 'server' => 'remote']
+                    );*/
 
-                $this->context->controller->registerJavascript(
-                        'remote-openpaydata-js', 'https://resources.openpay.co/openpay-data.v1.min.js', ['position' => 'bottom', 'server' => 'remote']
-                );
             }elseif ($country == 'PE'){
-                $this->context->controller->registerJavascript(
-                    'remote-openpay-js', 'https://js.openpay.pe/openpay.v1.min.js', ['position' => 'bottom', 'server' => 'remote']
-                );
-                $this->context->controller->registerJavascript(
-                    'remote-openpaydata-js', 'https://js.openpay.pe/openpay-data.v1.min.js', ['position' => 'bottom', 'server' => 'remote']
-                );
+
+                    //*** OLD IMPLEMENTATION WITHOUT INTEGRITY ***
+                    /*$this->context->controller->registerJavascript(
+                        'remote-openpay-js', 'https://js.openpay.pe/openpay.v1.min.js', ['position' => 'bottom', 'server' => 'remote']
+                    );
+                    $this->context->controller->registerJavascript(
+                        'remote-openpaydata-js', 'https://js.openpay.pe/openpay-data.v1.min.js', ['position' => 'bottom', 'server' => 'remote']
+                    );*/
+
             }
         } else {
             Logger::addLog('NO hookHeader, Controller => '.Tools::getValue('controller'), 1, null, null, null, true);
         }
     }
+
+    public function hookDisplayBeforeBodyClosingTag(){
+        Logger::addLog('Hook before body', 1, null, null, null, true);
+        if (!$this->active) {
+            return;
+        }
+
+        $country = Configuration::get('OPENPAY_COUNTRY');
+        if (Tools::getValue('module') === 'onepagecheckoutps' ||
+            Tools::getValue('controller') === 'order-opc' ||
+            Tools::getValue('controller') === 'orderopc' ||
+            Tools::getValue('controller') === 'order') {
+
+            $this->context->controller->addCSS($this->_path.'views/css/openpay-prestashop.css');
+            if($country == 'MX'){
+                $openpayjsPath = $this->_path . 'lib/openpaytokenize/Mx/openpay.v1.min.js';
+                $openpayjsDataPath = $this->_path . 'lib/openpaytokenize/Mx/openpay-data.v1.min.js';
+
+                return '<script type="text/javascript" src="'.$openpayjsPath.'" integrity="sha256-WrWvhWLc23NGnw8DIxSdKvZEQT15ZApDSgV050k3Y5o=" crossorigin="anonymous"></script>
+                <script type="text/javascript" src="'.$openpayjsDataPath.'" integrity="sha256-vk4t/D2uJZb05HIt9Yfl/G3j4TvqYfUggSNK6+Ykvyk=" crossorigin="anonymous"></script>';
+            }elseif($country == 'CO'){
+                $openpayjsPath = $this->_path . 'lib/openpaytokenize/Co/openpay.v1.min.js';
+                $openpayjsDataPath = $this->_path . 'lib/openpaytokenize/Co/openpay-data.v1.min.js';
+
+                return '<script type="text/javascript" src="'.$openpayjsPath.'" integrity="sha256-OK9qfWKqHJYnsxWiqczAt8TTIOYYZbx30krm/wE6EmI=" crossorigin="anonymous"></script>
+                <script type="text/javascript" src="'.$openpayjsDataPath.'" integrity="sha256-xUtB6hmMgZQlMrTCE/GHl2V5ApTEy5ozbenKwGxXiJw=" crossorigin="anonymous"></script>';
+
+            }elseif ($country == 'PE'){
+                $openpayjsPath = $this->_path . 'lib/openpaytokenize/Pe/openpay.v1.min.js';
+                $openpayjsDataPath = $this->_path . 'lib/openpaytokenize/Pe/openpay-data.v1.min.js';
+
+                return '<script type="text/javascript" src="'.$openpayjsPath.'" integrity="sha256-lIslBTmdkKjqAtij4q5AvkaBzU+8ac/kkGVFjt8Frcs=" crossorigin="anonymous"></script>
+                <script type="text/javascript" src="'.$openpayjsDataPath.'" integrity="sha256-d8O+0riP1qHx+F/d14BLblGjaSBGNNllmr5f5E6HJLY=" crossorigin="anonymous"></script>';
+
+            }
+        } else {
+            Logger::addLog('NO hookBeforeBodyClosing, Controller => '.Tools::getValue('controller'), 1, null, null, null, true);
+        }
+    }
+
 
     /**
      * Hook to the new PS 1.7 payment options hook
@@ -542,7 +591,11 @@ class OpenpayPrestashop extends PaymentModule
         else
             $userAgent = "Openpay-PS17".$country."/v2";
         Openpay::setUserAgent($userAgent);
-        try {   
+        try {
+            if(!$token || !isset($token)) {
+                throw new OpenpayApiError("Error", 1003);
+            }
+
             Logger::addLog('$save_cc => '. json_encode($save_cc), 1, null, null, null, true);
             $openpay_customer = $this->getOpenpayCustomer($this->context->cookie->id_customer);
 
